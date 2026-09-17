@@ -23,9 +23,9 @@ npm run dev
 
 Dev server: `http://127.0.0.1:43180`
 
-Production (once the claimreach.com-account token is applied): **https://sterling.claimreach.com** — Worker script `sterling-city` only (does not bind `claimreach.com` or `/m6`). See `DEPLOY.md`.
+Production (after a **separate** `sterling-city` Pages/Workers project is Git-connected or deployed): **https://sterling.claimreach.com**. Do not attach that hostname to the CRM Pages project `claimreach`. See `DEPLOY.md`.
 
-GitHub (Pages / Workers Builds connect): `https://github.com/bmcc3po/sterling-city`
+GitHub (Git-connect this, not `bmcc3po/claimreach`): `https://github.com/bmcc3po/sterling-city`
 
 ```bash
 export CLOUDFLARE_API_TOKEN="…"   # account that owns claimreach.com

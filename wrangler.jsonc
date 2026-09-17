@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "sterling-city",
+  "account_id": "2ba9f1e76fa0bea71be1ddffac54af74",
   "main": "worker.ts",
   "compatibility_date": "2026-09-17",
   "workers_dev": true,
