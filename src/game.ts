@@ -673,11 +673,13 @@ export class SterlingCity {
   private spawnCoaches() {
     const n = this.wanted >= 3 ? 2 : 1;
     while (this.coaches.length < n) {
+      const fwd = new THREE.Vector3(Math.sin(this.player.yaw), 0, Math.cos(this.player.yaw));
+      const right = new THREE.Vector3(fwd.z, 0, -fwd.x);
       const kit = createCoachCar();
-      const back = new THREE.Vector3(-Math.sin(this.player.yaw), 0, -Math.cos(this.player.yaw));
+      const side = this.coaches.length ? -1 : 1;
       const car: SimCar = {
         kit,
-        pos: this.player.pos.clone().addScaledVector(back, 10 + this.coaches.length * 5).add(new THREE.Vector3(this.coaches.length ? -5.5 : 5.5, 0, 2)),
+        pos: this.player.pos.clone().addScaledVector(fwd, 12).addScaledVector(right, side * 5.2),
         vel: new THREE.Vector3(),
         yaw: this.player.yaw,
         steerVis: 0,
