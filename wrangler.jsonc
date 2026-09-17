@@ -3,12 +3,20 @@
   "name": "sterling-city",
   "main": "worker.ts",
   "compatibility_date": "2026-09-17",
+  "workers_dev": true,
+  "preview_urls": false,
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
     "not_found_handling": "single-page-application",
     "html_handling": "auto-trailing-slash"
   },
+  "routes": [
+    {
+      "pattern": "sterling.claimreach.com",
+      "custom_domain": true
+    }
+  ],
   "observability": {
     "enabled": true
   }
