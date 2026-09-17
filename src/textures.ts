@@ -49,14 +49,15 @@ export function windowTexture(seed: number, tint: string) {
     const bh = (size - padY * 2) / rows;
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
-        const lit = ((seed * 17 + x * 13 + y * 29) % 10) > 3;
+        const lit = ((seed * 17 + x * 13 + y * 29) % 10) > 2;
         const g = ctx.createLinearGradient(0, 0, 0, bh);
         if (lit) {
-          g.addColorStop(0, tint);
-          g.addColorStop(1, "#1a1208");
+          g.addColorStop(0, "#fff6cf");
+          g.addColorStop(0.45, tint);
+          g.addColorStop(1, "#3a2208");
         } else {
-          g.addColorStop(0, "#12141c");
-          g.addColorStop(1, "#08090e");
+          g.addColorStop(0, "#1c2230");
+          g.addColorStop(1, "#0c1018");
         }
         ctx.fillStyle = g;
         ctx.fillRect(padX + x * bw + 4, padY + y * bh + 3, bw - 8, bh - 6);

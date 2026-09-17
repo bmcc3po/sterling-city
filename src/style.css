@@ -141,6 +141,7 @@ body.light {
 
 #wanted span.on {
   color: var(--gold);
+  text-shadow: 0 0 12px rgba(255, 196, 77, 0.95);
 }
 
 #wanted.hot span.on {

@@ -41,7 +41,7 @@ const RADIO = [
 export class SterlingCity {
   private renderer: THREE.WebGLRenderer;
   private scene = new THREE.Scene();
-  private camera = new THREE.PerspectiveCamera(58, 1, 0.1, 420);
+  private camera = new THREE.PerspectiveCamera(62, 1, 0.1, 420);
   private composer: EffectComposer;
   private bloom: UnrealBloomPass;
   private moon: THREE.DirectionalLight;
@@ -88,16 +88,18 @@ export class SterlingCity {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.05;
+    this.renderer.toneMappingExposure = 1.38;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    this.scene.background = new THREE.Color(0x050814);
-    this.scene.fog = new THREE.FogExp2(0x070b16, 0.012);
+    this.scene.background = new THREE.Color(0x10182e);
+    this.scene.fog = new THREE.Fog(0x121a32, 28, 160);
+    this.scene.add(makeSky());
+    this.scene.add(new THREE.AmbientLight(0x4a5a88, 0.65));
 
-    this.hemi = new THREE.HemisphereLight(0x6a7bff, 0x0b0508, 0.45);
+    this.hemi = new THREE.HemisphereLight(0x9ab0ff, 0x4a2038, 1.05);
     this.scene.add(this.hemi);
-    this.moon = new THREE.DirectionalLight(0xb7c8ff, 1.15);
+    this.moon = new THREE.DirectionalLight(0xd6e4ff, 1.85);
     this.moon.position.set(40, 70, 18);
     this.moon.castShadow = true;
     this.moon.shadow.mapSize.set(1024, 1024);
@@ -131,6 +133,8 @@ export class SterlingCity {
       wheelRot: 0,
     };
     this.scene.add(hero.group);
+    this.camPos.set(this.player.pos.x, 2.2, this.player.pos.z - 6.4);
+    this.camLook.copy(this.player.pos).add(new THREE.Vector3(0, 0.9, 8));
 
     this.headL = this.makeHeadlight(0.55);
     this.headR = this.makeHeadlight(-0.55);
@@ -169,7 +173,7 @@ export class SterlingCity {
     this.seedRain();
 
     const renderPass = new RenderPass(this.scene, this.camera);
-    this.bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.85, 0.5, 0.72);
+    this.bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.05, 0.62, 0.22);
     const out = new OutputPass();
     this.composer = new EffectComposer(this.renderer);
     this.composer.addPass(renderPass);
@@ -206,9 +210,9 @@ export class SterlingCity {
   }
 
   private makeHeadlight(x: number) {
-    const s = new THREE.SpotLight(0xe8f4ff, 6, 38, Math.PI / 7, 0.45, 1.1);
+    const s = new THREE.SpotLight(0xe8f4ff, 22, 52, Math.PI / 5.5, 0.38, 1.0);
     s.position.set(x, 0.55, 2.15);
-    s.target.position.set(x * 1.4, 0.1, 12);
+    s.target.position.set(x * 1.4, 0.05, 16);
     s.castShadow = false;
     return s;
   }
@@ -257,6 +261,7 @@ export class SterlingCity {
       this.wanted = 3;
       this.spawnCoaches();
       this.getawayOn = true;
+      this.getawayCool = 14;
     }
   }
 
@@ -401,19 +406,20 @@ export class SterlingCity {
 
   private updateCamera(dt: number) {
     const back = new THREE.Vector3(-Math.sin(this.player.yaw), 0, -Math.cos(this.player.yaw));
-    const desired = this.player.pos.clone().addScaledVector(back, 8.4).add(new THREE.Vector3(0, 4.1, 0));
-    this.camPos.lerp(desired, 1 - Math.pow(0.001, dt));
+    const fwd = new THREE.Vector3(Math.sin(this.player.yaw), 0, Math.cos(this.player.yaw));
+    const desired = this.player.pos.clone().addScaledVector(back, 6.5).add(new THREE.Vector3(0, 2.15, 0));
+    this.camPos.lerp(desired, 1 - Math.pow(0.0004, dt));
     if (this.shake > 0) {
       this.camPos.x += (Math.random() - 0.5) * this.shake;
       this.camPos.y += (Math.random() - 0.5) * this.shake * 0.4;
       this.shake *= 1 - 6 * dt;
     }
     this.camera.position.copy(this.camPos);
-    const look = this.player.pos.clone().add(new THREE.Vector3(Math.sin(this.player.yaw) * 7, 1.1, Math.cos(this.player.yaw) * 7));
-    this.camLook.lerp(look, 1 - Math.pow(0.0008, dt));
+    const look = this.player.pos.clone().addScaledVector(fwd, 9.5).add(new THREE.Vector3(0, 0.85, 0));
+    this.camLook.lerp(look, 1 - Math.pow(0.0003, dt));
     this.camera.lookAt(this.camLook);
     const boost = this.getawayOn ? 6 : 0;
-    this.camera.fov = THREE.MathUtils.damp(this.camera.fov, 58 + this.player.vel.length() * 0.12 + boost, 6, dt);
+    this.camera.fov = THREE.MathUtils.damp(this.camera.fov, 62 + this.player.vel.length() * 0.1 + boost, 6, dt);
     this.camera.updateProjectionMatrix();
   }
 
@@ -424,8 +430,8 @@ export class SterlingCity {
     this.city.lamps.forEach((l) => {
       l.intensity = 0;
     });
-    nearest.slice(0, 8).forEach((l, i) => {
-      l.intensity = this.night ? 3.4 - i * 0.2 : 0.4;
+    nearest.slice(0, 10).forEach((l, i) => {
+      l.intensity = this.night ? 8.2 - i * 0.35 : 0.6;
     });
   }
 
@@ -671,7 +677,7 @@ export class SterlingCity {
       const back = new THREE.Vector3(-Math.sin(this.player.yaw), 0, -Math.cos(this.player.yaw));
       const car: SimCar = {
         kit,
-        pos: this.player.pos.clone().addScaledVector(back, 16 + this.coaches.length * 6).add(new THREE.Vector3(4, 0, 0)),
+        pos: this.player.pos.clone().addScaledVector(back, 10 + this.coaches.length * 5).add(new THREE.Vector3(this.coaches.length ? -5.5 : 5.5, 0, 2)),
         vel: new THREE.Vector3(),
         yaw: this.player.yaw,
         steerVis: 0,
@@ -740,12 +746,12 @@ export class SterlingCity {
     this.night = !this.night;
     document.getElementById("theme")!.textContent = this.night ? "NIGHT" : "DAWN";
     document.body.classList.toggle("light", !this.night);
-    this.scene.background = new THREE.Color(this.night ? 0x050814 : 0x8aa3c7);
-    this.scene.fog = new THREE.FogExp2(this.night ? 0x070b16 : 0x9bb4d4, this.night ? 0.012 : 0.008);
-    this.hemi.intensity = this.night ? 0.45 : 0.9;
-    this.moon.intensity = this.night ? 1.15 : 1.8;
-    this.renderer.toneMappingExposure = this.night ? 1.05 : 1.2;
-    this.bloom.strength = this.night ? 0.85 : 0.35;
+    this.scene.background = new THREE.Color(this.night ? 0x10182e : 0x8aa3c7);
+    this.scene.fog = new THREE.Fog(this.night ? 0x121a32 : 0x9bb4d4, this.night ? 28 : 40, this.night ? 160 : 220);
+    this.hemi.intensity = this.night ? 1.05 : 1.2;
+    this.moon.intensity = this.night ? 1.85 : 2.1;
+    this.renderer.toneMappingExposure = this.night ? 1.38 : 1.15;
+    this.bloom.strength = this.night ? 1.05 : 0.35;
     this.rain.visible = this.night;
   }
 
@@ -783,4 +789,37 @@ export class SterlingCity {
     ctx.lineTo(w / 2 - 5, h / 2 + 7);
     ctx.fill();
   }
+}
+
+function makeSky() {
+  const geo = new THREE.SphereGeometry(280, 32, 20);
+  const mat = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    depthWrite: false,
+    uniforms: {
+      top: { value: new THREE.Color(0x152048) },
+      mid: { value: new THREE.Color(0x2a1040) },
+      bot: { value: new THREE.Color(0x3a1830) },
+    },
+    vertexShader: `
+      varying vec3 vP;
+      void main() {
+        vP = position;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vP;
+      uniform vec3 top;
+      uniform vec3 mid;
+      uniform vec3 bot;
+      void main() {
+        float h = normalize(vP).y;
+        vec3 col = mix(bot, mid, smoothstep(-0.2, 0.15, h));
+        col = mix(col, top, smoothstep(0.15, 0.85, h));
+        gl_FragColor = vec4(col, 1.0);
+      }
+    `,
+  });
+  return new THREE.Mesh(geo, mat);
 }

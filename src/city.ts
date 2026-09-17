@@ -50,12 +50,12 @@ export function buildCity(renderer: THREE.WebGLRenderer): City {
     new THREE.PlaneGeometry(CITY_SPAN + 80, CITY_SPAN + 80),
     new THREE.MeshPhysicalMaterial({
       map: asphalt,
-      color: 0x8a93a8,
-      roughness: 0.18,
-      metalness: 0.22,
+      color: 0xb8c2d8,
+      roughness: 0.32,
+      metalness: 0.18,
       transparent: true,
-      opacity: 0.78,
-      envMapIntensity: 1.3,
+      opacity: 0.9,
+      envMapIntensity: 1.1,
     }),
   );
   road.rotation.x = -Math.PI / 2;
@@ -63,16 +63,16 @@ export function buildCity(renderer: THREE.WebGLRenderer): City {
   road.receiveShadow = true;
   group.add(road);
 
-  const sidewalkMat = new THREE.MeshStandardMaterial({ color: 0x2a2e38, roughness: 0.7, metalness: 0.1 });
-  const concrete = new THREE.MeshStandardMaterial({ color: 0x3a3344, roughness: 0.62, metalness: 0.18 });
+  const sidewalkMat = new THREE.MeshStandardMaterial({ color: 0x4a5160, roughness: 0.7, metalness: 0.1 });
+  const concrete = new THREE.MeshStandardMaterial({ color: 0x5a5366, roughness: 0.55, metalness: 0.22, emissive: 0x1a1220, emissiveIntensity: 0.15 });
   const glassMat = new THREE.MeshPhysicalMaterial({
-    color: 0x1b2438,
-    metalness: 0.9,
-    roughness: 0.12,
-    emissive: 0x142033,
-    emissiveIntensity: 0.4,
+    color: 0x3a4c68,
+    metalness: 0.85,
+    roughness: 0.16,
+    emissive: 0x243656,
+    emissiveIntensity: 0.55,
   });
-  const brick = new THREE.MeshStandardMaterial({ color: 0x4a2a33, roughness: 0.7, metalness: 0.08 });
+  const brick = new THREE.MeshStandardMaterial({ color: 0x6a3a44, roughness: 0.62, metalness: 0.1, emissive: 0x220810, emissiveIntensity: 0.12 });
   const windowMaps = [
     windowTexture(3, "#ffd38a"),
     windowTexture(9, "#9be7ff"),
@@ -108,18 +108,30 @@ export function buildCity(renderer: THREE.WebGLRenderer): City {
         building.receiveShadow = true;
         group.add(building);
 
+        const winMap = pick(rng, windowMaps);
         const win = new THREE.Mesh(
-          new THREE.BoxGeometry(w + 0.08, h * 0.92, d + 0.08),
-          new THREE.MeshBasicMaterial({
-            map: pick(rng, windowMaps),
-            transparent: true,
-            opacity: 0.85,
+          new THREE.BoxGeometry(w + 0.06, h * 0.9, d + 0.06),
+          new THREE.MeshStandardMaterial({
+            map: winMap,
+            emissiveMap: winMap,
+            emissive: 0xffffff,
+            emissiveIntensity: 2.4,
+            roughness: 0.45,
+            metalness: 0.15,
           }),
         );
-        win.position.set(bx, h / 2 + 0.2, bz);
+        win.position.set(bx, h / 2 + 0.15, bz);
         group.add(win);
 
-        if (rng() > 0.45) {
+        const shopColor = pick(rng, [0xff3d8a, 0x3cf0ff, 0xffc44d, 0x7cff6b, 0xff6a3c]);
+        const shop = new THREE.Mesh(
+          new THREE.BoxGeometry(w * 0.92, 2.4, 0.12),
+          new THREE.MeshBasicMaterial({ color: shopColor, toneMapped: false }),
+        );
+        shop.position.set(bx, 1.4, bz + d / 2 + 0.12);
+        group.add(shop);
+
+        if (rng() > 0.28) {
           const colors = ["#ff3d8a", "#3cf0ff", "#ffc44d", "#7cff6b"];
           const words = ["PIZZA", "ARCADE", "24H", "RADIO", "NOON", "GRID"];
           const sign = new THREE.Mesh(
@@ -130,7 +142,7 @@ export function buildCity(renderer: THREE.WebGLRenderer): City {
               toneMapped: false,
             }),
           );
-          sign.position.set(bx, 4.2, bz + d / 2 + 0.2);
+          sign.position.set(bx, 5.1, bz + d / 2 + 0.22);
           group.add(sign);
         }
 
@@ -154,27 +166,18 @@ export function buildCity(renderer: THREE.WebGLRenderer): City {
     }
   }
 
-  // Lane markings
-  for (let i = 0; i < CELLS; i++) {
+  // Lane markings on the driving lanes only
+  for (let i = 0; i < CELLS - 1; i++) {
     const { x } = blockCenter(i, 0);
     const roadX = x + BLOCK / 2 + ROAD / 2;
-    for (let s = -CITY_SPAN / 2; s < CITY_SPAN / 2; s += 6) {
-      const dash = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.04, 2.4), dashMat);
-      dash.position.set(roadX, 0.05, s);
+    for (let s = -CITY_SPAN / 2; s < CITY_SPAN / 2; s += 8) {
+      const dash = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.03, 1.6), dashMat);
+      dash.position.set(roadX, 0.04, s);
       group.add(dash);
     }
-    const yel = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.04, CITY_SPAN + 40), lineMat);
-    yel.position.set(x, 0.045, 0);
+    const yel = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.03, CITY_SPAN + 20), lineMat);
+    yel.position.set(roadX - 0.35, 0.035, 0);
     group.add(yel);
-  }
-  for (let j = 0; j < CELLS; j++) {
-    const { z } = blockCenter(0, j);
-    const roadZ = z + BLOCK / 2 + ROAD / 2;
-    for (let s = -CITY_SPAN / 2; s < CITY_SPAN / 2; s += 6) {
-      const dash = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.04, 0.18), dashMat);
-      dash.position.set(s, 0.05, roadZ);
-      group.add(dash);
-    }
   }
 
   // Street lamps along roads
@@ -191,7 +194,7 @@ export function buildCity(renderer: THREE.WebGLRenderer): City {
       const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.22, 10, 10), bulbMat);
       bulb.position.set(lx, 5.2, lz);
       group.add(post, bulb);
-      const light = new THREE.PointLight(0xffd19a, 0, 28, 2);
+      const light = new THREE.PointLight(0xffd19a, 0, 36, 1.6);
       light.position.set(lx, 5.1, lz);
       group.add(light);
       lamps.push(light);
@@ -234,7 +237,7 @@ export function buildCity(renderer: THREE.WebGLRenderer): City {
   group.add(water);
 
   const spots: MissionSpot[] = [
-    { id: "courier", ...offset(2, 1, 8, 0), label: "COURIER DROP" },
+    { id: "courier", x: BLOCK / 2 + ROAD / 2, z: 42, label: "COURIER DROP" },
     { id: "vault", ...offset(5, 4, 0, 8), label: "VAULT" },
     { id: "getaway", ...offset(1, 5, -8, 0), label: "GETAWAY GATE" },
     { id: "garage", ...offset(4, 2, 0, -8), label: "GARAGE" },
@@ -245,7 +248,7 @@ export function buildCity(renderer: THREE.WebGLRenderer): City {
     colliders,
     lamps,
     spots,
-    spawn: new THREE.Vector3(0, 0, 6),
+    spawn: new THREE.Vector3(BLOCK / 2 + ROAD / 2, 0, -22),
     reflector,
   };
 }
