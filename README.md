@@ -23,24 +23,17 @@ npm run dev
 
 Dev server: `http://127.0.0.1:43180`
 
+Production (once the claimreach.com-account token is applied): **https://sterling.claimreach.com** — Worker script `sterling-city` only (does not bind `claimreach.com` or `/m6`). See `DEPLOY.md`.
+
+GitHub (Pages / Workers Builds connect): `https://github.com/bmcc3po/sterling-city`
+
 ```bash
-npm install
+export CLOUDFLARE_API_TOKEN="…"   # account that owns claimreach.com
 npm run build
+npx wrangler deploy               # never --temporary
 ```
 
-Static output for Cloudflare Pages: **`dist/`** (SPA: `index.html`, hashed JS/CSS, `_redirects`).
-
-```bash
-# After the sterling-city Pages project exists:
-npx wrangler pages deploy dist --project-name=sterling-city --commit-dirty=true
-```
-
-Pages Git-connect (same pattern as the Claimreach CRM):
-
-- Repo: `https://github.com/bmcc3po/sterling-city`
-- Build command: `npm run build`
-- Output directory: `dist`
-- Custom domain: `sterling.claimreach.com`
+`dist/` is the static SPA. If Custom Domain does not attach, CNAME `sterling` → the printed `*.workers.dev` host (proxied).
 
 ## Stack
 

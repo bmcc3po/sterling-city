@@ -4,63 +4,72 @@ Target: **https://sterling.claimreach.com**
 Worker name: `sterling-city` (separate from `claimpoint` and `cdc-workup` — do not overwrite those).  
 Does **not** bind `claimreach.com/*` or `/m6`.
 
-## One command (real account — no `--temporary`)
+`wrangler.jsonc` already sets Custom Domain `sterling.claimreach.com`. A real-account `npx wrangler deploy` (no `--temporary`) creates the hostname + SSL in the **claimreach.com** zone. No CNAME is required if that succeeds.
 
-```bash
-export CLOUDFLARE_API_TOKEN="…"   # see token scopes below
-npm run build
-npx wrangler deploy                 # NOT wrangler deploy --temporary
-```
+## Blocked on this agent — exact missing auth
 
-`wrangler.jsonc` already sets Custom Domain `sterling.claimreach.com`. Wrangler will create the hostname + SSL in the **claimreach.com** zone. No CNAME is required if that succeeds.
+Checked 2026-09-17:
 
-## Token / login that is missing on this agent
+| Channel | Status |
+| --- | --- |
+| `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` in env | **Missing** |
+| `npx wrangler whoami` | **Not authenticated** — needs `wrangler login` or a token |
+| Cloudflare Bindings MCP | Logged into the **same** account as `claimpoint` + `cdc-workup` (claimreach.com). **List-only** — no Worker upload, no custom domain, no DNS tools |
+| GitHub `bmcc3po` PAT (`repo` scope) | Present (old OpenClaw `secrets.env` on Drive). Used only to publish this repo. **No Cloudflare token in that file.** |
+| `cdc-workup` GitHub Actions secrets | `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` **not** set there either |
 
-This environment has:
+Wrangler in this environment fails with:
 
-- Cloudflare **Bindings MCP** (can *list* `claimpoint` + `cdc-workup`)
-- **No** Wrangler CLI login
-- **No** `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` in env
+> In a non-interactive environment, it's necessary to set a `CLOUDFLARE_API_TOKEN` environment variable… To continue without logging in, rerun with `--temporary`.
 
-Create a token on the **same** account that owns claimreach.com:
+`--temporary` / claim-preview is **forbidden** as the lasting URL. Do not use it.
 
-Dashboard → My Profile → API Tokens → Create Token
+### Token to create (claimreach.com account)
 
-Use **Edit Cloudflare Workers**, or a custom token with:
+Dashboard → **My Profile** → **API Tokens** → **Create Token** → template **Edit Cloudflare Workers**, or custom:
 
-- Account → Cloudflare Workers Scripts → Edit
-- Account → Cloudflare Workers Routes → Edit (if shown)
-- Zone → Workers Routes → Edit on `claimreach.com`
-- Zone → SSL and Certificates → Edit on `claimreach.com` (custom domain)
-- Zone → DNS → Edit on `claimreach.com` (only if you add the CNAME by hand)
+- Account → Cloudflare Workers Scripts → **Edit**
+- Zone → Workers Routes → **Edit** on `claimreach.com`
+- Zone → SSL and Certificates → **Edit** on `claimreach.com` (Custom Domain)
+- Zone → DNS → **Edit** on `claimreach.com` (only if attaching CNAME by hand)
+
+Also copy **Account ID** from Workers overview (right column).
 
 Then either:
 
 ```bash
 export CLOUDFLARE_API_TOKEN=…
-npx wrangler whoami    # must show the claimreach.com account, not a preview
-npx wrangler deploy
+export CLOUDFLARE_ACCOUNT_ID=…   # optional if the token is single-account
+npx wrangler whoami              # must show the claimreach.com account, not a preview
+npm run build
+npx wrangler deploy              # NEVER --temporary
 ```
 
-or on this machine: `npx wrangler login` as that account (OAuth).
+or add the same two values as GitHub Actions secrets on `bmcc3po/sterling-city` and run the **Deploy sterling-city Worker** workflow.
 
-## Manual DNS if Custom Domain API fails
+or on a laptop: `npx wrangler login` as that account (OAuth).
 
-After a successful `wrangler deploy`, Wrangler prints `https://sterling-city.<subdomain>.workers.dev`.
-
-| Type | Name | Target | Proxy |
-| --- | --- | --- | --- |
-| CNAME | `sterling` | `sterling-city.<subdomain>.workers.dev` | Proxied (orange cloud) |
-
-Example if the account workers.dev subdomain is `bmc`: `sterling-city.bmc.workers.dev`.
-
-Confirm with:
+Confirm:
 
 ```bash
 curl -sS -o /dev/null -w "%{http_code}\n" https://sterling.claimreach.com/
 ```
 
-Expect **200** and HTML title `STERLING CITY`.
+Expect **200** and HTML title `STERLING CITY`. Do not treat the URL as live until that passes.
+
+## Manual DNS if Custom Domain API fails
+
+After a successful real-account `wrangler deploy`, Wrangler prints `https://sterling-city.<subdomain>.workers.dev`.
+
+The workers.dev subdomain for this account is almost certainly **`bmc`** (`*.bmc.workers.dev` resolves; `cdc-workup.bmc.workers.dev` is 404 because that Worker has `workers_dev` off).
+
+| Type | Name | Target | Proxy |
+| --- | --- | --- | --- |
+| CNAME | `sterling` | `sterling-city.bmc.workers.dev` | Proxied (orange cloud) |
+
+If Wrangler prints a different `*.workers.dev` host, use that instead of `bmc`.
+
+Do **not** add a CNAME on `claimreach.com` apex or `www`. Do **not** add a Worker route `claimreach.com/*`.
 
 ## Fallback (do not use unless subdomain is impossible)
 

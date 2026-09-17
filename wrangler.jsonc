@@ -11,6 +11,7 @@
     "not_found_handling": "single-page-application",
     "html_handling": "auto-trailing-slash"
   },
+  // Subdomain only. Never pattern "claimreach.com/*" — that would steal /m6.
   "routes": [
     {
       "pattern": "sterling.claimreach.com",

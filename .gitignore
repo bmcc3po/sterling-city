@@ -2,6 +2,9 @@ node_modules
 dist
 .wrangler
 .dev.vars
+.env
 *.local
+.DS_Store
+.netlify
 .DS_Store
 .netlify

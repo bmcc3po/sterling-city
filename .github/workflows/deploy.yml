@@ -1,0 +1,35 @@
+name: Deploy sterling-city Worker
+
+# Manual until CLOUDFLARE_API_TOKEN (and CLOUDFLARE_ACCOUNT_ID) are set on this
+# repo. After they are set, add:
+#   push:
+#     branches: [main]
+# so a push deploys the Worker on the same account as claimreach.com.
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Fail early if Cloudflare auth is missing
+        run: |
+          if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ]; then
+            echo "CLOUDFLARE_API_TOKEN is not set. Add an Edit Cloudflare Workers token for the claimreach.com account under Settings → Secrets → Actions."
+            exit 1
+          fi
+
+      - name: Build and deploy Worker (never --temporary)
+        run: npm run build && npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
