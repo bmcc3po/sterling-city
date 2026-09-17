@@ -21,7 +21,7 @@ npm install
 npm run dev
 ```
 
-Dev server: `http://127.0.0.1:43180`
+Dev server: `http://127.0.0.1:43180`. Sample parent-hub school feed: `public/school/feed.sample.json`.
 
 Production (after a **separate** `sterling-city` Pages/Workers project is Git-connected or deployed): **https://sterling.claimreach.com**. Do not attach that hostname to the CRM Pages project `claimreach`. See `DEPLOY.md`.
 
