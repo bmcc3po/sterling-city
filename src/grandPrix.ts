@@ -16,7 +16,7 @@ export type PrixHooks = {
 };
 
 const CHECKPOINTS = 6;
-const CPU_RATE = 0.042;
+const CPU_IDLE = 0.004;
 
 export class GrandPrix {
   root: HTMLElement;
@@ -53,10 +53,10 @@ export class GrandPrix {
     this.juice = "coast";
     this.locked = false;
     this.racers = [
-      { id: "you", name: "STERLING", color: "#ffb400", progress: 0.02, you: true },
-      { id: "rio", name: "RIO", color: "#2f7dff", progress: 0.04 },
-      { id: "nova", name: "NOVA", color: "#e23d7a", progress: 0.01 },
-      { id: "jax", name: "JAX", color: "#1dbf6e", progress: 0.03 },
+      { id: "you", name: "STERLING", color: "#ffb400", progress: 0.14, you: true },
+      { id: "rio", name: "RIO", color: "#2f7dff", progress: 0.1 },
+      { id: "nova", name: "NOVA", color: "#e23d7a", progress: 0.08 },
+      { id: "jax", name: "JAX", color: "#1dbf6e", progress: 0.11 },
     ];
     this.problem = opening118x13();
     this.root.hidden = false;
@@ -122,7 +122,10 @@ export class GrandPrix {
       this.juice = "boost";
       this.shake = 10;
       this.flash = 1;
-      you.progress = Math.min(1, you.progress + 0.18 + this.combo * 0.012);
+      you.progress = Math.min(1, you.progress + 0.22 + this.combo * 0.02);
+      this.racers.forEach((r) => {
+        if (!r.you) r.progress = Math.min(0.96, r.progress + 0.03);
+      });
       sfxBoost();
     } else {
       this.combo = 0;
@@ -167,7 +170,7 @@ export class GrandPrix {
     if (!this.finished) {
       for (const r of this.racers) {
         if (r.you) continue;
-        r.progress = Math.min(0.98, r.progress + CPU_RATE * dt * (0.7 + Math.random() * 0.6));
+        r.progress = Math.min(0.92, r.progress + CPU_IDLE * dt);
       }
       this.place = this.rank();
     }
