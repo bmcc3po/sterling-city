@@ -1,5 +1,4 @@
 import "./style.css";
-import { SterlingCity } from "./game";
+import { boot } from "./app";
 
-const canvas = document.getElementById("gl") as HTMLCanvasElement;
-new SterlingCity(canvas);
+boot();

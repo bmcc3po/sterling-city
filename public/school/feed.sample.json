@@ -1,0 +1,59 @@
+{
+  "asOf": "2026-09-16T15:00:00-07:00",
+  "student": {
+    "name": "Sterling Martin Curry",
+    "gradeLevel": 5,
+    "school": "Walker International School ES",
+    "homeroom": "Mrs. Naylor",
+    "district": "CCSD"
+  },
+  "portals": {
+    "canvas": { "status": "ok", "via": "Clever" },
+    "campusParent": {
+      "status": "AUTH_FAIL",
+      "failCount": 1,
+      "note": "Parent login wall — reconnect required"
+    }
+  },
+  "courses": [
+    { "name": "Art 5", "percent": 95, "letter": "E", "trend": "flat" },
+    { "name": "PE 5", "percent": 91, "letter": "E", "trend": "up" },
+    { "name": "Science 5", "percent": 80.55, "letter": "B", "trend": "up" },
+    { "name": "Language 5", "percent": 72.08, "letter": "C", "trend": "flat" },
+    { "name": "Reading 5", "percent": 71.23, "letter": "C", "trend": "flat" },
+    { "name": "Writing 5", "percent": 69.26, "letter": "D", "trend": "down" },
+    { "name": "Math 5", "percent": 59.73, "letter": "F", "trend": "down" }
+  ],
+  "missing": [
+    { "id": "qc-1.1", "title": "Math Quick Check 1.1", "subject": "math", "action": "school_retake", "notifyTeacher": true },
+    { "id": "qc-1-2", "title": "Math Quick Check 1-2", "subject": "math", "action": "school_retake", "notifyTeacher": true },
+    { "id": "qc-1-3", "title": "Math Quick Check 1-3", "subject": "math", "action": "school_retake", "notifyTeacher": true },
+    { "id": "qc-1-4", "title": "Math Quick Check 1-4", "subject": "math", "action": "school_retake", "notifyTeacher": true },
+    { "id": "qc-2-1", "title": "Math Quick Check 2-1", "subject": "math", "action": "school_retake", "notifyTeacher": true },
+    { "id": "qc-2-3", "title": "Math Quick Check 2-3", "subject": "math", "action": "school_retake", "notifyTeacher": true },
+    { "id": "qc-2-4", "title": "Math Quick Check 2-4", "subject": "math", "action": "school_retake", "notifyTeacher": true },
+    { "id": "qc-2-5", "title": "Math Quick Check 2-5", "subject": "math", "action": "school_retake", "notifyTeacher": true },
+    { "id": "sci-1.4", "title": "Science Patterns 1.4", "subject": "science", "action": "school_makeup", "notifyTeacher": false },
+    { "id": "sci-1.5", "title": "Science Patterns 1.5", "subject": "science", "action": "school_makeup", "notifyTeacher": false },
+    { "id": "sci-1.6", "title": "Science Patterns 1.6", "subject": "science", "action": "school_makeup", "notifyTeacher": false }
+  ],
+  "homework": [
+    {
+      "id": "t3-8-video",
+      "title": "Topic 3-8 class videos",
+      "subject": "math",
+      "dueAt": "2026-09-16T15:30:00-07:00",
+      "notesRequired": true,
+      "cashReward": 50,
+      "video": {
+        "title": "Mrs. Naylor Topic 3-8 lesson videos",
+        "url": "https://www.youtube.com/watch?v=0MqP7aeTszM",
+        "canvasUrl": "https://esccsd.instructure.com/courses/822733/modules/items/17190629"
+      }
+    }
+  ],
+  "openTests": [{ "id": "mod2-wk2-quiz", "title": "Reading Module 2 Week 2 Quiz", "window": "due 2026-09-17" }],
+  "topics": [
+    { "id": "t3", "name": "Topic 3 Multiply", "status": "current", "skills": ["partial products", "118×13"] }
+  ]
+}

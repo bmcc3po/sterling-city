@@ -1,0 +1,237 @@
+/* Mobile / iPhone launch: no GPU blur freeze, compact hub, readable title. */
+
+#boot.hide {
+  opacity: 0;
+  pointer-events: none !important;
+  visibility: hidden;
+}
+
+#boot.hide,
+html.lite-gpu #boot.hide {
+  display: none;
+}
+
+#school-hub[hidden],
+#practice-portal[hidden],
+#homework-theater[hidden],
+#boot[hidden] {
+  display: none !important;
+  pointer-events: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+@media (max-width: 820px), (pointer: coarse) {
+  html,
+  body {
+    background: #0b1224;
+  }
+
+  .school-hub,
+  .homework-theater,
+  #practice-portal {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: #070b16 !important;
+    padding: 0;
+  }
+
+  .school-hub .sh-shell,
+  .homework-theater .ht-shell,
+  #practice-portal .pp-shell {
+    max-height: none;
+    height: 100%;
+    border-radius: 0;
+    overflow: auto;
+    background: #0b1224 !important;
+    color: #e8eefc;
+  }
+
+  .school-hub .sh-header {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .school-hub .sh-tabs {
+    padding: 4px 8px;
+  }
+
+  .school-hub .sh-main {
+    padding: 10px 12px 18px;
+  }
+
+  .school-hub .sh-footer {
+    display: none;
+  }
+
+  .sh-enter-banner {
+    position: sticky;
+    bottom: 0;
+    z-index: 4;
+    margin-top: 8px;
+    padding: 10px 12px !important;
+    gap: 10px !important;
+  }
+
+  .sh-enter-lg,
+  .sh-enter-city,
+  .sh-enter-city-inline {
+    width: 100%;
+    min-height: 44px;
+    font-size: 14px !important;
+  }
+
+  .sh-logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .gate-shell:not(.math-stage),
+  .coach-flash,
+  .boss-hud,
+  .gp-shell,
+  .fight-shell,
+  .interior-shell,
+  .shop-shell,
+  .venue-shell {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: #0e1628 !important;
+    max-height: min(70dvh, 560px);
+  }
+
+  #math-gate .math-stage,
+  #wanted-math .wanted-shell {
+    max-height: none !important;
+    height: 100%;
+  }
+
+  #title-card {
+    top: 16%;
+    width: min(92vw, 420px);
+    padding: 8px 10px;
+    pointer-events: none;
+  }
+
+  #title-card h1 {
+    font-size: clamp(32px, 12vw, 52px) !important;
+    line-height: 0.9;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    color: #ffe14a !important;
+    filter: none !important;
+    -webkit-text-stroke: 0.6px #3a2800;
+    text-shadow:
+      0 2px 0 #3a2800,
+      0 0 12px rgba(0, 0, 0, 0.85),
+      0 4px 18px rgba(0, 0, 0, 0.7) !important;
+  }
+
+  #title-card .city-tag,
+  #title-card .tagline {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: #dff8ff !important;
+    text-shadow: 0 1px 2px #000, 0 0 8px #041018;
+  }
+
+  .radar-wrap {
+    width: 72px;
+    height: 72px;
+  }
+
+  .hud-top {
+    padding: calc(6px + env(safe-area-inset-top)) 8px 0;
+    gap: 6px;
+  }
+
+  .hud-left,
+  .hud-right,
+  .hud-center {
+    gap: 4px;
+  }
+
+  #cash {
+    font-size: 22px;
+  }
+
+  #speed b {
+    font-size: 28px;
+  }
+
+  #objective {
+    max-width: min(240px, 52vw) !important;
+    font-size: 11px !important;
+    padding: 4px 8px !important;
+  }
+
+  .hud-right button,
+  #theme,
+  #mute,
+  #shop-btn,
+  #school-btn,
+  #practice-btn {
+    padding: 5px 7px !important;
+    font-size: 10px !important;
+    min-height: 32px;
+  }
+
+  #joystick {
+    width: 112px;
+    height: 112px;
+  }
+
+  #pedals button {
+    width: 72px;
+    height: 72px;
+  }
+
+  .boot-mark {
+    font-size: 48px;
+  }
+
+  #boot p {
+    font-size: 13px;
+    letter-spacing: 0.14em;
+  }
+
+  #hud .hud-top {
+    background: linear-gradient(180deg, rgba(11, 18, 36, 0.94), rgba(11, 18, 36, 0.45) 80%, transparent);
+  }
+}
+
+html.lite-gpu .school-hub,
+html.lite-gpu .homework-theater,
+html.lite-gpu #practice-portal,
+html.lite-gpu .gate-shell,
+html.lite-gpu .coach-flash,
+html.lite-gpu .boss-hud {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html.lite-gpu #title-card h1 {
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  color: #ffe14a !important;
+  filter: none !important;
+  text-shadow: 0 2px 0 #3a2800, 0 0 14px rgba(0, 0, 0, 0.9) !important;
+}
+
+html.lite-gpu #hud.cruising:before,
+html.lite-gpu #hud.cruise-hot:before,
+html.lite-gpu #hud.boosting:before,
+html.lite-gpu #hud.cruising:after,
+html.lite-gpu #hud.cruise-hot:after,
+#hud.cruising:before,
+#hud.cruise-hot:before,
+#hud.boosting:before,
+#hud.cruising:after,
+#hud.cruise-hot:after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+  animation: none !important;
+}
