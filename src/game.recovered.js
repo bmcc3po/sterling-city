@@ -33357,7 +33357,12 @@ class Fv {
     this.topicView = null;
     this.miniMode = null;
     this.root.hidden = false;
+    this.root.removeAttribute("hidden");
+    this.root.style.display = "";
+    this.root.style.visibility = "";
     this.root.style.pointerEvents = "auto";
+    this.root.style.backdropFilter = "";
+    this.root.style.webkitBackdropFilter = "";
     if (!this.feed) {
       try {
         this.feed = ao(fv());
