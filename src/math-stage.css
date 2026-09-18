@@ -1,7 +1,8 @@
 /* Math as a game venue/stage — not a floating popup ad. */
 
 #math-gate,
-#wanted-math {
+#wanted-math,
+#boss {
   position: absolute;
   inset: 0;
   z-index: 48;
@@ -9,24 +10,37 @@
   align-items: stretch;
   justify-content: center;
   padding: max(8px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom));
-  background: rgba(4, 8, 20, 0.88);
+  background: #070b16 !important;
   pointer-events: auto;
 }
 
+body.math-stage-open {
+  background: #070b16 !important;
+}
+
+body.math-stage-open #gl {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 #math-gate[hidden],
-#wanted-math[hidden] {
+#wanted-math[hidden],
+#boss[hidden] {
   display: none !important;
 }
 
 html:not(.lite-gpu) #math-gate,
-html:not(.lite-gpu) #wanted-math {
-  background: rgba(4, 10, 24, 0.72);
+html:not(.lite-gpu) #wanted-math,
+html:not(.lite-gpu) #boss {
+  background: #070b16;
 }
 
 html:not(.lite-gpu) #math-gate:not([hidden]),
-html:not(.lite-gpu) #wanted-math:not([hidden]) {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+html:not(.lite-gpu) #wanted-math:not([hidden]),
+html:not(.lite-gpu) #boss:not([hidden]) {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 #math-gate .math-stage,
@@ -196,7 +210,9 @@ body.math-stage-open #joystick,
 body.math-stage-open #pedals,
 body.math-stage-open #boost-rail,
 body.math-stage-open #exit-vehicle,
-body.math-stage-open #interact {
+body.math-stage-open #interact,
+body.math-stage-open .hud-top,
+body.math-stage-open #title-card {
   visibility: hidden !important;
 }
 
@@ -216,7 +232,7 @@ body.math-stage-open.math-hit #math-gate .math-stage {
   justify-content: center;
   place-items: unset;
   padding: max(8px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom));
-  background: rgba(4, 8, 20, 0.88);
+  background: #070b16 !important;
 }
 
 #boss .boss-hud {

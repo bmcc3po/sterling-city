@@ -32226,7 +32226,6 @@ class Mv {
     this.root.hidden = true;
     this.root.setAttribute("aria-hidden", "true");
     this.root.innerHTML = "";
-    document.body.classList.remove("hub-screen");
     this.cb.onClose();
   }
   save() {
@@ -32648,6 +32647,7 @@ class Mv {
       ${n}
       <div class="pp-drill">
         <p class="pp-prompt">${we(e.prompt)}</p>
+        ${kidVoiceHtml(e.prompt, e.factors)}
         <div class="pp-ans">${e.answers.map(s => `<button type="button" data-pp="ans" data-ans="${we(s)}">${we(s)}</button>`).join("")}</div>
       </div>
     </div>`;
@@ -33586,32 +33586,26 @@ class Fv {
         this.tab = e.getAttribute("data-tab") || "home";
         this.topicView = null;
         this.practice = null;
+        this.miniMode = null;
         this.render();
         break;
       case "play-game":
         {
           const g = e.getAttribute("data-game") || "speed";
-          this.tab = "topics";
+          this.tab = "games";
           this.topicView = "t3";
           this.practice = te.getTopicPractice("t3");
           this.topicCardIdx = 0;
+          if (g === "concept") {
+            this.callbacks.onOpenConceptPortal?.("t3");
+            break;
+          }
           if (g === "memory") {
             this.startMemory();
           } else if (g === "flash") {
-            this.miniMode = "flash";
-            this.flashSeen = new Set();
-            this.miniStreak = 0;
-            this.render();
-          } else if (g === "concept") {
-            this.callbacks.onOpenConceptPortal?.("t3");
+            this.startFlash();
           } else {
-            this.miniMode = "speed";
-            this.speedIdx = 0;
-            this.speedCorrect = 0;
-            this.miniStreak = 0;
-            this.miniLastMiss = false;
-            this.speedFeedback = null;
-            this.render();
+            this.startSpeed();
           }
           break;
         }
@@ -33679,24 +33673,13 @@ class Fv {
           break;
         }
       case "mini-flash":
-        this.miniMode = "flash";
-        this.flashSeen = new Set();
-        this.miniStreak = 0;
-        this.topicCardIdx = 0;
-        this.render();
+        this.startFlash();
         break;
       case "mini-memory":
         this.startMemory();
         break;
       case "mini-speed":
-        this.miniMode = "speed";
-        this.speedIdx = 0;
-        this.speedCorrect = 0;
-        this.miniStreak = 0;
-        this.miniLastMiss = false;
-        this.speedFeedback = null;
-        this.speedEndsAt = performance.now() + 12000;
-        this.render();
+        this.startSpeed();
         break;
       case "mini-back":
         this.miniMode = null;
@@ -33734,6 +33717,27 @@ class Fv {
         this.answerSpeed(e.getAttribute("data-ans") || "");
         break;
     }
+  }
+  startFlash() {
+    this.miniMode = "flash";
+    this.flashSeen = new Set();
+    this.miniStreak = 0;
+    this.topicCardIdx = 0;
+    this.flashPunch = false;
+    this.render();
+  }
+  startSpeed() {
+    this.miniMode = "speed";
+    this.speedIdx = 0;
+    this.speedCorrect = 0;
+    this.miniStreak = 0;
+    this.miniLastMiss = false;
+    this.speedFeedback = null;
+    this.speedEndsAt = performance.now() + 12000;
+    this.render();
+  }
+  miniBackLabel() {
+    return this.tab === "games" ? "← Game Hall" : "← Topic Review";
   }
   startMemory() {
     const t = this.practice || (this.topicView ? te.getTopicPractice(this.topicView) : null);
@@ -33978,7 +33982,7 @@ class Fv {
             <div class="sh-logo">SC</div>
             <div>
               <div class="sh-product">STERLING CITY · SCHOOL HUB</div>
-              <div class="sh-sub">${yt(r)}</div>
+              <div class="sh-sub">${yt(r)} · This is the hub screen — not a popup on the city</div>
             </div>
           </div>
           <div class="sh-header-right">
@@ -34018,6 +34022,9 @@ class Fv {
     }
     switch (this.tab) {
       case "games":
+        if (this.miniMode) {
+          return this.renderActiveMini();
+        }
         return this.renderGames();
       case "grades":
         return this.renderGrades(this.feed.courses);
@@ -34050,7 +34057,7 @@ class Fv {
           <div>
             <div class="sh-missing-tag">OPEN WORLD</div>
             <h2>Sterling City is ready</h2>
-            <p>Landspeeders · on-foot freeroam · loot crates · building interiors · math battles. Earn CASH in Topic Review and Game Hall, then spend it in the city.</p>
+            <p>This hub is its own screen. Play Game Hall here, then ENTER CITY / OPEN WORLD to drive.</p>
           </div>
           <button type="button" class="sh-primary sh-enter-lg" data-action="enter-city">ENTER CITY / OPEN WORLD</button>
         </section>
@@ -34086,7 +34093,7 @@ class Fv {
 
         <section class="sh-card sh-span-2">
           <div class="sh-card-head"><h3>Game Hall</h3><button type="button" class="sh-link" data-action="tab" data-tab="games">All games</button></div>
-          <p class="sh-muted">Play here on this screen — not as a popup over the city.</p>
+          <p class="sh-muted">Play here on this screen — Speed, Memory, and Flashcards stay in the hub. Concept Portal is its own full-screen lesson.</p>
           <div class="sh-games-hall">
             <button type="button" class="sh-game-tile" data-action="play-game" data-game="speed"><small>Topic 3</small><b>⚡ Speed Round</b><span>Beat the bar. Keep the streak.</span></button>
             <button type="button" class="sh-game-tile" data-action="play-game" data-game="memory"><small>Topic 3</small><b>🧠 Memory Match</b><span>Flip houses. Bank cash.</span></button>
@@ -34139,12 +34146,32 @@ class Fv {
       </div>
     `;
   }
+  renderActiveMini() {
+    const id = this.topicView || "t3";
+    const e = this.practice || te.getTopicPractice(id);
+    const t = this.feed?.topics.find(a => a.id === id);
+    const name = t?.name || "Topic 3";
+    if (!e) {
+      return this.renderGames();
+    }
+    if (this.miniMode === "memory") {
+      return this.renderMemory(name, e);
+    }
+    if (this.miniMode === "speed") {
+      return this.renderSpeed(name, e);
+    }
+    if (this.miniMode === "flash") {
+      return this.renderFlash(name, e);
+    }
+    return this.renderGames();
+  }
   renderGames() {
     return `
       <div class="sh-toolbar">
         <h2>Game Hall</h2>
-        <span class="sh-muted">Full-screen School Hub games — city stays paused behind this screen</span>
+        <span class="sh-muted">Play on this hub screen — the city is off, not sitting under a popup</span>
       </div>
+      <p class="sh-lead">Speed Round, Memory Match, and Flashcards play right here. Concept Portal is its own full-screen lesson (close it to return to the hub).</p>
       <div class="sh-games-hall">
         <button type="button" class="sh-game-tile" data-action="play-game" data-game="speed"><small>Arcade</small><b>⚡ Speed Round</b><span>Topic 3 houses on a timer. Streaks pay.</span></button>
         <button type="button" class="sh-game-tile" data-action="play-game" data-game="memory"><small>Arcade</small><b>🧠 Memory Match</b><span>Match partial-product houses.</span></button>
@@ -34289,14 +34316,8 @@ class Fv {
     if (!t || !e) {
       return this.renderTopics(this.feed.topics);
     }
-    if (this.miniMode === "memory") {
-      return this.renderMemory(t.name, e);
-    }
-    if (this.miniMode === "speed") {
-      return this.renderSpeed(t.name, e);
-    }
-    if (this.miniMode === "flash") {
-      return this.renderFlash(t.name, e);
+    if (this.miniMode === "memory" || this.miniMode === "speed" || this.miniMode === "flash") {
+      return this.renderActiveMini();
     }
     const n = e.cards[this.topicCardIdx];
     const s = this.progress.topicQuestionCorrect[t.id] ?? [];
@@ -34334,6 +34355,7 @@ class Fv {
       return `
                 <div class="sh-practice ${r ? "answered" : ""}">
                   <p><b>${yt(a.prompt)}</b></p>
+                  ${kidVoiceHtml(a.prompt, a.factors)}
                   <div class="sh-ans-grid">
                     ${a.answers.map(l => `<button type="button" class="${r && kn(l, a.correct) ? "correct" : ""}" data-action="answer" data-id="${yt(t.id)}" data-qid="${yt(a.id)}" data-ans="${yt(l)}" ${r ? "disabled" : ""}>${yt(l)}</button>`).join("")}
                   </div>
@@ -34353,7 +34375,7 @@ class Fv {
     const s = this.flashSeen.has(n.id);
     return `
       <div class="sh-toolbar">
-        <button type="button" class="sh-link" data-action="mini-back">← Review hub</button>
+        <button type="button" class="sh-link" data-action="mini-back">${this.miniBackLabel()}</button>
         <h2>Flashcards · ${yt(t)}</h2>
         <span class="sh-cash">SHOOT FOR +$${e.cards.length * 75}</span>
       </div>
@@ -34365,6 +34387,7 @@ class Fv {
           <p>${s ? yt(n.body) : "TAP / SWIPE TO PUNCH-FLIP"}</p>
           ${s && n.tip ? `<p class="sh-tip">💡 ${yt(n.tip)}</p>` : ""}
         </button>
+        ${(this.topicView === "t3" || this.tab === "games") && s ? kidVoiceHtml(n.body) : ""}
         <div class="sh-card-nav">
           <button type="button" data-action="card-prev" ${this.topicCardIdx === 0 ? "disabled" : ""}>◀ Prev</button>
           <span>${this.topicCardIdx + 1}/${e.cards.length}</span>
@@ -34381,7 +34404,7 @@ class Fv {
     if (this.memCelebrating) {
       return `
         <div class="sh-toolbar">
-          <button type="button" class="sh-link" data-action="mini-back">← Review hub</button>
+          <button type="button" class="sh-link" data-action="mini-back">${this.miniBackLabel()}</button>
           <h2>Memory Match · CLEAR!</h2>
         </div>
         <div class="cash-celebration show">
@@ -34391,7 +34414,7 @@ class Fv {
     } else {
       return `
       <div class="sh-toolbar">
-        <button type="button" class="sh-link" data-action="mini-back">← Review hub</button>
+        <button type="button" class="sh-link" data-action="mini-back">${this.miniBackLabel()}</button>
         <h2>Memory Match · ${yt(t)}</h2>
         <span class="sh-cash">${s}/${n} pairs · SHOOT FOR +$1,000</span>
       </div>
@@ -34420,13 +34443,13 @@ class Fv {
   renderSpeed(t, e) {
     const n = e.questions[this.speedIdx];
     if (!n) {
-      return "<div class=\"sh-toolbar\"><button type=\"button\" class=\"sh-link\" data-action=\"mini-back\">← Back</button><h2>Speed Round done</h2></div>";
+      return `<div class="sh-toolbar"><button type="button" class="sh-link" data-action="mini-back">${this.miniBackLabel()}</button><h2>Speed Round done</h2></div>`;
     }
     const s = Math.max(0, this.speedEndsAt - performance.now());
     const o = this.speedFeedback ? `<div class="speed-fb ${this.speedFeedback}">${this.speedFeedback === "hit" ? "HIT!" : "MISS!"}</div>` : "";
     return `
       <div class="sh-toolbar">
-        <button type="button" class="sh-link" data-action="mini-back">← Review hub</button>
+        <button type="button" class="sh-link" data-action="mini-back">${this.miniBackLabel()}</button>
         <h2>Speed Round · ${yt(t)}</h2>
         <span class="sh-cash">${this.speedIdx + 1}/${e.questions.length} · ${this.speedCorrect} hit</span>
       </div>
@@ -34438,6 +34461,7 @@ class Fv {
         <div class="mem-timer hurry"><i style="width:${Math.min(100, s / 12000 * 100)}%"></i></div>
         ${o}
         <p class="speed-prompt sh-speed-prompt"><b>${yt(n.prompt)}</b></p>
+        ${kidVoiceHtml(n.prompt, n.factors)}
         <div class="sh-ans-grid speed-ans-grid">
           ${n.answers.map(a => `<button type="button" class="speed-ans" data-action="speed-ans" data-ans="${yt(a)}">${yt(a)}</button>`).join("")}
         </div>
@@ -34641,7 +34665,6 @@ class Hv {
     this.teardownPlayers();
     this.open = false;
     this.root.hidden = true;
-    document.body.classList.remove("hub-screen");
     this.hw = null;
     this.callbacks.onClose();
   }
@@ -35482,6 +35505,26 @@ function sterKid(i, t) {
     line: o
   };
 }
+function kidVoiceHtml(prompt, factors) {
+  const f = factors || bv(prompt || "");
+  if (!f) {
+    return "";
+  }
+  return `<p class="t3-kid">${sterKid(f.a, f.b).line}</p>`;
+}
+function kidPromptText(t) {
+  if (!t) {
+    return "";
+  }
+  const f = t.factors || (t.a != null && t.b != null ? {
+    a: t.a,
+    b: t.b
+  } : bv(t.prompt || ""));
+  if (!f) {
+    return t.prompt;
+  }
+  return `${t.prompt}  ·  ${sterKid(f.a, f.b).line}`;
+}
 class Kv {
   stuckT = 0;
   lastSafePos = new R();
@@ -35902,7 +35945,6 @@ class Kv {
       onOpenTheater: h => void this.openHomeworkTheater(h),
       onEnterCity: () => this.enterCityFromHub(),
       onOpenConceptPortal: h => {
-        this.closeSchool();
         this.openPracticePortal(h || "t3");
       }
     });
@@ -35910,8 +35952,12 @@ class Kv {
     if (c) {
       this.practicePortal = new Mv(c, {
         onClose: () => {
-          if (this.mode === "practice") {
+          if (this.schoolHub?.isOpen()) {
+            this.mode = "school";
+            document.body.classList.add("hub-screen");
+          } else if (this.mode === "practice") {
             this.mode = this.onFoot ? "onfoot" : "drive";
+            document.body.classList.remove("hub-screen");
           }
         },
         onAwardCash: (h, u) => {
@@ -35932,8 +35978,10 @@ class Kv {
       onClose: () => {
         if (this.schoolHub.isOpen()) {
           this.mode = "school";
+          document.body.classList.add("hub-screen");
         } else {
-          this.mode = "drive";
+          this.mode = this.onFoot ? "onfoot" : "drive";
+          document.body.classList.remove("hub-screen");
         }
       },
       onAwardCash: h => this.awardSchoolCash(h),
@@ -36135,7 +36183,9 @@ class Kv {
       }
       if (t === "practice") {
         this.practicePortal?.close();
-        this.mode = this.onFoot ? "onfoot" : "drive";
+        if (!this.schoolHub?.isOpen()) {
+          this.mode = this.onFoot ? "onfoot" : "drive";
+        }
         return;
       }
       if (t === "school") {
@@ -36263,8 +36313,11 @@ class Kv {
     }
     const t = Math.min(0.033, this.clock.getDelta());
     this.update(t);
-    this.composer.render();
-    this.drawMinimap();
+    const hub = this.mode === "school" || this.mode === "practice" || document.body.classList.contains("hub-screen") || document.body.classList.contains("math-stage-open");
+    if (!hub) {
+      this.composer.render();
+      this.drawMinimap();
+    }
   };
   update(t) {
     const e = this.isPaused();
@@ -37111,8 +37164,7 @@ class Kv {
     e.style.pointerEvents = "auto";
     document.getElementById("gate-kicker").textContent = t.kicker;
     document.getElementById("gate-title").textContent = t.title;
-    const kidF = t.factors ?? bv(t.prompt || "");
-    document.getElementById("gate-prompt").textContent = kidF ? `${t.prompt}  ·  ${sterKid(kidF.a, kidF.b).line}` : t.prompt;
+    document.getElementById("gate-prompt").textContent = kidPromptText(t);
     const reward = document.getElementById("gate-reward");
     if (reward) {
       const pay = t.cash ? `+$${Number(t.cash).toLocaleString()}` : "CASH + STREAK";
@@ -37417,7 +37469,7 @@ class Kv {
   nextBoss() {
     const t = hv(this.level);
     this.problem = t;
-    document.getElementById("boss-prompt").textContent = t.prompt;
+    document.getElementById("boss-prompt").textContent = kidPromptText(t);
     const e = document.querySelector("#boss .boss-hud");
     const n = document.getElementById("boss-steps") || hi(e, "boss-steps");
     ci(n, t);
@@ -37812,6 +37864,9 @@ class Kv {
     if (this.mode === "interior") {
       this.closeInterior();
     }
+    if (this.practicePortal?.isOpen()) {
+      this.practicePortal.close();
+    }
     this.mode = "school";
     await this.schoolHub.openHub(t, {
       bootGate: e
@@ -37819,6 +37874,9 @@ class Kv {
   }
   enterCityFromHub() {
     this.hubBootDone = true;
+    if (this.practicePortal?.isOpen()) {
+      this.practicePortal.close();
+    }
     const hub = document.getElementById("school-hub");
     if (this.schoolHub.isOpen()) {
       try {
@@ -37855,6 +37913,9 @@ class Kv {
     this.runPendingShot();
   }
   closeSchool() {
+    if (this.practicePortal?.isOpen()) {
+      this.practicePortal.close();
+    }
     if (this.mode !== "school" && !this.schoolHub.isOpen() && !this.homeworkTheater.isOpen()) {
       this.mode = this.onFoot ? "onfoot" : "drive";
       return;
@@ -38607,7 +38668,7 @@ class Kv {
     }
   }
   beginFight() {
-    if (this.mode === "interior" || this.mode === "gate" || this.mode === "gp" || (this.mode === "school" && (document.getElementById("school-hub").hidden = true, this.mode = this.onFoot ? "onfoot" : "drive"), this.fightLock)) {
+    if (this.mode === "interior" || this.mode === "gate" || this.mode === "gp" || this.mode === "school" || this.mode === "practice" || this.fightLock) {
       return;
     }
     this.fight = Vv(this.level);
@@ -39042,7 +39103,7 @@ class Kv {
     this.mode = "gate";
     document.body.classList.add("math-stage-open");
     e.hidden = false;
-    document.getElementById("wanted-math-prompt").textContent = t.prompt;
+    document.getElementById("wanted-math-prompt").textContent = kidPromptText(t);
     const n = document.getElementById("wanted-math-houses");
     if (n && t.houses && !t.steps) {
       n.hidden = false;

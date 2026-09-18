@@ -15,6 +15,14 @@
   pointer-events: auto;
 }
 
+/* Concept Portal / Theater stack ABOVE hub (hub is later in the DOM). */
+.homework-theater {
+  z-index: 45 !important;
+}
+#practice-portal {
+  z-index: 46 !important;
+}
+
 .school-hub[hidden],
 .homework-theater[hidden],
 #practice-portal[hidden] {
@@ -126,20 +134,30 @@
   letter-spacing: 0.04em;
 }
 
-body.hub-screen #gl {
-  filter: saturate(0.7) brightness(0.28);
-  pointer-events: none;
+body.hub-screen {
+  background: #070b16 !important;
 }
 
-body.hub-screen #hud .hud-top,
-body.hub-screen #joystick,
-body.hub-screen #pedals,
-body.hub-screen #boost-rail,
-body.hub-screen #exit-vehicle,
-body.hub-screen #interact,
-body.hub-screen #title-card {
+body.hub-screen #gl {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  filter: none;
+}
+
+body.hub-screen #hud {
   visibility: hidden !important;
   pointer-events: none !important;
+}
+
+.sh-game-stage .sh-toolbar h2 {
+  color: #ffe27a;
+}
+
+.speed-arcade,
+.sh-flash-stage,
+.sh-mem-grid {
+  min-height: min(420px, calc(100dvh - 220px));
 }
 
 #shop:not([hidden]),
