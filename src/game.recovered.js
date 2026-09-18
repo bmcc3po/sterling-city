@@ -36740,8 +36740,7 @@ class Kv {
           }
         }
         if (t === this.player) {
-          const u = 1 + Math.min(0.028, a * 0.00135) + (r > 0 ? 0.14 : 0);
-          d.scale.set(1, u, 1);
+          d.scale.set(1, 1, 1);
         }
       }
     }
@@ -36793,15 +36792,20 @@ class Kv {
     const s = new R(Math.cos(this.player.yaw), 0, -Math.sin(this.player.yaw));
     const o = this.player.vel.length();
     const a = this.boostActive > 0 || this.getawayOn || this.nos > 0;
-    const idlePull = !this.onFoot && !a ? Ce.clamp((5.2 - o) / 5.2, 0, 1) : 0;
-    const r = this.onFoot ? 4.8 : 7.72 + idlePull * 5.4 + Math.min(3, o * 0.052) + (a ? 0.9 : o > 22 ? 0.18 : 0) - (o > 16 ? 1.28 : o > 8 ? 0.62 : 0);
-    const l = this.onFoot ? 2.85 : 2.92 + idlePull * 1.35 + Math.min(0.08, o * 0.002) - (a ? 0.52 : o > 28 ? 0.58 : o > 16 ? 0.46 : o > 8 ? 0.26 : 0);
+    const idlePull = !this.onFoot && !a ? Ce.clamp((8.6 - o) / 8.6, 0, 1) : 0;
+    const r = this.onFoot ? 4.8 : 7.72 + idlePull * 8.9 + Math.min(3, o * 0.052) + (a ? 0.9 : o > 22 ? 0.18 : 0) - (o > 16 ? 1.28 : o > 8 ? 0.62 : 0);
+    const l = this.onFoot ? 2.85 : 2.92 + idlePull * 2.55 + Math.min(0.08, o * 0.002) - (a ? 0.52 : o > 28 ? 0.58 : o > 16 ? 0.46 : o > 8 ? 0.26 : 0);
     const c = this.onFoot ? 0 : Ce.clamp(this.player.steerVis * (0.78 + o * 0.042), -2.35, 2.35);
     const d = this.player.pos.clone().addScaledVector(e, r).addScaledVector(s, c).add(new R(0, l, 0));
     this.keepCamOutOfWalls(d);
     this.ensureCamClearOfHull(d);
-    const h = 1 - Math.exp(-(this.onFoot ? 16 : a ? 19.8 : o > 16 ? 22.4 : 15.5) * t);
-    this.camPos.lerp(d, h);
+    const h = 1 - Math.exp(-(this.onFoot ? 16 : idlePull > 0.35 ? 9.2 : a ? 19.8 : o > 16 ? 22.4 : 15.5) * t);
+    const distCam = Math.hypot(this.camPos.x - this.player.pos.x, this.camPos.z - this.player.pos.z);
+    if (!this.onFoot && distCam < 8.6) {
+      this.camPos.copy(d);
+    } else {
+      this.camPos.lerp(d, h);
+    }
     if (this.shake > 0) {
       this.camPos.x += (Math.random() - 0.5) * this.shake;
       this.camPos.y += (Math.random() - 0.5) * this.shake * 0.4;
@@ -36810,8 +36814,8 @@ class Kv {
     this.keepCamOutOfWalls(this.camPos);
     this.ensureCamClearOfHull(this.camPos);
     this.camera.position.copy(this.camPos);
-    const u = this.onFoot ? 6.5 : 9.5 + Math.min(8, o * 0.148) + (a ? 3 : 0);
-    const p = this.player.pos.clone().addScaledVector(n, u).add(new R(0, this.onFoot ? 1.1 : 0.78 - Math.min(0.42, o * 0.008), 0));
+    const u = this.onFoot ? 6.5 : 6.2 + idlePull * 2.4 + Math.min(8, o * 0.148) + (a ? 3 : 0);
+    const p = this.player.pos.clone().addScaledVector(n, u).add(new R(0, this.onFoot ? 1.1 : 1.05 + idlePull * 0.55 - Math.min(0.42, o * 0.008), 0));
     this.camLook.lerp(p, 1 - Math.exp(t * -15));
     this.camera.lookAt(this.camLook);
     const g = !this.onFoot && !a && o > 15;
@@ -36873,7 +36877,8 @@ class Kv {
     const backZ = -Math.cos(this.player.yaw);
     const px = this.player.pos.x;
     const pz = this.player.pos.z;
-    const minDist = 9.2;
+    const spd = this.player.vel.length();
+    const minDist = spd < 8.6 ? 12.8 : spd < 16 ? 10.4 : 9.2;
     const dx = t.x - px;
     const dz = t.z - pz;
     const dist = Math.hypot(dx, dz) || 0.0001;
@@ -36881,7 +36886,7 @@ class Kv {
     if (dist < minDist || behind < 3.4) {
       t.x = px + backX * minDist;
       t.z = pz + backZ * minDist;
-      t.y = Math.max(t.y, 4.45);
+      t.y = Math.max(t.y, spd < 8.6 ? 5.15 : 4.45);
     }
     this.keepCamOutOfWalls(t);
     const dist2 = Math.hypot(t.x - px, t.z - pz);
@@ -36906,9 +36911,9 @@ class Kv {
     const s = this.exhaust.geometry.getAttribute("position");
     const o = new R(-Math.sin(this.player.yaw), 0, -Math.cos(this.player.yaw));
     for (let c = 0; c < s.count; c++) {
-      let d = s.getX(c) + o.x * t * 10 + (Math.random() - 0.5) * 0.05;
-      let h = s.getY(c) + t * 1.2;
-      let u = s.getZ(c) + o.z * t * 10;
+      let d = s.getX(c) + o.x * t * 4 + (Math.random() - 0.5) * 0.03;
+      let h = s.getY(c) + t * 0.55;
+      let u = s.getZ(c) + o.z * t * 4;
       if (h > 2.4 || Math.random() < 0.08) {
         d = this.player.pos.x + o.x * 2.1 + (Math.random() - 0.5) * 0.3;
         h = 0.35;
@@ -36917,9 +36922,9 @@ class Kv {
       s.setXYZ(c, d, h, u);
     }
     s.needsUpdate = true;
-    const a = !this.onFoot && this.player.vel.length() > 16 ? 0.22 : this.player.vel.length() > 8 ? 0.1 : 0;
-    this.exhaust.material.opacity = (this.boostActive > 0 ? 0.55 : 0.1 + a) + e * 0.22;
-    this.exhaust.material.size = this.boostActive > 0 ? 0.11 : 0.05;
+    const a = !this.onFoot && this.player.vel.length() > 16 ? 0.08 : 0;
+    this.exhaust.material.opacity = this.onFoot || this.player.vel.length() < 4 ? 0.02 : (this.boostActive > 0 ? 0.28 : 0.06 + a) + e * 0.08;
+    this.exhaust.material.size = this.boostActive > 0 ? 0.07 : 0.035;
     const r = this.smoke.geometry.getAttribute("position");
     for (let c = 0; c < r.count; c++) {
       let d = r.getY(c) + t * 0.6;

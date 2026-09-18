@@ -224,6 +224,14 @@ html.lite-gpu #hud.cruising:before,
 html.lite-gpu #hud.cruise-hot:before,
 html.lite-gpu #hud.boosting:before,
 html.lite-gpu #hud.cruising:after,
-html.lite-gpu #hud.cruise-hot:after {
+html.lite-gpu #hud.cruise-hot:after,
+#hud.cruising:before,
+#hud.cruise-hot:before,
+#hud.boosting:before,
+#hud.cruising:after,
+#hud.cruise-hot:after {
   display: none !important;
+  content: none !important;
+  background: none !important;
+  animation: none !important;
 }
