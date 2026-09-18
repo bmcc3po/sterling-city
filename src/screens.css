@@ -1,0 +1,233 @@
+/* Dedicated screens (hub / practice / venues) — not glass popups over the live city. */
+
+.school-hub,
+.homework-theater,
+#practice-portal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 42 !important;
+  display: grid !important;
+  place-items: stretch !important;
+  padding: 0 !important;
+  background: #070b16 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  pointer-events: auto;
+}
+
+.school-hub[hidden],
+.homework-theater[hidden],
+#practice-portal[hidden] {
+  display: none !important;
+}
+
+.school-hub .sh-shell,
+.homework-theater .ht-shell,
+#practice-portal .pp-shell {
+  max-width: none !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  overflow: auto !important;
+  background:
+    radial-gradient(1200px 600px at 12% -10%, #16305a 0%, transparent 55%),
+    radial-gradient(900px 500px at 110% 0%, #3cf0ff22, transparent 50%),
+    linear-gradient(180deg, #10182c, #070b16 48%, #05070f) !important;
+  color: #e8eefc !important;
+  box-shadow: none !important;
+}
+
+.school-hub {
+  --sh-card: rgba(16, 28, 52, 0.92);
+  --sh-ink: #e8eefc;
+  --sh-muted: #9eb0cc;
+  --sh-line: rgba(60, 240, 255, 0.16);
+}
+
+.school-hub .sh-header {
+  background: linear-gradient(90deg, #ffc44d22, #3cf0ff18) !important;
+  border-bottom: 1px solid rgba(60, 240, 255, 0.22) !important;
+}
+
+.school-hub .sh-product,
+.school-hub h2,
+.school-hub h3,
+.school-hub h4,
+.school-hub .sh-sub {
+  color: #f4f7ff !important;
+}
+
+.school-hub .sh-muted,
+.school-hub .sh-footer {
+  color: #9eb0cc !important;
+}
+
+.school-hub .sh-card {
+  background: rgba(14, 24, 44, 0.94) !important;
+  border: 1px solid rgba(60, 240, 255, 0.2) !important;
+  color: #e8eefc !important;
+}
+
+.school-hub .sh-tab {
+  color: #d5def0 !important;
+}
+
+.school-hub .sh-tab.active {
+  color: #041018 !important;
+  background: #ffc44d !important;
+}
+
+.school-hub .sh-main {
+  padding: 18px 22px 28px !important;
+}
+
+.sh-games-hall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.sh-game-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  min-height: 148px;
+  padding: 16px 16px 14px;
+  border-radius: 16px;
+  border: 2px solid #3cf0ff;
+  background: linear-gradient(180deg, #1a335c, #0d1a32);
+  color: #f4f7ff;
+  box-shadow: 0 6px #061428, 0 0 18px rgba(60, 240, 255, 0.2);
+  cursor: pointer;
+  font: 800 15px Rajdhani, sans-serif;
+}
+
+.sh-game-tile:hover,
+.sh-game-tile:focus {
+  transform: translateY(-2px);
+  background: linear-gradient(180deg, #ffe27a, #f0b820);
+  color: #1a1400;
+  border-color: #ffe27a;
+}
+
+.sh-game-tile small {
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.sh-game-tile b {
+  font-size: 22px;
+  letter-spacing: 0.04em;
+}
+
+body.hub-screen #gl {
+  filter: saturate(0.7) brightness(0.28);
+  pointer-events: none;
+}
+
+body.hub-screen #hud .hud-top,
+body.hub-screen #joystick,
+body.hub-screen #pedals,
+body.hub-screen #boost-rail,
+body.hub-screen #exit-vehicle,
+body.hub-screen #interact,
+body.hub-screen #title-card {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+#shop:not([hidden]),
+#interior:not([hidden]),
+#race-offer:not([hidden]),
+#grand-prix:not([hidden]),
+#blaster-range:not([hidden]),
+#arcade-casino:not([hidden]) {
+  position: absolute;
+  inset: 0;
+  z-index: 46;
+  display: flex !important;
+  align-items: stretch;
+  justify-content: center;
+  place-items: unset;
+  padding: max(8px, env(safe-area-inset-top)) 12px max(10px, env(safe-area-inset-bottom));
+  background: rgba(4, 8, 20, 0.92);
+}
+
+#shop .shop-shell,
+#interior .interior-shell,
+#race-offer .gate-shell,
+#grand-prix .gp-shell,
+#blaster-range .venue-shell,
+#arcade-casino .venue-shell {
+  width: min(1120px, 100%) !important;
+  height: 100%;
+  max-height: none !important;
+  overflow: auto !important;
+}
+
+/* Motion lines: no striped interstitial while cruising. Mild boost wash only. */
+#hud.cruising:before,
+#hud.cruise-hot:before {
+  background: radial-gradient(ellipse at 50% 120%, rgba(60, 240, 255, 0.07), transparent 46%) !important;
+  animation: none !important;
+  opacity: 0.35 !important;
+  mix-blend-mode: normal !important;
+}
+
+#hud.cruising:after,
+#hud.cruise-hot:after {
+  opacity: 0.28 !important;
+  background: radial-gradient(ellipse at 50% 50%, transparent 58%, rgba(4, 10, 24, 0.22) 100%) !important;
+}
+
+#hud.boosting:before {
+  background:
+    linear-gradient(90deg, transparent 42%, rgba(60, 240, 255, 0.1), transparent 58%),
+    radial-gradient(ellipse at 50% 80%, rgba(255, 196, 77, 0.1), transparent 55%) !important;
+  animation: none !important;
+  opacity: 0.55 !important;
+}
+
+.t3-kid {
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 196, 77, 0.45);
+  background: linear-gradient(90deg, #ffc44d22, #3cf0ff18);
+  color: #ffe9a8;
+  font: 700 15px/1.35 Rajdhani, sans-serif;
+}
+
+.t3-ster-strip {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-left: 4px solid #3cf0ff;
+  background: #101c34;
+  color: #dce7ff;
+  font: 700 15px/1.45 Rajdhani, sans-serif;
+}
+
+.t3-ster-strip ol {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+@media (max-width: 820px), (pointer: coarse) {
+  .school-hub .sh-shell,
+  .homework-theater .ht-shell,
+  #practice-portal .pp-shell {
+    border-radius: 0 !important;
+    max-height: none !important;
+    height: 100% !important;
+  }
+
+  .school-hub .sh-footer {
+    display: none;
+  }
+}

@@ -28349,7 +28349,7 @@ function zg(i) {
     clearcoatRoughness: 0.08,
     envMapIntensity: 1.85,
     emissive: 2773104,
-    emissiveIntensity: 0.08
+    emissiveIntensity: 0.42
   });
   const p = new mt({
     color: 12868174,
@@ -28357,16 +28357,18 @@ function zg(i) {
     metalness: 0.06,
     envMapIntensity: 0.6
   });
-  const v = ["#c2ccd8", "#d4a574", "#9aa3b0", "#e8d5b0", "#7a9a6e", "#c45a4e", "#5a7a9a", "#f0d8c0", "#3d4a5c", "#b06050", "#e8eef6", "#6a8a58", "#2f3d52", "#c9a882", "#8b6b9a", "#d4c4a0", "#4a6a78", "#c87840"].map((X, H) => {
+  const v = ["#1c2a44", "#142438", "#2a1840", "#123048", "#241828", "#0e2238", "#301848", "#102830", "#1a3050", "#28143a", "#16304a", "#221838", "#0c2838", "#2c2048", "#142840", "#1e1634", "#10344c", "#281c3c"].map((X, H) => {
     const Y = Fg(11 + H * 17, X);
     Y.wrapS = Y.wrapT = Qn;
     Y.repeat.set(1.5 + H % 3 * 0.5, 2 + H % 4 * 0.5);
     return new mt({
       map: Y,
-      color: 16777215,
-      roughness: 0.5 + H % 4 * 0.1,
-      metalness: H % 3 === 0 ? 0.28 : H % 2 ? 0.08 : 0.16,
-      envMapIntensity: 0.68 + H % 3 * 0.1
+      color: 10066380,
+      roughness: 0.32 + H % 4 * 0.06,
+      metalness: H % 3 === 0 ? 0.55 : H % 2 ? 0.28 : 0.4,
+      envMapIntensity: 1.05 + H % 3 * 0.12,
+      emissive: H % 2 ? 1736959 : 16726544,
+      emissiveIntensity: 0.12
     });
   });
   const m = new mt({
@@ -28379,19 +28381,19 @@ function zg(i) {
     roughness: 0.45,
     metalness: 0.2,
     emissive: 16726544,
-    emissiveIntensity: 0.08
+    emissiveIntensity: 0.34
   }), new mt({
     color: 3993855,
     roughness: 0.4,
     metalness: 0.25,
     emissive: 1736959,
-    emissiveIntensity: 0.08
+    emissiveIntensity: 0.34
   }), new mt({
     color: 16761933,
     roughness: 0.42,
     metalness: 0.18,
     emissive: 16746496,
-    emissiveIntensity: 0.06
+    emissiveIntensity: 0.22
   }), new mt({
     color: 8191851,
     roughness: 0.45,
@@ -28399,7 +28401,7 @@ function zg(i) {
     emissive: 2797376,
     emissiveIntensity: 0.05
   })];
-  const M = [xn(3, "#c8dcff"), xn(9, "#a8e0ff"), xn(21, "#d8e8f8"), xn(27, "#b8d0e8"), xn(33, "#ffe0a8"), xn(41, "#a8ffcf"), xn(47, "#ffc8e0"), xn(53, "#c8fff0"), xn(59, "#fff0c0"), xn(67, "#d0c8ff")];
+  const M = [xn(3, "#3cf0ff"), xn(9, "#ff3d8a"), xn(21, "#ffc44d"), xn(27, "#7cff6b"), xn(33, "#7aa8ff"), xn(41, "#ff6ad5"), xn(47, "#5ce1ff"), xn(53, "#c8fff0"), xn(59, "#ffe27a"), xn(67, "#b388ff")];
   const _ = new $t({
     color: 0,
     transparent: true,
@@ -28454,7 +28456,7 @@ function zg(i) {
         const pt = Y + Et;
         const E = at + Wt;
         const b = t();
-        const J = Math.abs(X - 4) + Math.abs(H - 4) <= 3 ? b > 0.88 : b > 0.78;
+        const J = Math.abs(X - 4) + Math.abs(H - 4) <= 3 ? b > 0.58 : b > 0.7;
         const nt = J ? u : b > 0.42 ? fn(t, v) : b > 0.22 ? h : p;
         const q = new O(new z(L, ct, At), nt);
         q.position.set(pt, ct / 2, E);
@@ -28467,7 +28469,7 @@ function zg(i) {
             map: tt,
             emissiveMap: tt,
             emissive: 11061480,
-            emissiveIntensity: ct > 20 ? 0.12 : 0.06,
+            emissiveIntensity: ct > 20 ? 0.42 : 0.28,
             roughness: 0.28,
             metalness: 0.55,
             clearcoat: 0.55,
@@ -28482,7 +28484,7 @@ function zg(i) {
             map: tt,
             emissiveMap: tt,
             emissive: 8956620,
-            emissiveIntensity: 0.07,
+            emissiveIntensity: 0.22,
             roughness: 0.4,
             metalness: 0.25
           });
@@ -28509,12 +28511,12 @@ function zg(i) {
           tt.receiveShadow = true;
           e.add(tt);
         }
-        if (!J && t() > 0.68) {
+        if (!J && t() > 0.28) {
           const tt = fn(t, [16727434, 3993855, 16761933, 8191851, 16738876, 11766015]);
           const ot = new O(new z(0.35, ct * 0.85, 0.12), new mt({
             color: tt,
             emissive: tt,
-            emissiveIntensity: 0.38,
+            emissiveIntensity: 0.92,
             roughness: 0.35,
             metalness: 0.22
           }));
@@ -28578,11 +28580,13 @@ function zg(i) {
           tt.position.set(pt + (t() - 0.5) * L * 0.3, ct + 0.9, E);
           e.add(tt);
         }
-        if (t() > 0.94) {
+        if (t() > 0.55) {
           const tt = new O(new Me(0.04, 0.06, 2.4 + t() * 3, 6), new mt({
-            color: 11581640,
+            color: 3993855,
             metalness: 0.8,
-            roughness: 0.25
+            roughness: 0.25,
+            emissive: 3993855,
+            emissiveIntensity: 0.85
           }));
           tt.position.set(pt, ct + 2.2, E + At * 0.2);
           e.add(tt);
@@ -28599,9 +28603,9 @@ function zg(i) {
           ot.position.set(pt, 1.3, E + At / 2 + 0.12);
           e.add(ot);
         }
-        if (t() > 0.7) {
+        if (t() > 0.38) {
           const tt = ["#ff3d8a", "#3cf0ff", "#ffc44d", "#7cff6b"];
-          const ot = ["PIZZA", "ARCADE", "24H", "RADIO", "NOON", "GRID", "STERLING CITY"];
+          const ot = ["NEON", "GRID", "HOLO", "24H", "RADIO", "DOCK", "STERLING CITY", "BLAST", "VAULT"];
           const ft = new O(new Be(Math.min(L, 10), 3.2), new $t({
             map: Ss(fn(t, ot), fn(t, tt)),
             transparent: true,
@@ -29419,6 +29423,48 @@ function Vg(i, t, e, n) {
       minZ: g - c / 2 - 0.2,
       maxZ: g + c / 2 + 0.2
     });
+    if (a.id === "harbor") {
+      const pierMat = new mt({
+        color: 2771032,
+        roughness: 0.4,
+        metalness: 0.45,
+        emissive: 1736959,
+        emissiveIntensity: 0.25
+      });
+      const pier = new O(new z(22, 0.55, 9.5), pierMat);
+      pier.position.set(p + 4, 0.28, g + 10);
+      i.add(pier);
+      t.push({
+        minX: p + 4 - 11.2,
+        maxX: p + 4 + 11.2,
+        minZ: g + 10 - 4.9,
+        maxZ: g + 10 + 4.9
+      });
+      const curbA = new O(new z(1.1, 1.4, 14), pierMat);
+      curbA.position.set(p - 8, 0.7, g + 6);
+      i.add(curbA);
+      t.push({
+        minX: p - 8 - 0.7,
+        maxX: p - 8 + 0.7,
+        minZ: g + 6 - 7.2,
+        maxZ: g + 6 + 7.2
+      });
+      const wall = new O(new z(16, 2.4, 0.8), new mt({
+        color: 1710618,
+        roughness: 0.5,
+        metalness: 0.3,
+        emissive: 3993855,
+        emissiveIntensity: 0.2
+      }));
+      wall.position.set(p + 6, 1.2, g + 16);
+      i.add(wall);
+      t.push({
+        minX: p + 6 - 8.2,
+        maxX: p + 6 + 8.2,
+        minZ: g + 16 - 0.7,
+        maxZ: g + 16 + 0.7
+      });
+    }
   }
   return o;
 }
@@ -30494,40 +30540,40 @@ function Uo(i, t, e = "guided", n = "product") {
     id: "setup",
     kind: "setup",
     label: "SETUP",
-    detail: `Stack ${i} over × ${t}. Ones under ones.`,
+    detail: `Stack ${i} over × ${t}. Ones under ones. ${sterKid(i, t).split}`,
     show: `${i} × ${t}`
   }, {
     id: "ones",
     kind: "ones",
     label: "ONES LINE",
-    detail: `Multiply by the ONES digit (${o}). One digit at a time — carry leftovers.`,
+    detail: `Multiply by the ONES digit (${o}). One digit at a time — carry leftovers. ${sterKid(i, t).ones} ${sterKid(i, t).carry}`,
     show: f(re(r.line), e !== "guided" && M),
     ask: M
   }, {
     id: "zero",
     kind: "zero",
     label: "WRITE ZERO",
-    detail: `Start the TENS line with a 0 in the ones place (you're really doing ×${a}0).`,
+    detail: `Start the TENS line with a 0 in the ones place (you're really doing ×${a}0). Don't drop the zero when you multiply tens.`,
     show: "0 _ _ _"
   }, {
     id: "tens",
     kind: "tens",
     label: "TENS LINE",
-    detail: `Multiply by the TENS digit (${a}), write beside the zero → ${re(c)}.`,
+    detail: `Multiply by the TENS digit (${a}), write beside the zero → ${re(c)}. ${sterKid(i, t).tens}`,
     show: f(re(c), e !== "guided" && _),
     ask: _
   }, {
     id: "add",
     kind: "add",
     label: "ADD PARTIALS",
-    detail: `${re(r.line)} + ${re(c)} = ${re(s)}`,
+    detail: `${re(r.line)} + ${re(c)} = ${re(s)}. ${sterKid(i, t).add}`,
     show: f(re(s), e === "full" || e === "blanks" && x),
     ask: x && n === "product"
   }, {
     id: "check",
     kind: "check",
     label: "CHECK",
-    detail: `Estimate: ~${Math.round(i / 10) * 10} × ${t} ≈ ${re(Math.round(i / 10) * 10 * t)}. Exact ${re(s)} nearby?`,
+    detail: `Estimate: ~${Math.round(i / 10) * 10} × ${t} ≈ ${re(Math.round(i / 10) * 10 * t)}. Exact ${re(s)} nearby? ${sterKid(i, t).check}`,
     show: re(s)
   }];
   if (e === "guided") {
@@ -30591,7 +30637,7 @@ const xa = [{
   nodes: [{
     id: "n1",
     title: "① SETUP",
-    body: "Write the 3-digit number on top. Write the 1-digit (ones) multiplier under the ones place.",
+    body: "Split the top number into place-value houses: hundreds / tens / ones. Multiply hundreds × bottom first.",
     tip: "Ones under ones.",
     next: ["n2"]
   }, {
@@ -30630,13 +30676,13 @@ const xa = [{
   nodes: [{
     id: "n1",
     title: "① ONES LINE FIRST",
-    body: "Do the ones digit of the multiplier exactly like 3-7. For 118 × 13, ones digit is 3 → ones line 354.",
+      body: "Multiply hundreds × the bottom number first (watch place value). Then tens, then ones.",
     tip: "Always finish ones before tens.",
     next: ["n2"]
   }, {
     id: "n2",
     title: "② WRITE A ZERO",
-    body: "On the next line, write a 0 in the ones place BEFORE multiplying by the tens digit. That zero means you are multiplying by 10s.",
+      body: "Don't drop the zero when you multiply tens. On the tens line, write a 0 first so you are really multiplying by 10s.",
     tip: "Never forget the zero — it shifts the whole line.",
     next: ["n3"]
   }, {
@@ -30648,13 +30694,13 @@ const xa = [{
   }, {
     id: "n4",
     title: "④ ADD THE PARTIAL PRODUCTS",
-    body: "Add the ones line + tens line. Line up place values.",
+      body: "Stack the three answers (or ones line + tens line) and add. Line up place values.",
     tip: "354 + 1180 = 1534.",
     next: ["n5"]
   }, {
     id: "n5",
     title: "⑤ CHECK WITH HOUSES",
-    body: "Optional: break 118 = 100+10+8. 100×13=1300, 10×13=130, 8×13=104. Sum = 1534. Same answer!",
+      body: "Check: estimate (100×13≈1300, or 120×13=1560) — is your answer close? If a house makes 10 or more, rename into the next house.",
     tip: "Two methods, one truth."
   }]
 }, {
@@ -30707,7 +30753,9 @@ function No(i, t) {
       <div class="t3-step-show">${l.show}</div>
     </div>`).join("");
   const r = i.houses.map(l => `<div class="house${l.ask ? " ask" : ""}"><small>${l.label}</small><b>${l.value}</b></div>`).join("");
+  const k = sterKid(i.a, i.b);
   return `<div class="t3-board${e}" data-hardness="${i.hardness}">
+    <p class="t3-kid">${k.line}</p>
     <div class="t3-crumbs">${o}</div>
     <div class="t3-algo">${a}</div>
     <div class="t3-houses place-houses">${r}</div>
@@ -31485,7 +31533,7 @@ const mv = {
     cards: [{
       id: "t3c1",
       title: "Partial products — place value",
-      body: "Break factors by place value. 118 = 100 + 10 + 8. 13 = 10 + 3. Multiply each piece, then add.",
+      body: "Break 118 into houses: 100 / 10 / 8. Multiply hundreds × 13 first, then tens, then ones. Add. Check with an estimate.",
       tip: "118 × 13 = 118 × 10 + 118 × 3"
     }, {
       id: "t3c2",
@@ -32055,6 +32103,7 @@ class Mv {
     this.openFlag = true;
     this.root.hidden = false;
     this.root.setAttribute("aria-hidden", "false");
+    document.body.classList.add("hub-screen");
     if (t) {
       this.enterTopic(t);
       if (t === "t3") {
@@ -32072,6 +32121,7 @@ class Mv {
     this.openFlag = true;
     this.root.hidden = false;
     this.root.setAttribute("aria-hidden", "false");
+    document.body.classList.add("hub-screen");
     this.enterTopic("t3");
     this.view = "concept";
     this.conceptLessonIdx = 1;
@@ -32082,6 +32132,7 @@ class Mv {
     this.root.hidden = true;
     this.root.setAttribute("aria-hidden", "true");
     this.root.innerHTML = "";
+    document.body.classList.remove("hub-screen");
     this.cb.onClose();
   }
   save() {
@@ -32350,7 +32401,8 @@ class Mv {
       ${n ? `<div class="pp-concept-hero">
         <div class="pp-kicker">TOPIC 3 · CONCEPT PORTAL</div>
         <h2>Dummy-proof multiply STEPS</h2>
-        <p>Ones (carry) → Tens (trailing 0) → Add partials → Check. Same scaffold as every city challenge.</p>
+        <p>1) Split the top number into houses · 2) Multiply hundreds × bottom first · 3) Tens (don't drop the zero) · 4) Ones · 5) Stack and add · 6) Check with an estimate.</p>
+        <p class="pp-tip">Stuck on 118×13? Start with the hundreds house: what is 100 × 13? Then tens (10×13), then ones (8×13). Add them.</p>
         <div class="pp-actions-row">
           <button type="button" class="pp-primary" data-pp="concept">📐 Flowchart lessons</button>
           <button type="button" class="pp-primary" data-pp="worked">✨ Worked 118×13</button>
@@ -32377,6 +32429,18 @@ class Mv {
         </div>
         <button type="button" class="pp-close" data-pp="close">✕</button>
       </header>
+      <div class="t3-ster-strip">
+        <b>Kid path (every problem):</b>
+        <ol>
+          <li>Split the top number into place-value houses: hundreds / tens / ones</li>
+          <li>Multiply hundreds × bottom number first</li>
+          <li>Multiply tens × bottom — don't drop the zero</li>
+          <li>Multiply ones × bottom</li>
+          <li>Stack the three answers and add</li>
+          <li>Check: estimate — is your answer close?</li>
+        </ol>
+        <p>Stuck on 118×13? Start with the hundreds house: what is 100 × 13? Then tens (10×13), then ones (8×13). Add them. If a house makes 10 or more, rename into the next house.</p>
+      </div>
       <div class="pp-actions-row">
         ${xa.map((e, n) => `<button type="button" class="pp-ghost${n === this.conceptLessonIdx ? " on" : ""}" data-pp="concept-lesson" data-i="${n}">${we(String(e.id).toUpperCase())}</button>`).join("")}
         <button type="button" class="pp-primary" data-pp="worked">118×13 worked</button>
@@ -33363,6 +33427,7 @@ class Fv {
     this.root.style.pointerEvents = "auto";
     this.root.style.backdropFilter = "";
     this.root.style.webkitBackdropFilter = "";
+    document.body.classList.add("hub-screen");
     if (!this.feed) {
       try {
         this.feed = ao(fv());
@@ -33386,12 +33451,14 @@ class Fv {
     }
     this.open = false;
     this.root.hidden = true;
+    document.body.classList.remove("hub-screen");
     this.callbacks.onClose();
   }
   enterCity() {
     this.bootGate = false;
     this.open = false;
     this.root.hidden = true;
+    document.body.classList.remove("hub-screen");
     if (this.callbacks.onEnterCity) {
       this.callbacks.onEnterCity();
     } else {
@@ -33427,6 +33494,33 @@ class Fv {
         this.practice = null;
         this.render();
         break;
+      case "play-game":
+        {
+          const g = e.getAttribute("data-game") || "speed";
+          this.tab = "topics";
+          this.topicView = "t3";
+          this.practice = te.getTopicPractice("t3");
+          this.topicCardIdx = 0;
+          if (g === "memory") {
+            this.startMemory();
+          } else if (g === "flash") {
+            this.miniMode = "flash";
+            this.flashSeen = new Set();
+            this.miniStreak = 0;
+            this.render();
+          } else if (g === "concept") {
+            this.callbacks.onOpenConceptPortal?.("t3");
+          } else {
+            this.miniMode = "speed";
+            this.speedIdx = 0;
+            this.speedCorrect = 0;
+            this.miniStreak = 0;
+            this.miniLastMiss = false;
+            this.speedFeedback = null;
+            this.render();
+          }
+          break;
+        }
       case "open-topic":
         {
           const o = this.feed?.topics.find(r => r.id === s);
@@ -33804,6 +33898,7 @@ class Fv {
 
         <nav class="sh-tabs" role="tablist">
           ${this.tabBtn("home", "Overview")}
+          ${this.tabBtn("games", "Game Hall")}
           ${this.tabBtn("grades", "Grades")}
           ${this.tabBtn("missing", `Missing${n ? ` · ${n}` : ""}`)}
           ${this.tabBtn("homework", `Homework${s ? ` · ${s}` : ""}`)}
@@ -33828,6 +33923,8 @@ class Fv {
       return "<p class=\"sh-muted\">Loading school feed…</p>";
     }
     switch (this.tab) {
+      case "games":
+        return this.renderGames();
       case "grades":
         return this.renderGrades(this.feed.courses);
       case "missing":
@@ -33859,7 +33956,7 @@ class Fv {
           <div>
             <div class="sh-missing-tag">OPEN WORLD</div>
             <h2>Sterling City is ready</h2>
-            <p>Landspeeders · on-foot freeroam · loot crates · building interiors · math battles. Earn CASH in Topic Review, then spend it in the city.</p>
+            <p>Landspeeders · on-foot freeroam · loot crates · building interiors · math battles. Earn CASH in Topic Review and Game Hall, then spend it in the city.</p>
           </div>
           <button type="button" class="sh-primary sh-enter-lg" data-action="enter-city">ENTER CITY / OPEN WORLD</button>
         </section>
@@ -33890,6 +33987,17 @@ class Fv {
             <button type="button" data-action="tab" data-tab="homework">Homework Theater</button>
             <button type="button" data-action="tab" data-tab="topics">Topic Review</button>
             <button type="button" class="sh-enter-city-inline" data-action="enter-city">Enter City / Open World</button>
+          </div>
+        </section>
+
+        <section class="sh-card sh-span-2">
+          <div class="sh-card-head"><h3>Game Hall</h3><button type="button" class="sh-link" data-action="tab" data-tab="games">All games</button></div>
+          <p class="sh-muted">Play here on this screen — not as a popup over the city.</p>
+          <div class="sh-games-hall">
+            <button type="button" class="sh-game-tile" data-action="play-game" data-game="speed"><small>Topic 3</small><b>⚡ Speed Round</b><span>Beat the bar. Keep the streak.</span></button>
+            <button type="button" class="sh-game-tile" data-action="play-game" data-game="memory"><small>Topic 3</small><b>🧠 Memory Match</b><span>Flip houses. Bank cash.</span></button>
+            <button type="button" class="sh-game-tile" data-action="play-game" data-game="flash"><small>Topic 3</small><b>🃏 Flashcards</b><span>Punch-flip the steps.</span></button>
+            <button type="button" class="sh-game-tile" data-action="play-game" data-game="concept"><small>Topic 3</small><b>📐 Concept Portal</b><span>118×13 dummy-proof path.</span></button>
           </div>
         </section>
 
@@ -33934,6 +34042,20 @@ class Fv {
               </div>`).join("")}
           </div>
         </section>
+      </div>
+    `;
+  }
+  renderGames() {
+    return `
+      <div class="sh-toolbar">
+        <h2>Game Hall</h2>
+        <span class="sh-muted">Full-screen School Hub games — city stays paused behind this screen</span>
+      </div>
+      <div class="sh-games-hall">
+        <button type="button" class="sh-game-tile" data-action="play-game" data-game="speed"><small>Arcade</small><b>⚡ Speed Round</b><span>Topic 3 houses on a timer. Streaks pay.</span></button>
+        <button type="button" class="sh-game-tile" data-action="play-game" data-game="memory"><small>Arcade</small><b>🧠 Memory Match</b><span>Match partial-product houses.</span></button>
+        <button type="button" class="sh-game-tile" data-action="play-game" data-game="flash"><small>Arcade</small><b>🃏 Flashcards</b><span>Punch-flip ones / tens / add / check.</span></button>
+        <button type="button" class="sh-game-tile" data-action="play-game" data-game="concept"><small>Learn</small><b>📐 Concept Portal</b><span>118×13 dummy-proof path.</span></button>
       </div>
     `;
   }
@@ -34417,6 +34539,7 @@ class Hv {
       this.watchUnlocked = true;
     }
     this.root.hidden = false;
+    document.body.classList.add("hub-screen");
     this.render();
     this.mountPlayer();
   }
@@ -34424,6 +34547,7 @@ class Hv {
     this.teardownPlayers();
     this.open = false;
     this.root.hidden = true;
+    document.body.classList.remove("hub-screen");
     this.hw = null;
     this.callbacks.onClose();
   }
@@ -35246,8 +35370,27 @@ const wc = "sterling-city-v3";
 const Sc = 0.02;
 const Ec = 0.42;
 const fo = 3.05;
-const mo = 9.5;
+const mo = 17.8;
+function sterKid(i, t) {
+  const e = Math.floor(i / 100) * 100;
+  const n = Math.floor(i % 100 / 10) * 10;
+  const s = i % 10;
+  const o = i === 118 && t === 13 ? "Start with the hundreds house: what is 100 × 13? Then tens (10×13), then ones (8×13). Add them." : `Start with the hundreds house: what is ${e} × ${t}? Then tens (${n}×${t}), then ones (${s}×${t}). Add them.`;
+  return {
+    split: `Split ${i} into houses: hundreds ${e} / tens ${n} / ones ${s}.`,
+    hundreds: `Multiply hundreds × ${t} first (${e} × ${t}).`,
+    tens: `Don't drop the zero when you multiply tens (${n} × ${t}).`,
+    ones: `Multiply ones × ${t} (${s} × ${t}).`,
+    add: "Stack the three answers and add.",
+    check: "Check: estimate — is your answer close?",
+    carry: "If a house makes 10 or more, rename into the next house.",
+    stuck: o,
+    line: o
+  };
+}
 class Kv {
+  stuckT = 0;
+  lastSafePos = new R();
   renderer;
   scene = new hh();
   camera = new Ye(58, 1, 0.1, 560);
@@ -35471,6 +35614,7 @@ class Kv {
       airY: 0,
       airVy: 0
     };
+    this.lastSafePos = this.player.pos.clone();
     this.scene.add(s.group);
     {
       const h = document.createElement("canvas");
@@ -35884,6 +36028,7 @@ class Kv {
       }
       if (t === "boss") {
         document.getElementById("boss").hidden = true;
+        document.body.classList.remove("math-stage-open");
         this.mode = this.onFoot ? "onfoot" : "drive";
         this.interactLock = 0.35;
         return;
@@ -35907,7 +36052,7 @@ class Kv {
     }
   }
   isPaused() {
-    return this.mode === "gate" || this.mode === "coach" || this.mode === "boss" || this.mode === "shop" || this.mode === "raceOffer" || this.mode === "bust" || this.mode === "school" || this.mode === "interior" || this.mode === "fight" || this.mode === "gp" || this.mode === "blaster" || this.mode === "casino";
+    return this.mode === "gate" || this.mode === "coach" || this.mode === "boss" || this.mode === "shop" || this.mode === "raceOffer" || this.mode === "bust" || this.mode === "school" || this.mode === "interior" || this.mode === "fight" || this.mode === "gp" || this.mode === "blaster" || this.mode === "casino" || this.mode === "practice";
   }
   makeHeadlight(t) {
     const e = new vg(15267071, 22, 52, Math.PI / 5.5, 0.38, 1);
@@ -36089,7 +36234,7 @@ class Kv {
     } else {
       const l = o;
       if (this.onFoot || this.mode === "onfoot") {
-        this.stepOnFoot(n, l);
+        this.stepOnFoot(n, t);
         this.updateLoot(l);
         this.updateFootMissions(n.interactEdge && this.interactLock <= 0);
         this.rivalCool = Math.max(0, this.rivalCool - l);
@@ -36125,7 +36270,7 @@ class Kv {
           c = Math.max(c, 1);
         }
         this.stepCar(this.player, c, d, h, n.handbrake, l, true);
-        this.collide(this.player);
+        this.collide(this.player, l);
         this.applyRoofPad(this.player);
         this.applyCarPose(this.player);
         if (this.blobShadow) {
@@ -36325,25 +36470,67 @@ class Kv {
       t.roll = Ce.damp(t.roll, -n * 0.14 * Math.min(f / 18, 1), 8, a);
     }
   }
-  collide(t) {
-    for (const s of this.city.colliders) {
-      const o = Math.max(s.minX, Math.min(t.pos.x, s.maxX));
-      const a = Math.max(s.minZ, Math.min(t.pos.z, s.maxZ));
-      const r = t.pos.x - o;
-      const l = t.pos.z - a;
-      const c = r * r + l * l;
-      if (c < 1.3224999999999998) {
-        const d = Math.sqrt(c) || 0.0001;
-        const h = 1.15 - d + 0.02;
-        t.pos.x += r / d * h;
-        t.pos.z += l / d * h;
-        t.vel.multiplyScalar(0.35);
-        this.shake = Math.max(this.shake, 0.28);
+  collide(t, e = 0.016) {
+    const n = 2.42;
+    const s = n * n;
+    let o = false;
+    if (!this.lastSafePos) {
+      this.lastSafePos = t.pos.clone();
+    }
+    for (const a of this.city.colliders) {
+      const r = t.pos.x > a.minX && t.pos.x < a.maxX && t.pos.z > a.minZ && t.pos.z < a.maxZ;
+      if (r) {
+        const l = t.pos.x - a.minX;
+        const c = a.maxX - t.pos.x;
+        const d = t.pos.z - a.minZ;
+        const h = a.maxZ - t.pos.z;
+        const u = Math.min(l, c, d, h);
+        if (u === l) {
+          t.pos.x = a.minX - n;
+        } else if (u === c) {
+          t.pos.x = a.maxX + n;
+        } else if (u === d) {
+          t.pos.z = a.minZ - n;
+        } else {
+          t.pos.z = a.maxZ + n;
+        }
+        t.vel.multiplyScalar(0.12);
+        o = true;
+        continue;
+      }
+      const p = Math.max(a.minX, Math.min(t.pos.x, a.maxX));
+      const g = Math.max(a.minZ, Math.min(t.pos.z, a.maxZ));
+      const v = t.pos.x - p;
+      const m = t.pos.z - g;
+      const f = v * v + m * m;
+      if (f < s) {
+        const M = Math.sqrt(f) || 0.0001;
+        const _ = n - M + 0.05;
+        t.pos.x += v / M * _;
+        t.pos.z += m / M * _;
+        t.vel.multiplyScalar(0.28);
+        this.shake = Math.max(this.shake, 0.22);
+        o = true;
       }
     }
-    const n = ye / 2 + 28;
-    t.pos.x = Ce.clamp(t.pos.x, -n, n);
-    t.pos.z = Ce.clamp(t.pos.z, -n, n);
+    const a = ye / 2 + 28;
+    t.pos.x = Ce.clamp(t.pos.x, -a, a);
+    t.pos.z = Ce.clamp(t.pos.z, -a, a);
+    if (!o && t.vel.length() < 28) {
+      this.lastSafePos.copy(t.pos);
+      this.stuckT = 0;
+    } else if (o) {
+      this.stuckT = (this.stuckT || 0) + e;
+      if (t.vel.length() < 1.6) {
+        this.stuckT += e * 1.8;
+      }
+      if (this.stuckT > 0.45 && this.lastSafePos) {
+        t.pos.copy(this.lastSafePos);
+        t.vel.set(0, 0, 0);
+        this.stuckT = 0;
+        this.toast("UNSTUCK — back on the road");
+      }
+    }
   }
   collideTraffic(t) {
     const e = [...this.traffic, ...this.coaches];
@@ -36548,10 +36735,12 @@ class Kv {
     const s = new R(Math.cos(this.player.yaw), 0, -Math.sin(this.player.yaw));
     const o = this.player.vel.length();
     const a = this.boostActive > 0 || this.getawayOn || this.nos > 0;
-    const r = this.onFoot ? 4.8 : 7.72 + Math.min(3, o * 0.052) + (a ? 0.9 : o > 22 ? 0.18 : 0) - (o > 16 ? 1.28 : o > 8 ? 0.62 : 0);
-    const l = this.onFoot ? 2.85 : 2.92 + Math.min(0.08, o * 0.002) - (a ? 0.52 : o > 28 ? 0.58 : o > 16 ? 0.46 : o > 8 ? 0.26 : 0);
+    const idlePull = !this.onFoot && !a ? Ce.clamp((5.2 - o) / 5.2, 0, 1) : 0;
+    const r = this.onFoot ? 4.8 : 7.72 + idlePull * 5.4 + Math.min(3, o * 0.052) + (a ? 0.9 : o > 22 ? 0.18 : 0) - (o > 16 ? 1.28 : o > 8 ? 0.62 : 0);
+    const l = this.onFoot ? 2.85 : 2.92 + idlePull * 1.35 + Math.min(0.08, o * 0.002) - (a ? 0.52 : o > 28 ? 0.58 : o > 16 ? 0.46 : o > 8 ? 0.26 : 0);
     const c = this.onFoot ? 0 : Ce.clamp(this.player.steerVis * (0.78 + o * 0.042), -2.35, 2.35);
     const d = this.player.pos.clone().addScaledVector(e, r).addScaledVector(s, c).add(new R(0, l, 0));
+    this.keepCamOutOfWalls(d);
     const h = 1 - Math.exp(-(this.onFoot ? 16 : a ? 19.8 : o > 16 ? 22.4 : 15.5) * t);
     this.camPos.lerp(d, h);
     if (this.shake > 0) {
@@ -36559,6 +36748,7 @@ class Kv {
       this.camPos.y += (Math.random() - 0.5) * this.shake * 0.4;
       this.shake *= 1 - t * 8;
     }
+    this.keepCamOutOfWalls(this.camPos);
     this.camera.position.copy(this.camPos);
     const u = this.onFoot ? 6.5 : 9.5 + Math.min(8, o * 0.148) + (a ? 3 : 0);
     const p = this.player.pos.clone().addScaledVector(n, u).add(new R(0, this.onFoot ? 1.1 : 0.78 - Math.min(0.42, o * 0.008), 0));
@@ -36589,6 +36779,32 @@ class Kv {
       }
     }
   }
+  keepCamOutOfWalls(t) {
+    if (!this.city?.colliders) {
+      return t;
+    }
+    const e = 1.65;
+    for (const n of this.city.colliders) {
+      if (t.x > n.minX - e && t.x < n.maxX + e && t.z > n.minZ - e && t.z < n.maxZ + e) {
+        const s = t.x - (n.minX - e);
+        const o = n.maxX + e - t.x;
+        const a = t.z - (n.minZ - e);
+        const r = n.maxZ + e - t.z;
+        const l = Math.min(s, o, a, r);
+        if (l === s) {
+          t.x = n.minX - e;
+        } else if (l === o) {
+          t.x = n.maxX + e;
+        } else if (l === a) {
+          t.z = n.minZ - e;
+        } else {
+          t.z = n.maxZ + e;
+        }
+        t.y = Math.max(t.y, 4.6);
+      }
+    }
+    return t;
+  }
   updateLights() {
     const t = [...this.city.lamps].sort((e, n) => e.position.distanceToSquared(this.player.pos) - n.position.distanceToSquared(this.player.pos));
     this.city.lamps.forEach(e => {
@@ -36613,9 +36829,9 @@ class Kv {
       s.setXYZ(c, d, h, u);
     }
     s.needsUpdate = true;
-    const a = !this.onFoot && this.player.vel.length() > 16 ? 0.55 : this.player.vel.length() > 8 ? 0.26 : 0;
-    this.exhaust.material.opacity = (this.boostActive > 0 ? 0.9 : 0.22 + a) + e * 0.55;
-    this.exhaust.material.size = this.boostActive > 0 ? 0.18 : a > 0 ? 0.15 : 0.08;
+    const a = !this.onFoot && this.player.vel.length() > 16 ? 0.22 : this.player.vel.length() > 8 ? 0.1 : 0;
+    this.exhaust.material.opacity = (this.boostActive > 0 ? 0.55 : 0.1 + a) + e * 0.22;
+    this.exhaust.material.size = this.boostActive > 0 ? 0.11 : 0.05;
     const r = this.smoke.geometry.getAttribute("position");
     for (let c = 0; c < r.count; c++) {
       let d = r.getY(c) + t * 0.6;
@@ -36744,7 +36960,8 @@ class Kv {
     e.style.pointerEvents = "auto";
     document.getElementById("gate-kicker").textContent = t.kicker;
     document.getElementById("gate-title").textContent = t.title;
-    document.getElementById("gate-prompt").textContent = t.prompt;
+    const kidF = t.factors ?? bv(t.prompt || "");
+    document.getElementById("gate-prompt").textContent = kidF ? `${t.prompt}  ·  ${sterKid(kidF.a, kidF.b).line}` : t.prompt;
     const reward = document.getElementById("gate-reward");
     if (reward) {
       const pay = t.cash ? `+$${Number(t.cash).toLocaleString()}` : "CASH + STREAK";
@@ -37042,6 +37259,7 @@ class Kv {
     this.player.vel.set(0, 0, 0);
     this.bossTimer = 20;
     this.bossCash = 0;
+    document.body.classList.add("math-stage-open");
     document.getElementById("boss").hidden = false;
     this.nextBoss();
   }
@@ -37051,9 +37269,7 @@ class Kv {
     document.getElementById("boss-prompt").textContent = t.prompt;
     const e = document.querySelector("#boss .boss-hud");
     const n = document.getElementById("boss-steps") || hi(e, "boss-steps");
-    ci(n, t, {
-      compact: true
-    });
+    ci(n, t);
     document.getElementById("boss-answers").innerHTML = t.answers.map(s => `<button type="button">${s}</button>`).join("");
   }
   solveBoss(t) {
@@ -37075,6 +37291,7 @@ class Kv {
     document.getElementById("boss-cash").textContent = `$${this.bossCash}`;
     if (this.bossTimer <= 0) {
       document.getElementById("boss").hidden = true;
+      document.body.classList.remove("math-stage-open");
       this.mode = "drive";
       this.toast("BONUS BANKED — free drive! Follow the gold blip.");
       this.rewardFlash = 2;
@@ -37129,7 +37346,7 @@ class Kv {
       e.yaw = Ce.damp(e.yaw, s, 3.2, t);
       const o = 0.95 + this.wanted * 0.04;
       this.stepCar(e, o, Math.max(-1, Math.min(1, (s - e.yaw) * 2)), 0, false, t, false);
-      this.collide(e);
+      this.collide(e, t);
       this.applyCarPose(e);
       if (e.kit.lightbar) {
         const a = e.kit.lightbar.material;
@@ -37479,6 +37696,7 @@ class Kv {
       boot.style.pointerEvents = "none";
     }
     this.mode = this.onFoot ? "onfoot" : "drive";
+    document.body.classList.remove("hub-screen");
     this.toast("OPEN WORLD — SHIFT boost · E exit · bump = wanted");
     document.getElementById("title-card")?.classList.add("go");
     this.applyLights();
@@ -37633,7 +37851,6 @@ class Kv {
     this.moon.castShadow = false;
     this.sun.intensity = this.night ? 0.25 : (this._liteGpu ? 4.35 : 7.97);
     this.sun.color.set(16771256);
-    this.sun.castShadow = !this.night && !this._liteGpu;
     this.renderer.toneMappingExposure = this.night ? 1.1 : (this._liteGpu ? 0.92 : 0.845);
     if (this._liteGpu) {
       this.bloom.enabled = false;
@@ -37825,23 +38042,17 @@ class Kv {
   }
   stepOnFoot(t, e) {
     let n = t.throttle - t.brake;
-    -t.steer;
     if (Math.abs(t.steer) > 0.1) {
-      this.footYaw += t.steer * 2.4 * e;
+      this.footYaw += t.steer * 3.15 * e;
     }
-    if (n === 0) {
-      Math.abs(t.steer) > 0.15;
-    }
-    if (t.throttle || t.brake) {
-      mo * (t.handbrake ? 1.35 : 1);
-    }
-    mo * (n !== 0 ? 1 : Math.abs(t.steer) > 0.2 ? 0.65 : 0);
-    const s = Math.sin(this.footYaw) * n * mo;
-    const o = Math.cos(this.footYaw) * n * mo;
-    this.player.pos.x += s * e;
-    this.player.pos.z += o * e;
+    const run = mo * (t.handbrake ? 1.48 : 1);
+    const vx = Math.sin(this.footYaw) * n * run;
+    const vz = Math.cos(this.footYaw) * n * run;
+    this.player.pos.x += vx * e;
+    this.player.pos.z += vz * e;
     this.player.yaw = this.footYaw;
-    this.player.vel.set(s, 0, o);
+    this.player.vel.set(vx, 0, vz);
+    this.collide(this.player, e);
     const a = ye / 2 + 10;
     this.player.pos.x = Math.max(-a, Math.min(a, this.player.pos.x));
     this.player.pos.z = Math.max(-a, Math.min(a, this.player.pos.z));
@@ -37850,9 +38061,9 @@ class Kv {
       this.playerMesh.rotation.y = this.footYaw;
       if (this.playerParts) {
         if (Math.abs(n) > 0.05) {
-          this.footWalkPhase += e * 9;
-          Bg(this.playerParts, this.footWalkPhase, 0.55);
-          this.playerMesh.position.y = Math.abs(Math.sin(this.footWalkPhase * 2)) * 0.06;
+          this.footWalkPhase += e * 16.5;
+          Bg(this.playerParts, this.footWalkPhase, 0.82);
+          this.playerMesh.position.y = Math.abs(Math.sin(this.footWalkPhase * 2)) * 0.08;
         } else {
           ga(this.playerParts);
           this.playerMesh.position.y = 0;
