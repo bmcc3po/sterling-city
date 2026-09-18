@@ -27906,33 +27906,33 @@ function ns(i, t, e = Xe) {
 }
 function Ng() {
   return ns(1024, (i, t) => {
-    i.fillStyle = "#10141c";
+    i.fillStyle = "#070b14";
     i.fillRect(0, 0, t, t);
     const e = i.getImageData(0, 0, t, t);
     for (let n = 0; n < e.data.length; n += 4) {
-      const s = (Math.random() - 0.5) * 32;
-      const o = Math.random() * 5;
-      e.data[n] = 24 + s;
-      e.data[n + 1] = 28 + s + o * 0.15;
-      e.data[n + 2] = 36 + s + o;
+      const s = (Math.random() - 0.5) * 18;
+      e.data[n] = 10 + s;
+      e.data[n + 1] = 16 + s;
+      e.data[n + 2] = 28 + s;
     }
     i.putImageData(e, 0, 0);
-    i.globalAlpha = 0.16;
-    for (let n = 0; n < 80; n++) {
-      i.fillStyle = n % 3 ? "#6a7384" : "#1a2030";
-      i.fillRect(Math.random() * t, Math.random() * t, 30 + Math.random() * 180, 1.5 + Math.random() * 2);
-    }
-    i.globalAlpha = 0.1;
-    for (let n = 0; n < 14; n++) {
-      const s = Math.random() * t;
-      const o = Math.random() * t;
-      const a = i.createRadialGradient(s, o, 2, s, o, 40 + Math.random() * 40);
-      a.addColorStop(0, "#1a2230");
-      a.addColorStop(1, "rgba(0,0,0,0)");
-      i.fillStyle = a;
+    i.globalAlpha = 0.55;
+    i.strokeStyle = "#3cf0ff";
+    i.lineWidth = 3;
+    for (let n = 0; n < 18; n++) {
       i.beginPath();
-      i.arc(s, o, 55, 0, Math.PI * 2);
-      i.fill();
+      i.moveTo(n / 18 * t, 0);
+      i.lineTo(n / 18 * t, t);
+      i.stroke();
+    }
+    i.globalAlpha = 0.28;
+    i.strokeStyle = "#ff3d8a";
+    i.lineWidth = 1.5;
+    for (let n = 0; n < 12; n++) {
+      i.beginPath();
+      i.moveTo(0, n / 12 * t);
+      i.lineTo(t, n / 12 * t);
+      i.stroke();
     }
     i.globalAlpha = 1;
   });
@@ -28080,11 +28080,11 @@ function Fg(i, t) {
 }
 function xn(i, t) {
   return ns(512, (e, n) => {
-    e.fillStyle = "#1e2838";
+    e.fillStyle = "#05070e";
     e.fillRect(0, 0, n, n);
     const s = 6 + i % 5;
     const o = 9 + i % 6;
-    e.fillStyle = "#141c28";
+    e.fillStyle = "#0a1220";
     for (let d = 0; d <= s; d++) {
       e.fillRect(d / s * n - 2, 0, 3 + i % 2, n);
     }
@@ -28097,22 +28097,22 @@ function xn(i, t) {
     const c = (n - r * 2) / o;
     for (let d = 0; d < o; d++) {
       for (let h = 0; h < s; h++) {
-        const u = (i * 17 + h * 13 + d * 29) % 10 > 3;
+        const u = (i * 17 + h * 13 + d * 29) % 10 > 2;
         const p = e.createLinearGradient(0, r + d * c, 0, r + d * c + c);
         if (u) {
-          p.addColorStop(0, "#e8f2ff");
-          p.addColorStop(0.35, t);
-          p.addColorStop(1, "#1a2838");
+          p.addColorStop(0, t);
+          p.addColorStop(0.45, t);
+          p.addColorStop(1, "#041018");
         } else {
-          p.addColorStop(0, "#6a7a92");
-          p.addColorStop(1, "#3a4558");
+          p.addColorStop(0, "#0c121c");
+          p.addColorStop(1, "#05070c");
         }
         e.fillStyle = p;
         const g = a + h * l + 3;
         const v = r + d * c + 3;
         e.fillRect(g, v, l - 6, c - 6);
         if (u) {
-          e.fillStyle = "rgba(255,255,255,0.18)";
+          e.fillStyle = "rgba(255,255,255,0.35)";
           e.fillRect(g + 2, v + 2, (l - 6) * 0.22, c - 10);
         }
       }
@@ -28310,11 +28310,11 @@ function zg(i) {
   r.repeat.set(28, 28);
   const l = new O(new Be(ye + 80, ye + 80), new me({
     map: r,
-    color: 2239032,
+    color: 1710618,
     roughness: 0.84,
-    metalness: 0.12,
-    clearcoat: 0.07,
-    clearcoatRoughness: 0.78,
+    metalness: 0.22,
+    emissive: 1736959,
+    emissiveIntensity: 0.08,
     transparent: false,
     opacity: 1,
     envMapIntensity: 0.58
@@ -28328,9 +28328,9 @@ function zg(i) {
   c.repeat.set(6, 6);
   const d = new mt({
     map: c,
-    color: 12634324,
-    roughness: 0.88,
-    metalness: 0.04,
+    color: 1714744,
+    roughness: 0.78,
+    metalness: 0.18,
     envMapIntensity: 0.42
   });
   const h = new me({
@@ -28606,12 +28606,12 @@ function zg(i) {
         if (t() > 0.38) {
           const tt = ["#ff3d8a", "#3cf0ff", "#ffc44d", "#7cff6b"];
           const ot = ["NEON", "GRID", "HOLO", "24H", "RADIO", "DOCK", "STERLING CITY", "BLAST", "VAULT"];
-          const ft = new O(new Be(Math.min(L, 10), 3.2), new $t({
+          const ft = new O(new Be(Math.min(L, 12), 4.4), new $t({
             map: Ss(fn(t, ot), fn(t, tt)),
             transparent: true,
             toneMapped: false
           }));
-          ft.position.set(pt, 5.1, E + At / 2 + 0.22);
+          ft.position.set(pt, 6.2, E + At / 2 + 0.22);
           e.add(ft);
         }
         if (t() > 0.88) {
@@ -28648,8 +28648,12 @@ function zg(i) {
     e.add(at);
   }
   {
-    const X = new $t({
-      color: 16767608
+    const X = new mt({
+      color: 3993855,
+      emissive: 3993855,
+      emissiveIntensity: 0.9,
+      roughness: 0.28,
+      metalness: 0.35
     });
     const H = ye / 2 + 8;
     for (let Y = 0; Y < pe - 1; Y++) {
@@ -29259,6 +29263,60 @@ function zg(i) {
         At.rotation.x = -Math.PI / 2;
         At.position.set(dt.position.x, 0.03, dt.position.z);
         e.add(dt, L, At);
+      }
+    }
+  }
+  {
+    const rail = new mt({
+      color: 3818840,
+      metalness: 0.72,
+      roughness: 0.22,
+      emissive: 1736959,
+      emissiveIntensity: 0.35
+    });
+    const glow = new mt({
+      color: 3993855,
+      emissive: 3993855,
+      emissiveIntensity: 1.15,
+      roughness: 0.2
+    });
+    const beam = new O(new z(2.4, 0.45, ye + 40), rail);
+    beam.position.set(0, 14.2, 0);
+    e.add(beam);
+    const strip = new O(new z(1.6, 0.12, ye + 40), glow);
+    strip.position.set(0, 14.48, 0);
+    e.add(strip);
+    for (let X = -3; X <= 3; X++) {
+      const pole = new O(new z(0.38, 14.2, 0.38), rail);
+      pole.position.set(0, 7.1, X * (ye / 7));
+      e.add(pole);
+      const cap = new O(new z(1.1, 0.22, 1.1), glow);
+      cap.position.set(0, 14.55, X * (ye / 7));
+      e.add(cap);
+    }
+    const mag = new mt({
+      color: 16727434,
+      emissive: 16727434,
+      emissiveIntensity: 0.95,
+      roughness: 0.25
+    });
+    for (let X = 0; X < pe - 1; X++) {
+      for (let H = 0; H < pe - 1; H++) {
+        if ((X + H) % 2) {
+          continue;
+        }
+        const {
+          x: Y,
+          z: at
+        } = Te(X, H);
+        const et = Y + Ft / 2 + Jt / 2;
+        const Mt = at + Ft / 2 + Jt / 2;
+        const pole = new O(new z(0.22, 5.4, 0.22), rail);
+        pole.position.set(et, 2.7, Mt);
+        e.add(pole);
+        const orb = new O(new Ne(0.55, 10, 8), (X + H) % 4 ? glow : mag);
+        orb.position.set(et, 5.6, Mt);
+        e.add(orb);
       }
     }
   }
@@ -35406,7 +35464,7 @@ const wc = "sterling-city-v3";
 const Sc = 0.02;
 const Ec = 0.42;
 const fo = 3.05;
-const mo = 17.8;
+const mo = 26.8;
 function sterKid(i, t) {
   const e = Math.floor(i / 100) * 100;
   const n = Math.floor(i % 100 / 10) * 10;
@@ -37931,8 +37989,20 @@ class Kv {
     }
     document.body.classList.toggle("light", !this.night);
     document.body.classList.toggle("day-mode", !this.night);
-    this.scene.background = new zt(this.night ? 923176 : 2062516);
-    this.scene.fog = new ms(this.night ? 1317936 : 3835568, this.night ? 80 : 132, this.night ? 340 : 405);
+    const dayBg = 2062516;
+    const nightBg = 923176;
+    if (this.scene.background && this.scene.background.setHex) {
+      this.scene.background.setHex(this.night ? nightBg : dayBg);
+    } else {
+      this.scene.background = new zt(this.night ? nightBg : dayBg);
+    }
+    if (this.scene.fog && this.scene.fog.color) {
+      this.scene.fog.color.setHex(this.night ? 1317936 : 3835568);
+      this.scene.fog.near = this.night ? 80 : 132;
+      this.scene.fog.far = this.night ? 340 : 405;
+    } else {
+      this.scene.fog = new ms(this.night ? 1317936 : 3835568, this.night ? 80 : 132, this.night ? 340 : 405);
+    }
     this.hemi.color.set(this.night ? 10135760 : 15787208);
     this.hemi.groundColor.set(this.night ? 3811392 : 2375202);
     this.hemi.intensity = this.night ? 0.85 : (this._liteGpu ? 0.28 : 0.12);
@@ -37946,10 +38016,8 @@ class Kv {
     this.sun.color.set(16771256);
     this.renderer.toneMappingExposure = this.night ? 1.1 : (this._liteGpu ? 0.92 : 0.845);
     if (this._liteGpu) {
-      this.bloom.enabled = false;
       this.bloom.strength = 0;
     } else {
-      this.bloom.enabled = true;
       this.bloom.strength = this.night ? 0.34 : 0.039;
     }
     this.bloom.threshold = this.night ? 0.55 : (this._liteGpu ? 0.96 : 0.9);
@@ -38093,8 +38161,8 @@ class Kv {
       setTimeout(() => e.classList.remove("pulse-enter"), 700);
     }
     this.shake = Math.max(this.shake, 0.18);
-    this.bloom.strength = 0.55;
-    setTimeout(() => this.bloom.strength = this.night ? 0.45 : 0.039, 220);
+    this.slowMo = 0;
+    this.timeScale = 1;
     document.getElementById("hud")?.classList.add("mode-flash");
     setTimeout(() => document.getElementById("hud")?.classList.remove("mode-flash"), 280);
     this.fovKick = 7;
@@ -38123,9 +38191,8 @@ class Kv {
       e.hidden = true;
     }
     this.shake = Math.max(this.shake, 0.24);
-    this.bloom.strength = 0.75;
-    setTimeout(() => this.bloom.strength = this.night ? 0.45 : 0.039, 260);
-    this.slowMo = Math.max(this.slowMo, 0.16);
+    this.slowMo = 0;
+    this.timeScale = 1;
     document.getElementById("hud")?.classList.add("mode-flash", "punch");
     setTimeout(() => document.getElementById("hud")?.classList.remove("mode-flash", "punch"), 300);
     this.fovKick = 10;
@@ -38135,10 +38202,13 @@ class Kv {
   }
   stepOnFoot(t, e) {
     let n = t.throttle - t.brake;
-    if (Math.abs(t.steer) > 0.1) {
-      this.footYaw += t.steer * 3.15 * e;
+    if (Math.abs(n) > 0.08) {
+      n = Math.sign(n);
     }
-    const run = mo * (t.handbrake ? 1.48 : 1);
+    if (Math.abs(t.steer) > 0.08) {
+      this.footYaw += t.steer * 4.4 * e;
+    }
+    const run = mo * (t.handbrake || t.boost ? 1.62 : 1);
     const vx = Math.sin(this.footYaw) * n * run;
     const vz = Math.cos(this.footYaw) * n * run;
     this.player.pos.x += vx * e;
@@ -38154,9 +38224,9 @@ class Kv {
       this.playerMesh.rotation.y = this.footYaw;
       if (this.playerParts) {
         if (Math.abs(n) > 0.05) {
-          this.footWalkPhase += e * 16.5;
-          Bg(this.playerParts, this.footWalkPhase, 0.82);
-          this.playerMesh.position.y = Math.abs(Math.sin(this.footWalkPhase * 2)) * 0.08;
+          this.footWalkPhase += e * 22.5;
+          Bg(this.playerParts, this.footWalkPhase, 1.05);
+          this.playerMesh.position.y = Math.abs(Math.sin(this.footWalkPhase * 2)) * 0.1;
         } else {
           ga(this.playerParts);
           this.playerMesh.position.y = 0;
