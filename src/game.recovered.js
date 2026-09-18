@@ -29465,6 +29465,42 @@ function Vg(i, t, e, n) {
         maxZ: g + 16 + 0.7
       });
     }
+    if (a.id === "courier") {
+      const dock = new mt({
+        color: 4864072,
+        roughness: 0.45,
+        metalness: 0.35,
+        emissive: 16742912,
+        emissiveIntensity: 0.18
+      });
+      const bay = new O(new z(14, 1.2, 1.1), dock);
+      bay.position.set(p, 0.6, g + c / 2 + 3.2);
+      i.add(bay);
+      t.push({
+        minX: p - 7.2,
+        maxX: p + 7.2,
+        minZ: g + c / 2 + 3.2 - 0.7,
+        maxZ: g + c / 2 + 3.2 + 0.7
+      });
+      const curbL = new O(new z(1.2, 1.5, 12), dock);
+      curbL.position.set(p - 8.4, 0.75, g + 2);
+      i.add(curbL);
+      t.push({
+        minX: p - 8.4 - 0.75,
+        maxX: p - 8.4 + 0.75,
+        minZ: g + 2 - 6.2,
+        maxZ: g + 2 + 6.2
+      });
+      const curbR = new O(new z(1.2, 1.5, 12), dock);
+      curbR.position.set(p + 8.4, 0.75, g + 2);
+      i.add(curbR);
+      t.push({
+        minX: p + 8.4 - 0.75,
+        maxX: p + 8.4 + 0.75,
+        minZ: g + 2 - 6.2,
+        maxZ: g + 2 + 6.2
+      });
+    }
   }
   return o;
 }
@@ -36471,31 +36507,47 @@ class Kv {
     }
   }
   collide(t, e = 0.016) {
-    const n = 2.42;
+    const n = 2.95;
     const s = n * n;
+    const fwdX = Math.sin(t.yaw);
+    const fwdZ = Math.cos(t.yaw);
+    const rightX = Math.cos(t.yaw);
+    const rightZ = -Math.sin(t.yaw);
+    const hull = [[0, 0], [1.95, 1.55], [1.95, -2.2], [-1.95, 1.55], [-1.95, -2.2], [0, 2.15], [0, -2.55], [2.25, -0.55], [-2.25, -0.55]];
     let o = false;
     if (!this.lastSafePos) {
       this.lastSafePos = t.pos.clone();
     }
+    const pushOut = (a, x, z) => {
+      const l = x - a.minX;
+      const c = a.maxX - x;
+      const d = z - a.minZ;
+      const h = a.maxZ - z;
+      const u = Math.min(l, c, d, h);
+      if (u === l) {
+        t.pos.x += a.minX - n - x;
+      } else if (u === c) {
+        t.pos.x += a.maxX + n - x;
+      } else if (u === d) {
+        t.pos.z += a.minZ - n - z;
+      } else {
+        t.pos.z += a.maxZ + n - z;
+      }
+    };
     for (const a of this.city.colliders) {
-      const r = t.pos.x > a.minX && t.pos.x < a.maxX && t.pos.z > a.minZ && t.pos.z < a.maxZ;
-      if (r) {
-        const l = t.pos.x - a.minX;
-        const c = a.maxX - t.pos.x;
-        const d = t.pos.z - a.minZ;
-        const h = a.maxZ - t.pos.z;
-        const u = Math.min(l, c, d, h);
-        if (u === l) {
-          t.pos.x = a.minX - n;
-        } else if (u === c) {
-          t.pos.x = a.maxX + n;
-        } else if (u === d) {
-          t.pos.z = a.minZ - n;
-        } else {
-          t.pos.z = a.maxZ + n;
+      let hitHull = false;
+      for (const [sx, sz] of hull) {
+        const x = t.pos.x + rightX * sx + fwdX * sz;
+        const z = t.pos.z + rightZ * sx + fwdZ * sz;
+        if (x > a.minX && x < a.maxX && z > a.minZ && z < a.maxZ) {
+          pushOut(a, x, z);
+          t.vel.multiplyScalar(0.18);
+          o = true;
+          hitHull = true;
+          break;
         }
-        t.vel.multiplyScalar(0.12);
-        o = true;
+      }
+      if (hitHull) {
         continue;
       }
       const p = Math.max(a.minX, Math.min(t.pos.x, a.maxX));
@@ -36505,7 +36557,7 @@ class Kv {
       const f = v * v + m * m;
       if (f < s) {
         const M = Math.sqrt(f) || 0.0001;
-        const _ = n - M + 0.05;
+        const _ = n - M + 0.06;
         t.pos.x += v / M * _;
         t.pos.z += m / M * _;
         t.vel.multiplyScalar(0.28);
@@ -36516,19 +36568,25 @@ class Kv {
     const a = ye / 2 + 28;
     t.pos.x = Ce.clamp(t.pos.x, -a, a);
     t.pos.z = Ce.clamp(t.pos.z, -a, a);
-    if (!o && t.vel.length() < 28) {
+    if (!o && t.vel.length() < 32) {
       this.lastSafePos.copy(t.pos);
       this.stuckT = 0;
     } else if (o) {
       this.stuckT = (this.stuckT || 0) + e;
-      if (t.vel.length() < 1.6) {
-        this.stuckT += e * 1.8;
+      if (t.vel.length() < 1.8) {
+        this.stuckT += e * 2.2;
       }
-      if (this.stuckT > 0.45 && this.lastSafePos) {
+      if (this.stuckT > 0.28 && this.lastSafePos) {
         t.pos.copy(this.lastSafePos);
         t.vel.set(0, 0, 0);
         this.stuckT = 0;
-        this.toast("UNSTUCK — back on the road");
+        if (t === this.player) {
+          const bx = -Math.sin(t.yaw);
+          const bz = -Math.cos(t.yaw);
+          this.camPos.set(t.pos.x + bx * 10.4, 4.7, t.pos.z + bz * 10.4);
+          this.camLook.set(t.pos.x, 1.15, t.pos.z);
+          this.toast("UNSTUCK — back on the road");
+        }
       }
     }
   }
@@ -36741,6 +36799,7 @@ class Kv {
     const c = this.onFoot ? 0 : Ce.clamp(this.player.steerVis * (0.78 + o * 0.042), -2.35, 2.35);
     const d = this.player.pos.clone().addScaledVector(e, r).addScaledVector(s, c).add(new R(0, l, 0));
     this.keepCamOutOfWalls(d);
+    this.ensureCamClearOfHull(d);
     const h = 1 - Math.exp(-(this.onFoot ? 16 : a ? 19.8 : o > 16 ? 22.4 : 15.5) * t);
     this.camPos.lerp(d, h);
     if (this.shake > 0) {
@@ -36749,6 +36808,7 @@ class Kv {
       this.shake *= 1 - t * 8;
     }
     this.keepCamOutOfWalls(this.camPos);
+    this.ensureCamClearOfHull(this.camPos);
     this.camera.position.copy(this.camPos);
     const u = this.onFoot ? 6.5 : 9.5 + Math.min(8, o * 0.148) + (a ? 3 : 0);
     const p = this.player.pos.clone().addScaledVector(n, u).add(new R(0, this.onFoot ? 1.1 : 0.78 - Math.min(0.42, o * 0.008), 0));
@@ -36783,9 +36843,10 @@ class Kv {
     if (!this.city?.colliders) {
       return t;
     }
-    const e = 1.65;
+    const e = 1.85;
     for (const n of this.city.colliders) {
       if (t.x > n.minX - e && t.x < n.maxX + e && t.z > n.minZ - e && t.z < n.maxZ + e) {
+        t.y = Math.max(t.y, 6.35);
         const s = t.x - (n.minX - e);
         const o = n.maxX + e - t.x;
         const a = t.z - (n.minZ - e);
@@ -36800,8 +36861,35 @@ class Kv {
         } else {
           t.z = n.maxZ + e;
         }
-        t.y = Math.max(t.y, 4.6);
       }
+    }
+    return t;
+  }
+  ensureCamClearOfHull(t) {
+    if (this.onFoot) {
+      return t;
+    }
+    const backX = -Math.sin(this.player.yaw);
+    const backZ = -Math.cos(this.player.yaw);
+    const px = this.player.pos.x;
+    const pz = this.player.pos.z;
+    const minDist = 9.2;
+    const dx = t.x - px;
+    const dz = t.z - pz;
+    const dist = Math.hypot(dx, dz) || 0.0001;
+    const behind = dx * backX + dz * backZ;
+    if (dist < minDist || behind < 3.4) {
+      t.x = px + backX * minDist;
+      t.z = pz + backZ * minDist;
+      t.y = Math.max(t.y, 4.45);
+    }
+    this.keepCamOutOfWalls(t);
+    const dist2 = Math.hypot(t.x - px, t.z - pz);
+    if (dist2 < 6.5) {
+      t.x = px + backX * 10.6;
+      t.z = pz + backZ * 10.6;
+      t.y = Math.max(t.y, 6.9);
+      this.keepCamOutOfWalls(t);
     }
     return t;
   }
