@@ -4,12 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="theme-color" content="#05060d" />
+    <meta name="theme-color" content="#0b1224" />
     <title>STERLING CITY</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23050a14'/%3E%3Cpath d='M8 40 L32 16 L56 40 L48 40 L48 52 L16 52 L16 40Z' fill='%23ffc44d'/%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      html,body{margin:0;height:100%;background:#0b1224;overflow:hidden}
+      #boot{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:#05060d;color:#ffc44d}
+      #boot.hide{opacity:0;pointer-events:none!important;visibility:hidden;display:none}
+      @media (max-width:820px),(pointer:coarse){
+        .school-hub,.homework-theater,#practice-portal{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#0b1224!important}
+        #title-card h1{background:none!important;-webkit-background-clip:unset!important;color:#ffe14a!important;font-size:clamp(32px,12vw,52px)!important;text-shadow:0 2px 0 #3a2800,0 0 12px #000!important}
+      }
+    </style>
+    <script type="module" src="/src/main.ts"></script>
   </head>
   <body>
     <canvas id="gl"></canvas>
@@ -21,50 +31,74 @@
             <div class="radar-label">N</div>
           </div>
           <div id="cash">$0</div>
+          <div id="stars" title="Missions cleared">★ 0 / 4</div>
+          <div id="damage"></div>
         </div>
         <div class="hud-center">
-          <div id="radio">FLASH FM · Night Circuit</div>
-          <div id="objective">DRIVE TO THE GOLD BLIP — COURIER DROP</div>
+          <div id="radio">FLASH FM · Day Drive</div>
+          <div id="mission-panel">NOW: COURIER DROP</div>
+          <div id="objective">MISSION: drive to COURIER DROP (gold blip) → answer math → get paid</div>
+          <div id="progress">Clear 4 missions to unlock the Championship Race · 0/4</div>
         </div>
         <div class="hud-right">
           <div id="wanted" aria-label="wanted stars"><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span></div>
           <div id="speed"><b>0</b><small>MPH</small></div>
-          <button id="theme" type="button" title="Toggle lights">NIGHT</button>
+          <button id="theme" type="button" title="Toggle day / night">DAY</button>
+          <button id="mute" type="button" title="Mute music">♪ ON</button>
+          <button id="practice-btn" type="button" title="Learning / Practice Portal">PRACTICE</button>
+          <button id="school-btn" type="button" title="Open School Hub">SCHOOL</button>
+          <button id="shop-btn" type="button" title="Open garage shop">SHOP</button>
         </div>
       </div>
 
       <div id="title-card">
-        <p class="city-tag">KID-SAFE OPEN CITY</p>
+        <p class="city-tag">COOLMATH ENERGY · KID-SAFE</p>
         <h1>STERLING CITY</h1>
-        <p class="tagline">YOUR RIDE. YOUR MISSIONS. MATH IS THE HEIST.</p>
+        <p class="tagline">GRAND PRIX · TOPIC 3 · BLASTER · CASINO · FIGHTS · BOOST</p>
       </div>
 
       <div id="toast"></div>
+      <div id="combo" hidden>COMBO x2</div>
+      <div id="cash-floaters" aria-hidden="true"></div>
 
       <div id="joystick" class="stick">
         <div class="stick-base"><div class="stick-knob"></div></div>
       </div>
       <div id="pedals">
         <button id="brake" type="button">BRAKE</button>
+        <button id="boost" type="button" class="boost-btn ready">BOOST (SHIFT)</button>
         <button id="gas" type="button">GAS</button>
       </div>
+      <div id="boost-rail" aria-hidden="true"><i id="boost-meter"></i></div>
+      <button id="exit-vehicle" type="button" hidden>EXIT SPEEDER (E)</button>
       <button id="interact" type="button" hidden>START MISSION</button>
 
       <div id="math-gate" hidden>
-        <div class="gate-shell">
-          <div class="gate-kicker" id="gate-kicker">COURIER LOCK</div>
-          <h2 id="gate-title">Exact change</h2>
-          <p id="gate-prompt"></p>
-          <div id="place-houses" hidden></div>
-          <div id="fall-lanes" hidden></div>
-          <div id="answers"></div>
+        <div class="gate-shell math-stage">
+          <header class="math-stage-top">
+            <div class="math-stage-brand">
+              <div class="gate-kicker" id="gate-kicker">COURIER LOCK</div>
+              <p class="math-stage-reward" id="gate-reward">HIT THE SHOT · CASH · MISSION ADVANCES</p>
+            </div>
+            <h2 id="gate-title">Exact change</h2>
+            <p id="gate-prompt"></p>
+          </header>
+          <div class="math-stage-board">
+            <div id="place-houses" hidden></div>
+            <div id="fall-lanes" hidden></div>
+            <pre id="notepad" hidden></pre>
+            <div id="gate-steps" class="t3-step-host"></div>
+          </div>
+          <div class="math-stage-dock">
+            <div id="answers" class="math-arcade-answers"></div>
+          </div>
         </div>
       </div>
 
       <div id="coach" hidden>
         <div class="coach-flash">
           <div class="siren-bar"></div>
-          <p class="coach-kicker">COACH CALLED TIMEOUT</p>
+          <p class="coach-kicker">HOLOGUIDE CALLED TIMEOUT</p>
           <h2 id="coach-title">Hold up.</h2>
           <p id="coach-body"></p>
         </div>
@@ -77,15 +111,214 @@
             <b id="boss-time">20.0</b>
           </div>
           <p id="boss-prompt"></p>
+          <div id="boss-steps" class="t3-step-host"></div>
           <div id="boss-answers"></div>
           <div id="boss-cash">$0</div>
         </div>
       </div>
+
+      <div id="race-offer" hidden>
+        <div class="gate-shell cool-card">
+          <div class="gate-kicker">GRAND PRIX · TOPIC 3</div>
+          <h2>START GRAND PRIX?</h2>
+          <p>Correct partial products = pull ahead. Wrong = stall. 3-digit × 2-digit setup steps only.</p>
+          <div class="row-btns">
+            <button type="button" id="race-yes" class="cta-yellow">GRAND PRIX!</button>
+            <button type="button" id="race-no" class="ghost">SKIP</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="shop" hidden>
+        <div class="gate-shell shop-shell">
+          <div class="gate-kicker">SPEEDER GARAGE</div>
+          <h2>SPEND YOUR CASH</h2>
+          <p id="shop-cash">Bank: $0</p>
+          <div class="shop-grid">
+            <button type="button" data-buy="car-blue">BLUE SPEEDER · $2,000</button>
+            <button type="button" data-buy="car-pink">PINK STREAK · $2,500</button>
+            <button type="button" data-buy="car-lime">LIME HOVER · $2,500</button>
+            <button type="button" data-buy="speed">SPEED + · $1,500</button>
+            <button type="button" data-buy="paint-gold">GOLD PAINT · $800</button>
+            <button type="button" data-buy="paint-cyan">CYAN PAINT · $800</button>
+            <button type="button" data-buy="paint-white">PEARL WHITE · $900</button>
+          </div>
+          <button type="button" id="shop-close" class="ghost">CLOSE</button>
+        </div>
+      </div>
+
+      <div id="bust" hidden>
+        <div class="coach-flash">
+          <div class="siren-bar"></div>
+          <p class="coach-kicker">BUSTED</p>
+          <h2>Hologuide caught you.</h2>
+          <p id="bust-body">Lost cash and boost. Fly cleaner!</p>
+        </div>
+      </div>
+
+      <div id="interior" hidden>
+        <div class="gate-shell interior-shell">
+          <div class="gate-kicker" id="interior-kicker">BUILDING</div>
+          <h2 id="interior-title">Interior</h2>
+          <p id="interior-body">Pick a mini-game.</p>
+          <div id="interior-actions" class="row-btns"></div>
+          <button type="button" id="interior-exit" class="ghost">EXIT BUILDING</button>
+        </div>
+      </div>
+
+      <div id="fight" hidden>
+        <div class="fight-arena">
+          <div id="sf-round" class="sf-round" hidden>ROUND 1</div>
+          <div id="sf-ko" class="sf-ko" hidden>K.O.</div>
+          <div class="sf-vs-banner"><span>VS</span></div>
+          <div class="sf-bars">
+            <div class="sf-bar-wrap you">
+              <span id="fight-you">YOU</span>
+              <div class="sf-bar-track"><div id="fight-you-bar" class="sf-bar-fill you"></div></div>
+              <div class="sf-special-track"><div id="sf-special" class="sf-special-fill"></div></div>
+            </div>
+            <div class="sf-bar-wrap foe">
+              <span id="fight-them">FOE</span>
+              <div class="sf-bar-track"><div id="fight-them-bar" class="sf-bar-fill foe"></div></div>
+            </div>
+          </div>
+          <div class="sf-stage" aria-hidden="true">
+            <div class="sf-fighter you" id="sf-you">
+              <div class="sf-head"></div>
+              <div class="sf-body">
+                <div class="sf-arm l"></div>
+                <div class="sf-torso"></div>
+                <div class="sf-arm r"></div>
+              </div>
+              <div class="sf-legs"><div class="sf-leg"></div><div class="sf-leg"></div></div>
+            </div>
+            <div class="sf-spark" id="sf-spark">✦</div>
+            <div class="sf-fighter foe" id="sf-foe">
+              <div class="sf-head"></div>
+              <div class="sf-body">
+                <div class="sf-arm l"></div>
+                <div class="sf-torso"></div>
+                <div class="sf-arm r"></div>
+              </div>
+              <div class="sf-legs"><div class="sf-leg"></div><div class="sf-leg"></div></div>
+            </div>
+          </div>
+          <div class="gate-shell fight-shell">
+            <div class="gate-kicker">METEOR MATH · TOPIC 3 SETUP</div>
+            <h2 id="fight-title">Holo-Thug Challenge</h2>
+            <p id="fight-prompt"></p>
+            <div id="fight-houses" class="place-houses-inline"></div>
+            <div id="fight-steps" class="t3-step-host"></div>
+            <div id="fight-answers" class="row-btns"></div>
+            <p class="fight-hint">Correct = PUNCH. Wrong = HITSTUN. Special meter = KICK. Kid-safe holograms!</p>
+          </div>
+        </div>
+      </div>
     </div>
+
+      <div id="grand-prix" hidden>
+        <div class="gp-shell cool-card">
+          <div class="gp-top">
+            <div class="gp-brand">GRAND PRIX</div>
+            <div class="gp-stats">
+              <b id="gp-place">1ST</b>
+              <span id="gp-pct">0%</span>
+              <span id="gp-juice" class="gp-juice">COAST</span>
+            </div>
+          </div>
+          <div id="gp-track" class="gp-track"></div>
+          <div class="gate-kicker" id="gp-kicker">GRAND PRIX · TOPIC 3</div>
+          <h2 id="gp-title">LAP MATH</h2>
+          <p id="gp-prompt"></p>
+          <div id="gp-houses" class="place-houses"></div>
+          <pre id="gp-notepad" hidden></pre>
+          <div id="gp-steps" class="t3-step-host"></div>
+          <div id="gp-answers" class="row-btns"></div>
+          <p class="gp-hint">Correct = BOOST ahead · Wrong = STALL · Partial-product houses</p>
+        </div>
+      </div>
+
+
+      <div id="blaster-range" hidden>
+        <div class="venue-shell blaster-shell cool-card">
+          <div class="venue-top">
+            <div class="venue-brand blaster-brand">BLASTER RANGE</div>
+            <div class="venue-stats">
+              <b id="blaster-score">0</b>
+              <span id="blaster-hits">0 HITS</span>
+              <span id="blaster-streak" class="venue-juice">READY</span>
+            </div>
+          </div>
+          <div id="blaster-targets" class="blaster-targets" aria-hidden="true">
+            <i data-t="0"></i><i data-t="1"></i><i data-t="2"></i><i data-t="3"></i><i data-t="4"></i>
+          </div>
+          <div id="blaster-beam" class="blaster-beam" hidden></div>
+          <div class="gate-kicker" id="blaster-kicker">BLASTER RANGE · TOPIC 3 SETUP</div>
+          <h2 id="blaster-title">LOCK · FIRE</h2>
+          <p id="blaster-prompt"></p>
+          <div id="blaster-houses" class="place-houses"></div>
+          <pre id="blaster-notepad" hidden></pre>
+          <div id="blaster-steps" class="t3-step-host"></div>
+          <div id="blaster-answers" class="row-btns"></div>
+          <p class="venue-hint">Kid-safe holo targets · Correct SETUP = FIRE · Wrong = MISS</p>
+          <button type="button" id="blaster-exit" class="ghost">EXIT RANGE</button>
+        </div>
+      </div>
+
+      <div id="arcade-casino" hidden>
+        <div class="venue-shell casino-shell cool-card">
+          <div class="venue-top">
+            <div class="venue-brand casino-brand">ARCADE CASINO</div>
+            <div class="venue-stats">
+              <b id="casino-chips">50 CHIPS</b>
+              <span id="casino-table">LUCKY</span>
+              <span id="casino-streak" class="venue-juice">COLD</span>
+            </div>
+          </div>
+          <div class="casino-neon" aria-hidden="true">★ CHIPS ONLY · NO REAL BETS ★</div>
+          <div class="gate-kicker" id="casino-kicker">ARCADE CASINO · TOPIC 3</div>
+          <h2 id="casino-title">CHIP CHALLENGE</h2>
+          <p id="casino-prompt"></p>
+          <div id="casino-houses" class="place-houses"></div>
+          <pre id="casino-notepad" hidden></pre>
+          <div id="casino-steps" class="t3-step-host"></div>
+          <div id="casino-answers" class="row-btns"></div>
+          <p class="venue-hint">Solve Topic 3 houses → win chips → cash out. Bold Coolmath juice!</p>
+          <div class="row-btns casino-exit-row">
+            <button type="button" id="casino-cashout" class="cta-yellow">CASH OUT CHIPS</button>
+            <button type="button" id="casino-exit" class="ghost">EXIT CASINO</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="wanted-math" hidden>
+        <div class="gate-shell cool-card wanted-shell math-stage">
+          <header class="math-stage-top">
+            <div class="math-stage-brand">
+              <div class="gate-kicker">WANTED CLEAR · TOPIC 3</div>
+              <p class="math-stage-reward">NAIL IT → DROP A ★</p>
+            </div>
+            <h2>TALK DOWN THE COPS</h2>
+            <p id="wanted-math-prompt"></p>
+          </header>
+          <div class="math-stage-board">
+            <div id="wanted-math-houses" class="place-houses"></div>
+            <div id="wanted-steps" class="t3-step-host"></div>
+          </div>
+          <div class="math-stage-dock">
+            <div id="wanted-math-answers" class="math-arcade-answers"></div>
+            <p class="fight-hint">Correct setup drops heat. Wrong adds a star — try the houses again.</p>
+          </div>
+        </div>
+      </div>
+
+    <div id="practice-portal" hidden aria-hidden="true"></div>
+    <div id="school-hub" class="school-hub" hidden></div>
+    <div id="homework-theater" class="homework-theater" hidden></div>
+    <div id="school-cash-toast" class="school-cash-toast" hidden></div>
     <div id="boot">
       <div class="boot-mark">SC</div>
       <p>LOADING THE GRID</p>
     </div>
-    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
