@@ -213,6 +213,23 @@ body.hub-screen #hud {
   font: 700 15px/1.35 Rajdhani, sans-serif;
 }
 
+.t3-prompt-ask {
+  display: block;
+  margin-bottom: 8px;
+}
+
+#gate-prompt .t3-kid,
+#boss-prompt .t3-kid,
+#wanted-math-prompt .t3-kid,
+#fight-prompt .t3-kid,
+#gp-prompt .t3-kid,
+#blaster-prompt .t3-kid,
+#casino-prompt .t3-kid,
+#coach-body .t3-kid {
+  display: block;
+  margin: 8px 0 0;
+}
+
 .t3-ster-strip {
   margin: 0 0 14px;
   padding: 12px 14px;

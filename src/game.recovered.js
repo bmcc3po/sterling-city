@@ -30732,12 +30732,12 @@ const xa = [{
     id: "n1",
     title: "① SETUP",
     body: "Split the top number into place-value houses: hundreds / tens / ones. Multiply hundreds × bottom first.",
-    tip: "Ones under ones.",
+    tip: "If a house makes 10 or more, rename into the next house.",
     next: ["n2"]
   }, {
     id: "n2",
     title: "② ONES × ONES",
-    body: "Multiply the ones digit first. If the product is 10 or more, WRITE the ones digit and CARRY the tens.",
+    body: "Multiply the ones digit first. If a house makes 10 or more, rename into the next house.",
     tip: "8 × 3 = 24 → write 4, carry 2.",
     next: ["n3"]
   }, {
@@ -30809,7 +30809,7 @@ const xa = [{
   nodes: [{
     id: "n1",
     title: "① SETUP",
-    body: "Stack 3-digit × 2-digit. Circle the ones digit of the bottom number, then the tens digit.",
+    body: "Split the top number into place-value houses: hundreds / tens / ones. Multiply hundreds × bottom first, then tens, then ones.",
     next: ["n2"]
   }, {
     id: "n2",
@@ -30826,13 +30826,13 @@ const xa = [{
   }, {
     id: "n4",
     title: "④ ADD",
-    body: "Add both partial products carefully.",
+    body: "Stack the three answers and add. Add both partial products carefully.",
     tip: "492 + 2460 = 2952.",
     next: ["n5"]
   }, {
     id: "n5",
     title: "⑤ CHECK",
-    body: "Estimate 250 × 12 = 3000. Is 2952 close? Yes. Or add houses 200×12 + 40×12 + 6×12.",
+    body: "Check: estimate (200×12≈2400, or 250 × 12 = 3000) — is your answer close? Or add houses 200×12 + 40×12 + 6×12.",
     tip: "Wrong add = most common miss. Re-add once."
   }]
 }];
@@ -30949,17 +30949,23 @@ function nv(i, t) {
 }
 function hs() {
   const i = [{
-    t: "① MULTIPLY ONES",
-    d: "× ones digit · write · CARRY leftovers"
+    t: "① SPLIT HOUSES",
+    d: "hundreds / tens / ones"
   }, {
-    t: "② MULTIPLY TENS",
-    d: "Write trailing 0 · × tens digit · shift left"
+    t: "② HUNDREDS × BOTTOM",
+    d: "e.g. 100 × 13 first"
   }, {
-    t: "③ ADD PARTIALS",
-    d: "Ones line + tens line · line up places"
+    t: "③ TENS × BOTTOM",
+    d: "don't drop the zero — 10 × 13 = 130, not 13"
   }, {
-    t: "④ CHECK WORK",
-    d: "Estimate nearby? Re-add if wild"
+    t: "④ ONES × BOTTOM",
+    d: "e.g. 8 × 13"
+  }, {
+    t: "⑤ STACK AND ADD",
+    d: "add the three partial products"
+  }, {
+    t: "⑥ CHECK ESTIMATE",
+    d: "100×13≈1300 — close?"
   }];
   return `<div class="t3-flow-chart" role="list">${i.map((t, e) => `<div class="t3-flow-box" role="listitem"><b>${t.t}</b><span>${t.d}</span></div>${e < i.length - 1 ? "<div class=\"t3-flow-arrow\" aria-hidden=\"true\">▼</div>" : ""}`).join("")}</div>`;
 }
@@ -31627,17 +31633,18 @@ const mv = {
     cards: [{
       id: "t3c1",
       title: "Partial products — place value",
-      body: "Break 118 into houses: 100 / 10 / 8. Multiply hundreds × 13 first, then tens, then ones. Add. Check with an estimate.",
-      tip: "118 × 13 = 118 × 10 + 118 × 3"
+      body: "Split the top number into place-value houses: hundreds / tens / ones. Multiply hundreds × bottom first (100 × 13), then tens (don't drop the zero — 10 × 13 = 130, not 13), then ones (8 × 13).",
+      tip: "If a house makes 10 or more, rename into the next house."
     }, {
       id: "t3c2",
       title: "118 × 13 step-by-step",
-      body: "118 × 10 = 1,180. 118 × 3 = 354. Add: 1,180 + 354 = 1,534.",
-      tip: "Area model: four (or two) rectangles, then sum."
+      body: "Start with the hundreds house: what is 100 × 13? Then tens (10×13), then ones (8×13). Stack the three answers and add: 1,300 + 130 + 104 = 1,534.",
+      tip: "Don't drop the zero when you multiply tens."
     }, {
       id: "t3c3",
       title: "Check with estimate",
-      body: "120 × 13 = 1,560. Your exact answer should be near 1,560 — 1,534 checks out."
+      body: "Check: estimate (100×13≈1300) — is your answer close? 1,534 is near 1,300 (and 120×13=1,560).",
+      tip: "Stack the three answers and add, then check the estimate."
     }],
     questions: [{
       id: "t3q1",
@@ -32459,6 +32466,7 @@ class Mv {
           <button type="button" class="pp-close" data-pp="close" aria-label="Close">✕</button>
         </div>
       </header>
+      ${sterStripHtml()}
       <div class="pp-grid">${ro.map(e => {
       const n = te.getTopicPractice(e.id);
       const s = this.localProgress[e.id];
@@ -32491,11 +32499,11 @@ class Mv {
         </div>
         <button type="button" class="pp-close" data-pp="close">✕</button>
       </header>
+      ${n ? sterStripHtml() : ""}
       ${n ? `<div class="pp-concept-hero">
         <div class="pp-kicker">TOPIC 3 · CONCEPT PORTAL</div>
         <h2>Dummy-proof multiply STEPS</h2>
-        <p>1) Split the top number into houses · 2) Multiply hundreds × bottom first · 3) Tens (don't drop the zero) · 4) Ones · 5) Stack and add · 6) Check with an estimate.</p>
-        <p class="pp-tip">Stuck on 118×13? Start with the hundreds house: what is 100 × 13? Then tens (10×13), then ones (8×13). Add them.</p>
+        <p class="pp-tip">Stuck on 118×13? ${sterKid(118, 13).stuck}</p>
         <div class="pp-actions-row">
           <button type="button" class="pp-primary" data-pp="concept">📐 Flowchart lessons</button>
           <button type="button" class="pp-primary" data-pp="worked">✨ Worked 118×13</button>
@@ -32522,18 +32530,7 @@ class Mv {
         </div>
         <button type="button" class="pp-close" data-pp="close">✕</button>
       </header>
-      <div class="t3-ster-strip">
-        <b>Kid path (every problem):</b>
-        <ol>
-          <li>Split the top number into place-value houses: hundreds / tens / ones</li>
-          <li>Multiply hundreds × bottom number first</li>
-          <li>Multiply tens × bottom — don't drop the zero</li>
-          <li>Multiply ones × bottom</li>
-          <li>Stack the three answers and add</li>
-          <li>Check: estimate — is your answer close?</li>
-        </ol>
-        <p>Stuck on 118×13? Start with the hundreds house: what is 100 × 13? Then tens (10×13), then ones (8×13). Add them. If a house makes 10 or more, rename into the next house.</p>
-      </div>
+      ${sterStripHtml()}
       <div class="pp-actions-row">
         ${xa.map((e, n) => `<button type="button" class="pp-ghost${n === this.conceptLessonIdx ? " on" : ""}" data-pp="concept-lesson" data-i="${n}">${we(String(e.id).toUpperCase())}</button>`).join("")}
         <button type="button" class="pp-primary" data-pp="worked">118×13 worked</button>
@@ -32553,6 +32550,7 @@ class Mv {
         </div>
         <button type="button" class="pp-close" data-pp="close">✕</button>
       </header>
+      ${sterStripHtml()}
       <div class="pp-actions-row">
         ${[1, 2, 3, 4, 5].map(t => `<button type="button" class="pp-ghost${this.workedStep === t ? " on" : ""}" data-pp="worked-step" data-i="${t}">Step ${t}</button>`).join("")}
         <button type="button" class="pp-primary" data-pp="guided">Try guided →</button>
@@ -32571,6 +32569,7 @@ class Mv {
           </div>
           <button type="button" class="pp-close" data-pp="close">✕</button>
         </header>
+        ${sterStripHtml()}
         <p class="pp-tip">💡 Same scaffold fires in vault, bag load, GP, fight, blaster, casino, quizzes.</p>
         <div class="pp-actions-row">
           <button type="button" class="pp-primary" data-pp="guided">Run again</button>
@@ -32588,10 +32587,12 @@ class Mv {
         </div>
         <button type="button" class="pp-close" data-pp="close">✕</button>
       </header>
+      ${sterStripHtml()}
       <div class="pp-flow-wrap">${hs()}</div>
       <div class="pp-guided">
         <div class="pp-guided-step">${we(t.stepLabel)}</div>
         <p class="pp-prompt">${we(t.prompt)}</p>
+        ${kidVoiceHtml(t.prompt, { a: 118, b: 13 })}
         ${this.guidedFeedback ? `<p class="pp-tip">${we(this.guidedFeedback)}</p>` : `<p class="pp-muted">💡 ${we(t.hint)}</p>`}
         <div class="pp-ans">${t.choices.map(e => `<button type="button" data-pp="guided-ans" data-ans="${we(e)}">${we(e)}</button>`).join("")}</div>
       </div>
@@ -32610,11 +32611,12 @@ class Mv {
           <h1>Flashcards · ${this.cardIdx + 1}/${t.cards.length}</h1>
           <p class="pp-sub">Seen ${this.flashSeen.size} · bank $${this.flashSeen.size * 75}</p>
         </div>
-        <button type="button" class="pp-close" data-pp="close">✕</button>
+          <button type="button" class="pp-close" data-pp="close">✕</button>
       </header>
+      ${this.topicId === "t3" ? sterStripHtml() : ""}
       <button type="button" class="pp-flash-card ${this.cardFlipped ? "flipped" : ""}" data-pp="flip">
         <div class="pp-flash-front"><h2>${we(e.title)}</h2><p>Tap to flip</p></div>
-        <div class="pp-flash-back"><p>${we(e.body)}</p>${e.tip ? `<p class="pp-tip">💡 ${we(e.tip)}</p>` : ""}</div>
+        <div class="pp-flash-back"><p>${we(e.body)}</p>${e.tip ? `<p class="pp-tip">💡 ${we(e.tip)}</p>` : ""}${this.topicId === "t3" ? kidVoiceHtml(e.body) : ""}</div>
       </button>
       <div class="pp-actions-row">
         <button type="button" data-pp="card-prev" ${this.cardIdx === 0 ? "disabled" : ""}>Prev</button>
@@ -35494,19 +35496,37 @@ function sterKid(i, t) {
   const s = i % 10;
   const o = i === 118 && t === 13 ? "Start with the hundreds house: what is 100 × 13? Then tens (10×13), then ones (8×13). Add them." : `Start with the hundreds house: what is ${e} × ${t}? Then tens (${n}×${t}), then ones (${s}×${t}). Add them.`;
   return {
-    split: `Split ${i} into houses: hundreds ${e} / tens ${n} / ones ${s}.`,
-    hundreds: `Multiply hundreds × ${t} first (${e} × ${t}).`,
-    tens: `Don't drop the zero when you multiply tens (${n} × ${t}).`,
-    ones: `Multiply ones × ${t} (${s} × ${t}).`,
+    split: `Split the top number into place-value houses: hundreds ${e} / tens ${n} / ones ${s}.`,
+    hundreds: `Multiply hundreds × bottom number first (${e} × ${t}).`,
+    tens: n >= 10 ? `Don't drop the zero when you multiply tens (${n} × ${t} = ${n * t}, not ${n / 10 * t}).` : `Don't drop the zero when you multiply tens.`,
+    ones: `Multiply ones × bottom (${s} × ${t}).`,
     add: "Stack the three answers and add.",
-    check: "Check: estimate — is your answer close?",
+    check: `Check: estimate (${e}×${t}≈${e * t}) — is your answer close?`,
     carry: "If a house makes 10 or more, rename into the next house.",
     stuck: o,
     line: o
   };
 }
+function sterFactors(t) {
+  if (!t) {
+    return null;
+  }
+  if (t.factors?.a != null && t.factors?.b != null) {
+    return t.factors;
+  }
+  if (t.a != null && t.b != null) {
+    return {
+      a: t.a,
+      b: t.b
+    };
+  }
+  return bv(t.prompt || t.body || "");
+}
 function kidVoiceHtml(prompt, factors) {
-  const f = factors || bv(prompt || "");
+  const f = typeof factors === "object" && factors?.a != null ? factors : sterFactors({
+    prompt,
+    factors
+  });
   if (!f) {
     return "";
   }
@@ -35516,14 +35536,39 @@ function kidPromptText(t) {
   if (!t) {
     return "";
   }
-  const f = t.factors || (t.a != null && t.b != null ? {
-    a: t.a,
-    b: t.b
-  } : bv(t.prompt || ""));
+  const f = sterFactors(t);
   if (!f) {
     return t.prompt;
   }
   return `${t.prompt}  ·  ${sterKid(f.a, f.b).line}`;
+}
+function fillKidPromptEl(el, problem) {
+  if (!el) {
+    return;
+  }
+  const prompt = problem?.prompt || "";
+  const f = sterFactors(problem);
+  if (!f) {
+    el.textContent = prompt;
+    return;
+  }
+  el.innerHTML = `<span class="t3-prompt-ask">${we(prompt)}</span>${kidVoiceHtml(prompt, f)}`;
+}
+function sterStripHtml() {
+  const k = sterKid(118, 13);
+  return `<div class="t3-ster-strip">
+    <b>Kid path (every problem):</b>
+    <ol>
+      <li>Split the top number into place-value houses: hundreds / tens / ones</li>
+      <li>Multiply hundreds × bottom number first (e.g. 100 × 13)</li>
+      <li>Multiply tens × bottom (watch the zero — 10 × 13 = 130, not 13)</li>
+      <li>Multiply ones × bottom</li>
+      <li>Add the three partial products</li>
+      <li>Check: estimate (100×13≈1300) — is your answer close?</li>
+    </ol>
+    <p>${k.stuck}</p>
+    <p>${k.carry} ${k.tens} ${k.add}</p>
+  </div>`;
 }
 class Kv {
   stuckT = 0;
@@ -37164,7 +37209,7 @@ class Kv {
     e.style.pointerEvents = "auto";
     document.getElementById("gate-kicker").textContent = t.kicker;
     document.getElementById("gate-title").textContent = t.title;
-    document.getElementById("gate-prompt").textContent = kidPromptText(t);
+    fillKidPromptEl(document.getElementById("gate-prompt"), t);
     const reward = document.getElementById("gate-reward");
     if (reward) {
       const pay = t.cash ? `+$${Number(t.cash).toLocaleString()}` : "CASH + STREAK";
@@ -37469,7 +37514,7 @@ class Kv {
   nextBoss() {
     const t = hv(this.level);
     this.problem = t;
-    document.getElementById("boss-prompt").textContent = kidPromptText(t);
+    fillKidPromptEl(document.getElementById("boss-prompt"), t);
     const e = document.querySelector("#boss .boss-hud");
     const n = document.getElementById("boss-steps") || hi(e, "boss-steps");
     ci(n, t);
@@ -37508,7 +37553,12 @@ class Kv {
     this.coachTimer = 2.8;
     const e = document.getElementById("coach");
     e.hidden = false;
-    document.getElementById("coach-body").textContent = t;
+    fillKidPromptEl(document.getElementById("coach-body"), {
+      prompt: t,
+      a: this.problem?.a,
+      b: this.problem?.b,
+      factors: this.problem?.factors
+    });
     this.spawnCoaches();
   }
   spawnCoaches() {
@@ -38480,7 +38530,8 @@ class Kv {
       <div class="arcade-meter"><span>COMBO x${this.memCombo}</span><b>BEST ${this.memBestCombo}</b></div>
       <div class="arcade-meter"><span>${s}/${n} PAIRS</span><b>${o}s</b></div>
       <div class="mem-timer"><i id="mem-timer-bar" style="width:${Math.max(0, (this.memEndsAt - performance.now()) / 45000 * 100)}%"></i></div>
-    </div>`;
+    </div>
+    ${kidVoiceHtml("118 × 13")}`;
     e.className = "mem-arcade-grid";
     e.innerHTML = this.memTiles.map(a => {
       const r = this.memFlipped.includes(a.id) || this.memMatched.has(a.id);
@@ -38560,6 +38611,7 @@ class Kv {
         <h4>${s.title}</h4>
         <p>${o ? s.body : "TAP / SWIPE TO PUNCH-FLIP"}</p>
         ${o && s.tip ? `<p class="sh-tip">💡 ${s.tip}</p>` : ""}
+        ${o ? kidVoiceHtml(s.body) : ""}
       </button>
     </div>`;
     n.className = "row-btns";
@@ -38597,7 +38649,7 @@ class Kv {
     document.getElementById("interior-actions").innerHTML = "<button type=\"button\" data-igame=\"memory\">Memory Match</button>";
   }
   renderInteriorSpeed() {
-    const t = te.getTopicPractice("t2") || te.getTopicPractice("t1");
+    const t = te.getTopicPractice("t3") || te.getTopicPractice("t2") || te.getTopicPractice("t1");
     const e = document.getElementById("interior-actions");
     const n = document.getElementById("interior-body");
     if (!t) {
@@ -38623,12 +38675,13 @@ class Kv {
       <div class="arcade-hud"><span>Q ${this.speedQ + 1}/${t.questions.length}</span><span class="streak">STREAK x${this.speedStreak}</span><span>${this.speedOk} HIT</span></div>
       <div class="mem-timer hurry"><i style="width:${o / 12000 * 100}%"></i></div>
       <p class="speed-prompt">${s.prompt}</p>
+      ${kidVoiceHtml(s.prompt, s.factors)}
     </div>`;
     e.className = "speed-ans-grid";
     e.innerHTML = s.answers.map(a => `<button type="button" class="speed-ans" data-spd="${a}">${a}</button>`).join("");
   }
   interiorSpeedAns(t) {
-    const e = te.getTopicPractice("t2") || te.getTopicPractice("t1");
+    const e = te.getTopicPractice("t3") || te.getTopicPractice("t2") || te.getTopicPractice("t1");
     if (!e) {
       return;
     }
@@ -38768,7 +38821,7 @@ class Kv {
       return;
     }
     document.getElementById("fight-title").textContent = t.title;
-    document.getElementById("fight-prompt").textContent = t.problem.prompt;
+    fillKidPromptEl(document.getElementById("fight-prompt"), t.problem);
     const e = document.getElementById("fight-houses");
     if (e) {
       if (t.problem.houses) {
@@ -39103,7 +39156,7 @@ class Kv {
     this.mode = "gate";
     document.body.classList.add("math-stage-open");
     e.hidden = false;
-    document.getElementById("wanted-math-prompt").textContent = kidPromptText(t);
+    fillKidPromptEl(document.getElementById("wanted-math-prompt"), t);
     const n = document.getElementById("wanted-math-houses");
     if (n && t.houses && !t.steps) {
       n.hidden = false;
@@ -39193,7 +39246,7 @@ class Kv {
     }
     document.getElementById("gp-kicker").textContent = t.problem.kicker;
     document.getElementById("gp-title").textContent = t.problem.title;
-    document.getElementById("gp-prompt").textContent = t.problem.prompt;
+    fillKidPromptEl(document.getElementById("gp-prompt"), t.problem);
     const r = document.getElementById("gp-houses");
     if (t.problem.houses) {
       r.hidden = false;
@@ -39379,7 +39432,7 @@ class Kv {
     e.className = "venue-juice " + (t.flash === "hit" ? "hot" : t.flash === "miss" ? "cold" : "");
     document.getElementById("blaster-kicker").textContent = t.problem.kicker;
     document.getElementById("blaster-title").textContent = t.problem.title;
-    document.getElementById("blaster-prompt").textContent = t.problem.prompt;
+    fillKidPromptEl(document.getElementById("blaster-prompt"), t.problem);
     const n = document.getElementById("blaster-houses");
     if (t.problem.houses) {
       n.hidden = false;
@@ -39480,7 +39533,7 @@ class Kv {
     e.className = "venue-juice " + (t.flash === "win" ? "hot" : t.flash === "lose" ? "cold" : "");
     document.getElementById("casino-kicker").textContent = t.problem.kicker;
     document.getElementById("casino-title").textContent = t.problem.title;
-    document.getElementById("casino-prompt").textContent = t.problem.prompt;
+    fillKidPromptEl(document.getElementById("casino-prompt"), t.problem);
     const n = document.getElementById("casino-houses");
     if (t.problem.houses) {
       n.hidden = false;
