@@ -74,15 +74,24 @@
       <button id="interact" type="button" hidden>START MISSION</button>
 
       <div id="math-gate" hidden>
-        <div class="gate-shell">
-          <div class="gate-kicker" id="gate-kicker">COURIER LOCK</div>
-          <h2 id="gate-title">Exact change</h2>
-          <p id="gate-prompt"></p>
-          <div id="place-houses" hidden></div>
-          <div id="fall-lanes" hidden></div>
-          <pre id="notepad" hidden></pre>
-          <div id="gate-steps" class="t3-step-host"></div>
-          <div id="answers"></div>
+        <div class="gate-shell math-stage">
+          <header class="math-stage-top">
+            <div class="math-stage-brand">
+              <div class="gate-kicker" id="gate-kicker">COURIER LOCK</div>
+              <p class="math-stage-reward" id="gate-reward">HIT THE SHOT · CASH · MISSION ADVANCES</p>
+            </div>
+            <h2 id="gate-title">Exact change</h2>
+            <p id="gate-prompt"></p>
+          </header>
+          <div class="math-stage-board">
+            <div id="place-houses" hidden></div>
+            <div id="fall-lanes" hidden></div>
+            <pre id="notepad" hidden></pre>
+            <div id="gate-steps" class="t3-step-host"></div>
+          </div>
+          <div class="math-stage-dock">
+            <div id="answers" class="math-arcade-answers"></div>
+          </div>
         </div>
       </div>
 
@@ -283,14 +292,23 @@
       </div>
 
       <div id="wanted-math" hidden>
-        <div class="gate-shell cool-card wanted-shell">
-          <div class="gate-kicker">WANTED CLEAR · TOPIC 3</div>
-          <h2>TALK DOWN THE COPS</h2>
-          <p id="wanted-math-prompt"></p>
-          <div id="wanted-math-houses" class="place-houses"></div>
-          <div id="wanted-steps" class="t3-step-host"></div>
-          <div id="wanted-math-answers" class="row-btns"></div>
-          <p class="fight-hint">Nail the setup steps to drop a ★. Wrong adds heat.</p>
+        <div class="gate-shell cool-card wanted-shell math-stage">
+          <header class="math-stage-top">
+            <div class="math-stage-brand">
+              <div class="gate-kicker">WANTED CLEAR · TOPIC 3</div>
+              <p class="math-stage-reward">NAIL IT → DROP A ★</p>
+            </div>
+            <h2>TALK DOWN THE COPS</h2>
+            <p id="wanted-math-prompt"></p>
+          </header>
+          <div class="math-stage-board">
+            <div id="wanted-math-houses" class="place-houses"></div>
+            <div id="wanted-steps" class="t3-step-host"></div>
+          </div>
+          <div class="math-stage-dock">
+            <div id="wanted-math-answers" class="math-arcade-answers"></div>
+            <p class="fight-hint">Correct setup drops heat. Wrong adds a star — try the houses again.</p>
+          </div>
         </div>
       </div>
 

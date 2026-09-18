@@ -87,7 +87,7 @@ html.lite-gpu #boot.hide {
     height: 32px;
   }
 
-  .gate-shell,
+  .gate-shell:not(.math-stage),
   .coach-flash,
   .boss-hud,
   .gp-shell,
@@ -99,6 +99,12 @@ html.lite-gpu #boot.hide {
     -webkit-backdrop-filter: none !important;
     background: #0e1628 !important;
     max-height: min(70dvh, 560px);
+  }
+
+  #math-gate .math-stage,
+  #wanted-math .wanted-shell {
+    max-height: none !important;
+    height: 100%;
   }
 
   #title-card {

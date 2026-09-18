@@ -35865,6 +35865,7 @@ class Kv {
       }
       if (t === "gate") {
         document.getElementById("math-gate").hidden = true;
+        document.body.classList.remove("math-stage-open");
         const e = document.getElementById("wanted-math");
         if (e) {
           e.hidden = true;
@@ -36735,15 +36736,28 @@ class Kv {
     this.problem = t;
     this.mode = "gate";
     this.player.vel.set(0, 0, 0);
+    document.body.classList.add("math-stage-open");
     const e = document.getElementById("math-gate");
     e.hidden = false;
+    e.removeAttribute("hidden");
+    e.style.display = "";
+    e.style.pointerEvents = "auto";
     document.getElementById("gate-kicker").textContent = t.kicker;
     document.getElementById("gate-title").textContent = t.title;
     document.getElementById("gate-prompt").textContent = t.prompt;
+    const reward = document.getElementById("gate-reward");
+    if (reward) {
+      const pay = t.cash ? `+$${Number(t.cash).toLocaleString()}` : "CASH + STREAK";
+      reward.textContent = `HIT THE SHOT · ${pay} · MISSION ADVANCES`;
+    }
     const n = document.getElementById("place-houses");
     const s = document.getElementById("fall-lanes");
     const o = document.getElementById("notepad");
-    if (t.houses) {
+    if (t.steps) {
+      n.hidden = true;
+      s.hidden = true;
+      o.hidden = true;
+    } else if (t.houses) {
       n.hidden = false;
       n.innerHTML = t.houses.map(c => `<div class="house"><small>${c.label}</small><b>${c.value}</b></div>`).join("");
       s.hidden = false;
@@ -36752,10 +36766,10 @@ class Kv {
       n.hidden = true;
       s.hidden = true;
     }
-    if (t.notepad) {
+    if (!t.steps && t.notepad) {
       o.hidden = false;
       o.textContent = t.notepad;
-    } else {
+    } else if (!t.steps) {
       o.hidden = true;
     }
     const a = document.querySelector("#math-gate .gate-shell");
@@ -36771,6 +36785,7 @@ class Kv {
     if (this.heist && (this.problem.kind === "vault" || this.mission === "vault")) {
       const o = this.problem.cash ?? 0;
       document.getElementById("math-gate").hidden = true;
+      document.body.classList.remove("math-stage-open");
       if (e) {
         this.sfx.blip?.(true);
         this.cash += o;
@@ -36789,6 +36804,7 @@ class Kv {
     const n = this.problem.kind;
     const s = this.problem.cash ?? 0;
     document.getElementById("math-gate").hidden = true;
+    document.body.classList.remove("math-stage-open");
     if (e) {
       this.sfx.blip(true);
       this.streak += 1;
@@ -38650,10 +38666,11 @@ class Kv {
       return;
     }
     this.mode = "gate";
+    document.body.classList.add("math-stage-open");
     e.hidden = false;
     document.getElementById("wanted-math-prompt").textContent = t.prompt;
     const n = document.getElementById("wanted-math-houses");
-    if (n && t.houses) {
+    if (n && t.houses && !t.steps) {
       n.hidden = false;
       n.innerHTML = t.houses.map(s => `<div class="house"><small>${s.label}</small><b>${s.value}</b></div>`).join("");
     } else if (n) {
@@ -38678,6 +38695,7 @@ class Kv {
       n.hidden = true;
     }
     document.getElementById("math-gate").hidden = true;
+    document.body.classList.remove("math-stage-open");
     if (e) {
       this.sfx.blip(true);
       const s = this.wanted;
