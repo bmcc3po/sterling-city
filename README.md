@@ -1,18 +1,18 @@
 # STERLING CITY
 
-Kid-safe night-city driving game: GTA energy, 5th-grade math as every mission lock.
+School Hub + Topic 3 Grand Prix first. The open-world city is a later reward, not the product.
 
-Sterling (age ~10–11) owns the gold GT. Missions are courier drops, vault cracks, getaway races, and garage upgrades. Wrong math raises **wanted stars** and sends **Coach** cruisers — no guns, no blood, no stealing cars.
+Sterling (age ~10–11) lands on a **bright full-screen School Hub** — not a dark popup over the city. The loop he should want to open is **Topic 3 Grand Prix**: Savvas kid-voice partial products (houses hundreds/tens/ones → × bottom → add → estimate). Correct steps boost. Wrong answers stall. The step board stays on screen. Kid-safe — no gore.
 
 ## Play
 
-Open the deployed URL on an iPhone (or desktop). First screen is the city, not a menu.
+Live: **https://sterling.claimreach.com**
 
-- **Phone:** left joystick steer, GAS / BRAKE
-- **Desktop:** WASD or arrows, Space to drift
-- Gold blip on the radar is always the next mission
-- Math gates: exact change / line-up-the-dots decimals (Topics 1–2) and place-value multiply (Topic 3)
-- Correct answers pay cash and punch the camera; wrong answers flash Coach for under 3 seconds, then you are back in the world
+1. School Hub opens first (Game Hall).
+2. **Play Grand Prix** — 118 × 13 is the first gate.
+3. **Speed Houses** is playable on the hub screen itself.
+4. Missing Quick Checks stay **AT SCHOOL only** chips — not in-game quizzes.
+5. **Enter City** is a secondary stub.
 
 ## Local
 
@@ -23,18 +23,25 @@ npm run dev
 
 Dev server: `http://127.0.0.1:43180`
 
-Production (after a **separate** `sterling-city` Pages/Workers project is Git-connected or deployed): **https://sterling.claimreach.com**. Do not attach that hostname to the CRM Pages project `claimreach`. See `DEPLOY.md`.
-
-GitHub (Git-connect this, not `bmcc3po/claimreach`): `https://github.com/bmcc3po/sterling-city`
+## Deploy
 
 ```bash
-export CLOUDFLARE_API_TOKEN="…"   # account that owns claimreach.com
 npm run build
-npx wrangler deploy               # never --temporary
+npx wrangler pages deploy dist --project-name=sterling-city --branch=main --commit-dirty=true
 ```
 
-`dist/` is the static SPA. If Custom Domain does not attach, CNAME `sterling` → the printed `*.workers.dev` host (proxied).
+Host: `sterling.claimreach.com` · Pages project `sterling-city`. See `DEPLOY.md`.
 
-## Stack
+Do **not** attach that hostname to the CRM Pages project `claimreach`.
 
-Vite + TypeScript + Three.js (WebGL, bloom, wet-road reflector, chase camera, vehicle slip physics).
+## Pedagogy
+
+Topic 3 markers that must remain in the bundle:
+
+- `pp-drill-steps`
+- `ONES LINE`
+- `hundreds_house`
+- `askTarget`
+- `factors` `{ a: 118`
+
+STER WORK school-feed hooks load `/school/feed.json`, then `/school/feed.sample.json`, then the rich mock. Campus Parent AUTH_FAIL is a handoff to the STER WORK computer — not a login in this browser.

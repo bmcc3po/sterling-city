@@ -16,5 +16,6 @@ export default defineConfig({
     target: "es2022",
     sourcemap: false,
     assetsInlineLimit: 4096,
+    minify: "esbuild",
   },
 });

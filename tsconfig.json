@@ -14,5 +14,15 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": [
+    "src/main.ts",
+    "src/app.ts",
+    "src/hub.ts",
+    "src/grandPrix.ts",
+    "src/cityStub.ts",
+    "src/topic3.ts",
+    "src/schoolFeed.ts",
+    "src/juice.ts",
+    "src/vite-env.d.ts"
+  ]
 }

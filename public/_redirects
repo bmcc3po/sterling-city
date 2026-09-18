@@ -1,1 +1,3 @@
-/*    /index.html   200
+# Do not SPA-fallback /* → index.html.
+# That rule served HTML for missing /assets/*.js and broke the Worker + iOS Safari MIME.
+/  /index.html  200
