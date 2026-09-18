@@ -234,20 +234,20 @@ export class GrandPrix {
   private car(c: CanvasRenderingContext2D, x: number, y: number, color: string, you: boolean) {
     c.save();
     c.translate(x, y);
-    c.fillStyle = "#1a1a1a";
-    c.fillRect(-10, 6, 8, 6);
-    c.fillRect(14, 6, 8, 6);
+    c.fillStyle = "#111";
+    c.beginPath();
+    c.ellipse(-12, 10, 8, 8, 0, 0, Math.PI * 2);
+    c.ellipse(18, 10, 8, 8, 0, 0, Math.PI * 2);
+    c.fill();
     c.fillStyle = color;
     c.beginPath();
-    c.roundRect(-16, -8, 44, 16, 6);
+    c.roundRect(-22, -14, 58, 24, 8);
     c.fill();
     c.fillStyle = you ? "#fff6c8" : "#d9f0ff";
-    c.fillRect(-2, -5, 16, 8);
-    if (you) {
-      c.fillStyle = "#12203a";
-      c.font = "800 10px Nunito, sans-serif";
-      c.fillText("YOU", -8, -12);
-    }
+    c.fillRect(-4, -8, 22, 12);
+    c.fillStyle = you ? "#12203a" : "#0b1224";
+    c.font = "900 11px Nunito, sans-serif";
+    c.fillText(you ? "YOU" : "", -18, -18);
     c.restore();
   }
 
@@ -283,7 +283,7 @@ export class GrandPrix {
         <h2>${p.title}</h2>
         <p class="gp-prompt"><span class="t3-prompt-ask">${esc(p.prompt)}</span>${kidVoiceHtml(p.prompt, p.factors)}</p>
       </div>
-      ${htmlT3DrillStepBoard({ prompt: p.prompt, factors: p.factors, askTarget: p.askTarget })}
+      ${htmlT3DrillStepBoard({ prompt: p.prompt, factors: p.factors, askTarget: p.askTarget }, "race")}
     `;
   }
 

@@ -293,7 +293,10 @@ export function parseAskTarget(prompt: string): AskTarget {
   return "product";
 }
 
-export function htmlT3DrillStepBoard(t: { prompt: string; factors?: Factors; askTarget?: AskTarget }): string {
+export function htmlT3DrillStepBoard(
+  t: { prompt: string; factors?: Factors; askTarget?: AskTarget },
+  mode: "full" | "race" | "mini" = "full",
+): string {
   const e = t.factors ?? parseFactors(t.prompt);
   if (!e) return `<div class="pp-flow-wrap compact">${flowChartHtml()}</div>`;
   const n: AskTarget = t.askTarget ?? parseAskTarget(t.prompt);
@@ -302,9 +305,18 @@ export function htmlT3DrillStepBoard(t: { prompt: string; factors?: Factors; ask
       ? "blanks"
       : "guided";
   const o = buildBoard(e.a, e.b, s, n);
+  if (mode === "mini") {
+    const r = o.houses
+      .map((l) => `<div class="house${l.ask ? " ask" : ""}"><small>${l.label}</small><b>${l.value}</b></div>`)
+      .join("");
+    return `<div class="pp-drill-steps mini">
+      <p class="t3-kid">${sterKid(e.a, e.b).line}</p>
+      <div class="t3-houses place-houses">${r}</div>
+    </div>`;
+  }
   return `<div class="pp-drill-steps">
-      <div class="pp-flow-wrap compact">${flowChartHtml()}</div>
-      ${renderBoard(o, { compact: false })}
+      ${mode === "full" ? `<div class="pp-flow-wrap compact">${flowChartHtml()}</div>` : ""}
+      ${renderBoard(o, { compact: mode === "race" })}
     </div>`;
 }
 

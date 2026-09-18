@@ -246,9 +246,13 @@ button { cursor: pointer; }
 .gp-juice.boost { background: #ffe14a; color: #2a1400; }
 .gp-juice.stall { background: #fb7185; color: #2a1400; }
 .gp-canvas {
-  width: 100%; height: min(26vh, 220px); border-radius: 16px; border: 3px solid #ffe14a;
+  width: 100%; height: min(34vh, 280px); border-radius: 16px; border: 3px solid #ffe14a;
   background: #89d4ff; display: block;
 }
+.t3-board.compact .t3-step-detail,
+.t3-board.compact .t3-notepad { display: none; }
+.t3-board.compact .t3-step { grid-template-columns: 100px 1fr auto; }
+.pp-drill-steps.mini .t3-kid { font-size: 14px; }
 .gp-board {
   flex: 1; overflow: auto; background: #fff7e6; color: var(--ink);
   border-radius: 18px; padding: 10px 12px; border: 3px solid #12203a;
@@ -292,7 +296,10 @@ button { cursor: pointer; }
 
 @media (max-width: 820px), (pointer: coarse) {
   .hero-prix, .school-grid { grid-template-columns: 1fr; }
-  .hero-art { min-height: 120px; }
+  .hero-art { min-height: 110px; }
+  .hero-copy h1 { font-size: 48px; }
+  .sh-main { scroll-padding-top: 8px; }
+  .gp-canvas { height: min(28vh, 200px); }
   .t3-step { grid-template-columns: 1fr; }
   .t3-step-show { justify-self: start; }
   .sh-sub { font-size: 13px; }

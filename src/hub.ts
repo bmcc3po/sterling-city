@@ -279,7 +279,7 @@ export class SchoolHub {
         <div class="speed-meter"><i id="speed-bar"></i></div>
         <div class="speed-clock-row"><span id="speed-clock">20s</span><span class="streak">${this.speedStreak ? `STREAK x${this.speedStreak}` : "GO"}</span></div>
         <p class="speed-prompt"><span class="t3-prompt-ask">${esc(p.prompt)}</span>${kidVoiceHtml(p.prompt, p.factors)}</p>
-        ${htmlT3DrillStepBoard({ prompt: p.prompt, factors: p.factors, askTarget: p.askTarget })}
+        ${htmlT3DrillStepBoard({ prompt: p.prompt, factors: p.factors, askTarget: p.askTarget }, "mini")}
         <div class="speed-ans-grid">
           ${p.answers
             .map((a) => `<button type="button" data-hub="speed-ans" data-ans="${esc(a)}">${esc(a)}</button>`)
