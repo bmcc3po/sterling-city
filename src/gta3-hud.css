@@ -210,3 +210,14 @@ body.day-mode {
     transform: none;
   }
 }
+
+#exit-vehicle,
+#interact,
+#pedals button,
+#joystick {
+  pointer-events: auto !important;
+}
+
+#exit-vehicle {
+  z-index: 12 !important;
+}

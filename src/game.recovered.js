@@ -28310,7 +28310,7 @@ function zg(i) {
   r.repeat.set(28, 28);
   const l = new O(new Be(ye + 80, ye + 80), new me({
     map: r,
-    color: 1710618,
+    color: 10131900,
     roughness: 0.84,
     metalness: 0.22,
     emissive: 1736959,
@@ -33152,7 +33152,7 @@ function Iv() {
     i.add(f[_]);
   });
   t.position.y = 0.4;
-  t.scale.set(1.32, 1.36, 1);
+  t.scale.set(0.9, 0.86, 0.92);
   i.add(t);
   i.traverse(M => {
     if (M.isMesh) {
@@ -35845,8 +35845,8 @@ class Kv {
       this.blobShadow.position.y = 0.04;
       this.scene.add(this.blobShadow);
     }
-    this.camPos.set(this.player.pos.x, 2.2, this.player.pos.z - 6.4);
-    this.camLook.copy(this.player.pos).add(new R(0, 0.9, 8));
+    this.camPos.set(this.player.pos.x, 5.6, this.player.pos.z - 15.2);
+    this.camLook.copy(this.player.pos).add(new R(0, 1.15, 10));
     this.headL = this.makeHeadlight(0.55);
     this.headR = this.makeHeadlight(-0.55);
     s.group.add(this.headL, this.headR, this.headL.target, this.headR.target);
@@ -36983,16 +36983,16 @@ class Kv {
     const s = new R(Math.cos(this.player.yaw), 0, -Math.sin(this.player.yaw));
     const o = this.player.vel.length();
     const a = this.boostActive > 0 || this.getawayOn || this.nos > 0;
-    const idlePull = !this.onFoot && !a ? Ce.clamp((6.2 - o) / 6.2, 0, 1) : 0;
-    const r = this.onFoot ? 5.15 : 8.15 + idlePull * 1.35 + Math.min(1.6, o * 0.038) + (a ? 0.55 : 0);
-    const l = this.onFoot ? 2.18 : 2.62 + idlePull * 0.28 + Math.min(0.12, o * 0.003) - (a ? 0.22 : 0);
+    const idlePull = !this.onFoot && !a ? Ce.clamp((7.5 - o) / 7.5, 0, 1) : 0;
+    const r = this.onFoot ? 6.6 : 14.8 + idlePull * 2.4 + Math.min(2.2, o * 0.045) + (a ? 0.8 : 0);
+    const l = this.onFoot ? 2.55 : 5.35 + idlePull * 0.55 + Math.min(0.18, o * 0.004) - (a ? 0.15 : 0);
     const c = this.onFoot ? 0 : Ce.clamp(this.player.steerVis * (0.78 + o * 0.042), -2.35, 2.35);
     const d = this.player.pos.clone().addScaledVector(e, r).addScaledVector(s, c).add(new R(0, l, 0));
     this.keepCamOutOfWalls(d);
     this.ensureCamClearOfHull(d);
     const h = 1 - Math.exp(-(this.onFoot ? 16 : idlePull > 0.35 ? 9.2 : a ? 19.8 : o > 16 ? 22.4 : 15.5) * t);
     const distCam = Math.hypot(this.camPos.x - this.player.pos.x, this.camPos.z - this.player.pos.z);
-    if (!this.onFoot && distCam < 8.6) {
+    if (!this.onFoot && distCam < 12.5) {
       this.camPos.copy(d);
     } else {
       this.camPos.lerp(d, h);
@@ -37069,7 +37069,7 @@ class Kv {
     const px = this.player.pos.x;
     const pz = this.player.pos.z;
     const spd = this.player.vel.length();
-    const minDist = spd < 6 ? 8.6 : spd < 16 ? 8.1 : 7.6;
+    const minDist = spd < 6 ? 14.2 : spd < 16 ? 13.2 : 12.4;
     const dx = t.x - px;
     const dz = t.z - pz;
     const dist = Math.hypot(dx, dz) || 0.0001;
@@ -38144,7 +38144,7 @@ class Kv {
     }
     document.body.classList.toggle("light", !this.night);
     document.body.classList.toggle("day-mode", !this.night);
-    const dayBg = 2062516;
+    const dayBg = 8953512;
     const nightBg = 923176;
     if (this.scene.background && this.scene.background.setHex) {
       this.scene.background.setHex(this.night ? nightBg : dayBg);
@@ -38152,24 +38152,24 @@ class Kv {
       this.scene.background = new zt(this.night ? nightBg : dayBg);
     }
     if (this.scene.fog && this.scene.fog.color) {
-      this.scene.fog.color.setHex(this.night ? 1317936 : 3835568);
-      this.scene.fog.near = this.night ? 80 : 132;
-      this.scene.fog.far = this.night ? 340 : 405;
+      this.scene.fog.color.setHex(this.night ? 1317936 : 10401720);
+      this.scene.fog.near = this.night ? 80 : 70;
+      this.scene.fog.far = this.night ? 340 : 300;
     } else {
       this.scene.fog = new ms(this.night ? 1317936 : 3835568, this.night ? 80 : 132, this.night ? 340 : 405);
     }
     this.hemi.color.set(this.night ? 10135760 : 15787208);
     this.hemi.groundColor.set(this.night ? 3811392 : 2375202);
-    this.hemi.intensity = this.night ? 0.85 : (this._liteGpu ? 0.28 : 0.12);
+    this.hemi.intensity = this.night ? 0.85 : 1.05;
     if (this.ambient) {
-      this.ambient.color.set(this.night ? 6320288 : 16760976);
-      this.ambient.intensity = this.night ? 0.45 : (this._liteGpu ? 0.08 : 0.025);
+      this.ambient.color.set(this.night ? 6320288 : 13489908);
+      this.ambient.intensity = this.night ? 0.45 : 0.48;
     }
     this.moon.intensity = this.night ? 1.25 : 0.08;
     this.moon.castShadow = false;
-    this.sun.intensity = this.night ? 0.25 : (this._liteGpu ? 4.35 : 7.97);
-    this.sun.color.set(16771256);
-    this.renderer.toneMappingExposure = this.night ? 1.1 : (this._liteGpu ? 0.92 : 0.845);
+    this.sun.intensity = this.night ? 0.25 : (this._liteGpu ? 1.65 : 2.15);
+    this.sun.color.set(16772027);
+    this.renderer.toneMappingExposure = this.night ? 1.1 : 1.18;
     if (this._liteGpu) {
       this.bloom.strength = 0;
     } else {
