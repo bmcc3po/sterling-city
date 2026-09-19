@@ -173,20 +173,24 @@ export class SterlingCity {
 
     const palette = [0x1f4aa8, 0xb4233a, 0x1f8a62, 0x6a3d9a, 0xd8d4c8, 0x1c1c22, 0x8a6a1e];
     const trafficN = this.lite ? 14 : 22;
+    const lanes = this.city.lanes.length ? this.city.lanes : [];
     for (let i = 0; i < trafficN; i++) {
       const kit = createTrafficCar(palette[i % palette.length]!);
-      const along = i % 2 === 0;
-      const laneOff = i % 4 < 2 ? 3.1 : -3.1;
+      const lane = lanes[i % Math.max(1, lanes.length)];
+      const axis = lane?.axis ?? (i % 2 === 0 ? "z" : "x");
+      const dir = (lane?.dir ?? (i % 4 < 2 ? 1 : -1)) as 1 | -1;
+      const offset = axis === "z" ? (lane?.x ?? 3.1) : (lane?.z ?? 3.1);
+      const spread = ((i * 37) % 280) - 140;
       const t: SimCar = {
         kit,
-        pos: new THREE.Vector3(along ? (i - trafficN / 2) * 22 : laneOff, 0, along ? laneOff : (i - trafficN / 2) * 20),
+        pos: new THREE.Vector3(axis === "z" ? offset : spread, 0, axis === "z" ? spread : offset),
         vel: new THREE.Vector3(),
-        yaw: along ? 0 : Math.PI / 2,
+        yaw: axis === "z" ? (dir === 1 ? 0 : Math.PI) : dir === 1 ? Math.PI / 2 : -Math.PI / 2,
         steerVis: 0,
         pitch: 0,
         roll: 0,
         wheelRot: 0,
-        lane: { axis: along ? "z" : "x", dir: i % 4 < 2 ? 1 : -1, offset: laneOff },
+        lane: { axis, dir, offset },
       };
       this.traffic.push(t);
       this.scene.add(kit.group);

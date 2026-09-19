@@ -348,8 +348,44 @@ export function buildCity(renderer: THREE.WebGLRenderer, lite = isLiteGpu): City
   curb.position.set(0, 0.2, CITY_SPAN / 2 + 20);
   group.add(curb);
 
+  // Dress driving avenues: mesh-only props (no extra PointLights — those freeze phones).
+  const parkGeo = new THREE.BoxGeometry(1.55, 0.7, 3.4);
+  const parkMats = [0x1f4aa8, 0x8a1e2e, 0x2a2f3a, 0x6a5344, 0xd8d4c8].map(
+    (c) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.45, metalness: 0.35 }),
+  );
+  const hydrantMat = new THREE.MeshStandardMaterial({ color: 0xa33a28, roughness: 0.55 });
+  const hydGeo = new THREE.CylinderGeometry(0.14, 0.16, 0.55, 6);
+  const step = lite ? 36 : 24;
+  for (let i = 0; i < CELLS - 1; i++) {
+    const rx = roadX(i);
+    const rz = roadZ(i);
+    for (let s = -CITY_SPAN / 2 + 12; s < CITY_SPAN / 2; s += step) {
+      const lampX = new THREE.Mesh(postGeo, lampMat);
+      lampX.position.set(rx + ROAD / 2 - 1.4, 2.55, s);
+      const bulbX = new THREE.Mesh(bulbGeo, bulbMat);
+      bulbX.position.set(lampX.position.x, 5.1, s);
+      group.add(lampX, bulbX);
+      const parked = new THREE.Mesh(parkGeo, pick(rng, parkMats));
+      parked.position.set(rx + (Math.floor(s) % 48 > 24 ? 6.2 : -6.2), 0.4, s + 3);
+      parked.rotation.y = Math.floor(s) % 48 > 24 ? 0 : Math.PI;
+      group.add(parked);
+      if (i % 2 === 0) {
+        const lampZ = new THREE.Mesh(postGeo, lampMat);
+        lampZ.position.set(s, 2.55, rz + ROAD / 2 - 1.4);
+        const bulbZ = new THREE.Mesh(bulbGeo, bulbMat);
+        bulbZ.position.set(s, 5.1, lampZ.position.z);
+        group.add(lampZ, bulbZ);
+      }
+    }
+    if (!lite && i % 2 === 0) {
+      const hyd = new THREE.Mesh(hydGeo, hydrantMat);
+      hyd.position.set(rx + 6.8, 0.28, 8);
+      group.add(hyd);
+    }
+  }
+
   const spots: MissionSpot[] = [
-    { id: "courier", x: roadX(4), z: roadZ(2) + 6, label: "ONES LINE BOOTH" },
+    { id: "courier", x: roadX(4), z: roadZ(4) - 2, label: "ONES LINE BOOTH" },
     { id: "vault", ...offset(6, 4, 0, 10), label: "VAULT HOUSES" },
     { id: "getaway", x: roadX(1), z: roadZ(6), label: "NITRO GATE" },
     { id: "garage", ...offset(3, 1, 0, -9), label: "GARAGE LIFT" },
@@ -365,16 +401,6 @@ export function buildCity(renderer: THREE.WebGLRenderer, lite = isLiteGpu): City
     g.position.set(s.x, 0, s.z);
     group.add(g);
     gates.push(g);
-  }
-
-  // Parked-car stubs as curb blockers (visual only, not colliders)
-  const parkMat = new THREE.MeshStandardMaterial({ color: 0x2a2f3a, roughness: 0.45, metalness: 0.4 });
-  const parkGeo = new THREE.BoxGeometry(1.55, 0.7, 3.4);
-  for (let i = 0; i < CELLS - 1; i += lite ? 2 : 1) {
-    const { x, z } = blockCenter(i, (i * 3) % CELLS);
-    const car = new THREE.Mesh(parkGeo, parkMat);
-    car.position.set(x + BLOCK / 2 + 2.2, 0.4, z + 4);
-    group.add(car);
   }
 
   return {
