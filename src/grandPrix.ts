@@ -148,7 +148,7 @@ export class GrandPrix {
       }
       sfxCountdown();
       this.renderKeepCanvas();
-    }, 320);
+    }, 180);
   }
 
   private answer(guess: string) {
@@ -180,14 +180,15 @@ export class GrandPrix {
     }
     this.place = this.rank();
     this.renderKeepCanvas();
+    this.paintAnswer(guess, ok);
     if (you.progress >= 1 || this.step + 1 >= CHECKPOINTS) {
-      window.setTimeout(() => this.finish(ok), 280);
+      window.setTimeout(() => this.finish(ok), 140);
       return;
     }
     window.setTimeout(() => {
       this.juice = "coast";
       this.nextProblem();
-    }, 300);
+    }, 160);
   }
 
   private finish(lastOk: boolean) {
@@ -197,8 +198,10 @@ export class GrandPrix {
     this.won = this.place === 1 || (lastOk && this.you().progress >= 0.92);
     if (this.won) {
       sfxWin();
-      this.burst("#ffe14a", 48);
-      this.burst("#ffffff", 24);
+      this.burst("#ffe14a", 72);
+      this.burst("#ffffff", 36);
+      this.burst("#22c55e", 24);
+      this.burst("#fb7185", 18);
       this.hooks.onWin(900 + this.combo * 80);
     }
     this.renderKeepCanvas();
@@ -403,7 +406,23 @@ export class GrandPrix {
       if (this.finished) finish.innerHTML = this.finishHtml();
     }
     const combo = this.root.querySelector("#gp-combo");
-    if (combo) combo.textContent = this.combo ? `COMBO x${this.combo}` : this.phase === "start" ? "LIGHTS" : "GATE 1";
+    if (combo) combo.textContent = this.combo ? `COMBO x${this.combo}` : this.phase === "start" ? "LIGHTS" : `GATE ${this.step + 1}`;
+    this.paintCoolbar();
+  }
+
+  private paintAnswer(guess: string, ok: boolean) {
+    const buttons = this.root.querySelectorAll<HTMLButtonElement>("#gp-answers [data-gp='ans']");
+    buttons.forEach((b) => {
+      b.classList.toggle("hit", ok && sameAnswer(b.dataset.ans || "", guess));
+      b.classList.toggle("miss", !ok && sameAnswer(b.dataset.ans || "", guess));
+      if (ok && sameAnswer(b.dataset.ans || "", this.problem?.correct || "")) b.classList.add("hit");
+    });
+  }
+
+  private paintCoolbar() {
+    const bar = this.root.querySelector("#gp-coolbar");
+    if (!bar) return;
+    bar.innerHTML = this.coolbarHtml();
   }
 
   private startHtml() {
@@ -437,10 +456,21 @@ export class GrandPrix {
       <p class="gp-hint">Correct = BOOST ahead · Wrong = STALL · Partial-product houses stay on screen</p>`;
   }
 
+  private coolbarHtml() {
+    const gates = Array.from({ length: CHECKPOINTS }, (_, i) => {
+      const on = this.step > i || (this.finished && this.won);
+      const now = this.phase === "race" && this.step === i && !this.finished;
+      return `<i class="${on ? "done" : now ? "now" : ""}" title="Gate ${i + 1}"></i>`;
+    }).join("");
+    const juice = this.juice === "boost" ? "BOOST" : this.juice === "stall" ? "STALL" : this.phase === "start" ? "LIGHTS" : "COAST";
+    return `<div class="gp-coolbar-track">${gates}</div><b class="gp-coolbar-juice ${this.juice}">${juice}</b>`;
+  }
+
   private finishHtml() {
     const win = this.won;
+    const bits = Array.from({ length: 18 }, (_, i) => `<i class="bit bit-${i % 6}" style="left:${4 + i * 5.2}%"></i>`).join("");
     return `<div class="gp-finish-card pop-in ${win ? "win" : ""}">
-      <div class="gp-confetti" aria-hidden="true"></div>
+      <div class="gp-confetti" aria-hidden="true">${win ? bits : ""}</div>
       <div class="gp-kicker">${win ? "CHECKERED FLAG" : "FINISH LINE"}</div>
       <h2>${win ? "YOU WIN THE GRAND PRIX!" : `P${this.place} · RACE AGAIN`}</h2>
       <p>${win ? "Partial products pulled you into 1st. Bank the cash and run it back." : "Wrong answers stall. Hit the houses and take 1st next heat."}</p>
@@ -467,6 +497,7 @@ export class GrandPrix {
         </div>
         <button type="button" class="ghost compact" data-gp="exit">HUB</button>
       </header>
+      <div id="gp-coolbar" class="gp-coolbar">${this.coolbarHtml()}</div>
       <canvas id="gp-canvas" class="gp-canvas" aria-label="Race track"></canvas>
       <div id="gp-board" class="gp-board">${racing && p ? this.boardHtml(p) : ""}</div>
       <div id="gp-dock" class="gp-dock">${this.phase === "race" && p ? this.dockHtml(p) : ""}</div>
