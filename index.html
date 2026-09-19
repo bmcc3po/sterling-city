@@ -23,38 +23,38 @@
   </head>
   <body>
     <canvas id="gl"></canvas>
-    <div id="hud">
-      <div class="hud-top">
-        <div class="hud-left">
-          <div class="radar-wrap">
-            <canvas id="minimap" width="220" height="220"></canvas>
-            <div class="radar-label">N</div>
-          </div>
-          <div id="cash">$0</div>
-          <div id="stars" title="Missions cleared">★ 0 / 4</div>
-          <div id="damage"></div>
-        </div>
-        <div class="hud-center">
-          <div id="radio">FLASH FM · Day Drive</div>
-          <div id="mission-panel">NOW: COURIER DROP</div>
-          <div id="objective">MISSION: drive to COURIER DROP (gold blip) → answer math → get paid</div>
-          <div id="progress">Clear 4 missions to unlock the Championship Race · 0/4</div>
-        </div>
-        <div class="hud-right">
-          <div id="wanted" aria-label="wanted stars"><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span></div>
-          <div id="speed"><b>0</b><small>MPH</small></div>
-          <button id="theme" type="button" title="Toggle day / night">DAY</button>
-          <button id="mute" type="button" title="Mute music">♪ ON</button>
-          <button id="practice-btn" type="button" title="Learning / Practice Portal">PRACTICE</button>
-          <button id="school-btn" type="button" title="Open School Hub">SCHOOL</button>
-          <button id="shop-btn" type="button" title="Open garage shop">SHOP</button>
-        </div>
+    <div id="hud" class="gta-hud">
+      <div class="gta-tl">
+        <div id="mission-panel">NOW: COURIER DROP</div>
+        <div id="objective">DRIVE TO THE GOLD BLIP — COURIER DROP</div>
+        <div id="stars" title="Missions cleared">★ 0 / 4</div>
+        <div id="damage"></div>
       </div>
+      <div class="gta-tr">
+        <div id="cash">$0</div>
+        <div id="wanted" aria-label="wanted stars"><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span></div>
+        <div id="speed"><b>0</b><small>MPH</small></div>
+      </div>
+      <div class="radar-wrap gta-bl">
+        <canvas id="minimap" width="220" height="220"></canvas>
+        <div class="radar-label">N</div>
+      </div>
+      <button id="more-btn" type="button" title="Pause / more">☰</button>
+      <div id="pause-sheet" hidden>
+        <p>SIDE DOORS</p>
+        <button id="theme" type="button" title="Toggle day / night">DAY</button>
+        <button id="mute" type="button" title="Mute music">♪ ON</button>
+        <button id="practice-btn" type="button" title="Optional Learn">LEARN</button>
+        <button id="school-btn" type="button" title="Optional School Hub">SCHOOL</button>
+        <button id="shop-btn" type="button" title="Garage shop">SHOP</button>
+      </div>
+      <div id="radio" hidden>FLASH FM · Day Drive</div>
+      <div id="progress" hidden>Clear 4 missions · 0/4</div>
 
       <div id="title-card">
-        <p class="city-tag">COOLMATH ENERGY · KID-SAFE</p>
+        <p class="city-tag">OPEN WORLD · KID-SAFE</p>
         <h1>STERLING CITY</h1>
-        <p class="tagline">GRAND PRIX · TOPIC 3 · BLASTER · CASINO · FIGHTS · BOOST</p>
+        <p class="tagline">DRIVE · WALK · MISSIONS · WANTED</p>
       </div>
 
       <div id="toast"></div>

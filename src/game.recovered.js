@@ -28928,9 +28928,10 @@ function zg(i) {
   }
   const Q = [];
   const j = [16739210, 7063039, 16769126, 10354608, 14132991, 16777215, 16750916];
-  for (let X = 0; X < 18; X++) {
+  const pedN = window.__SC_LITE ? 24 : 46;
+  for (let X = 0; X < pedN; X++) {
     const H = X % pe;
-    const Y = X * 3 % pe;
+    const Y = (X * 3 + (X >> 2)) % pe;
     const {
       x: at,
       z: et
@@ -28949,6 +28950,31 @@ function zg(i) {
       speed: 0.7 + t() * 1.1,
       yaw: dt > 0 ? Math.PI / 2 : -Math.PI / 2
     });
+  }
+  {
+    const signs = ["PIZZA", "ARCADE", "GARAGE", "BANK", "DOCK", "RADIO", "HOTEL", "DINER", "CLUB", "SHOP"];
+    const signCols = [16738876, 3993855, 16761933, 16727434, 8191851];
+    for (let X = 0; X < pe; X++) {
+      for (let H = 0; H < pe; H++) {
+        if ((X + H) % 2) continue;
+        const { x: at, z: et } = Te(X, H);
+        const side = ((X + H) % 4) ? 1 : -1;
+        const sx = at + side * (Ft / 2 + 1.15);
+        const sz = et + ((X * 7 + H) % 9 - 4) * 1.6;
+        const col = signCols[(X + H) % signCols.length];
+        const pole = new O(new z(0.12, 3.4, 0.12), new mt({ color: 3818064, metalness: 0.55, roughness: 0.4 }));
+        pole.position.set(sx, 1.7, sz);
+        const board = new O(new z(2.6, 1.05, 0.12), new mt({
+          color: col,
+          emissive: col,
+          emissiveIntensity: 0.85,
+          roughness: 0.35
+        }));
+        board.position.set(sx, 3.35, sz);
+        board.rotation.y = side > 0 ? -Math.PI / 2 : Math.PI / 2;
+        e.add(pole, board);
+      }
+    }
   }
   const it = new O(new Be(ye + 120, 36), new me({
     color: 1192010,
@@ -35489,7 +35515,7 @@ const wc = "sterling-city-v3";
 const Sc = 0.02;
 const Ec = 0.42;
 const fo = 3.05;
-const mo = 26.8;
+const mo = 34.5;
 function sterKid(i, t) {
   const e = Math.floor(i / 100) * 100;
   const n = Math.floor(i % 100 / 10) * 10;
@@ -35825,7 +35851,8 @@ class Kv {
     this.headR = this.makeHeadlight(-0.55);
     s.group.add(this.headL, this.headR, this.headL.target, this.headR.target);
     const o = [2780671, 16731501, 3073702, 12614655, 15921906, 1842210];
-    for (let h = 0; h < 14; h++) {
+    const trafficN = lite ? 16 : 30;
+    for (let h = 0; h < trafficN; h++) {
       const u = gr(o[h % o.length]);
       const p = h % 2 === 0;
       const g = {
@@ -35861,6 +35888,21 @@ class Kv {
         z: u + 54,
         yaw: -0.08,
         c: 3073702
+      }, {
+        x: h + 7.2,
+        z: u + 8,
+        yaw: Math.PI / 2,
+        c: 12614655
+      }, {
+        x: h - 7.4,
+        z: u + 22,
+        yaw: -Math.PI / 2,
+        c: 15921906
+      }, {
+        x: h + 1.2,
+        z: u + 72,
+        yaw: 0.02,
+        c: 1842210
       }];
       for (const g of p) {
         const v = gr(g.c);
@@ -36146,14 +36188,7 @@ class Kv {
         bootEl.style.pointerEvents = "none";
       }, 160);
     }
-    this.openSchool("home", true).then(() => {
-      const h = new URLSearchParams(location.search).get("shot");
-      if (h && h !== "hub") {
-        this.enterCityFromHub();
-      }
-    }).catch(() => {
-      try { this.enterCityFromHub(); } catch {}
-    });
+    this.enterCityFromHub();
     setTimeout(() => document.getElementById("title-card")?.classList.add("go"), lite ? 1400 : 2800);
   }
   bailOut() {
@@ -36948,9 +36983,9 @@ class Kv {
     const s = new R(Math.cos(this.player.yaw), 0, -Math.sin(this.player.yaw));
     const o = this.player.vel.length();
     const a = this.boostActive > 0 || this.getawayOn || this.nos > 0;
-    const idlePull = !this.onFoot && !a ? Ce.clamp((8.6 - o) / 8.6, 0, 1) : 0;
-    const r = this.onFoot ? 4.8 : 7.72 + idlePull * 8.9 + Math.min(3, o * 0.052) + (a ? 0.9 : o > 22 ? 0.18 : 0) - (o > 16 ? 1.28 : o > 8 ? 0.62 : 0);
-    const l = this.onFoot ? 2.85 : 2.92 + idlePull * 2.55 + Math.min(0.08, o * 0.002) - (a ? 0.52 : o > 28 ? 0.58 : o > 16 ? 0.46 : o > 8 ? 0.26 : 0);
+    const idlePull = !this.onFoot && !a ? Ce.clamp((6.2 - o) / 6.2, 0, 1) : 0;
+    const r = this.onFoot ? 5.15 : 8.15 + idlePull * 1.35 + Math.min(1.6, o * 0.038) + (a ? 0.55 : 0);
+    const l = this.onFoot ? 2.18 : 2.62 + idlePull * 0.28 + Math.min(0.12, o * 0.003) - (a ? 0.22 : 0);
     const c = this.onFoot ? 0 : Ce.clamp(this.player.steerVis * (0.78 + o * 0.042), -2.35, 2.35);
     const d = this.player.pos.clone().addScaledVector(e, r).addScaledVector(s, c).add(new R(0, l, 0));
     this.keepCamOutOfWalls(d);
@@ -37034,7 +37069,7 @@ class Kv {
     const px = this.player.pos.x;
     const pz = this.player.pos.z;
     const spd = this.player.vel.length();
-    const minDist = spd < 8.6 ? 12.8 : spd < 16 ? 10.4 : 9.2;
+    const minDist = spd < 6 ? 8.6 : spd < 16 ? 8.1 : 7.6;
     const dx = t.x - px;
     const dz = t.z - pz;
     const dist = Math.hypot(dx, dz) || 0.0001;
@@ -37055,13 +37090,22 @@ class Kv {
     return t;
   }
   updateLights() {
-    const t = [...this.city.lamps].sort((e, n) => e.position.distanceToSquared(this.player.pos) - n.position.distanceToSquared(this.player.pos));
-    this.city.lamps.forEach(e => {
+    this._lightTick = (this._lightTick || 0) + 1;
+    if (this._lightTick % (this._liteGpu ? 8 : 4)) return;
+    const px = this.player.pos.x;
+    const pz = this.player.pos.z;
+    const ranked = [];
+    for (const e of this.city.lamps) {
+      const dx = e.position.x - px;
+      const dz = e.position.z - pz;
       e.intensity = 0;
-    });
-    t.slice(0, this.night ? 6 : 3).forEach((e, n) => {
-      e.intensity = this.night ? 3.2 - n * 0.28 : 0.18;
-    });
+      ranked.push({ e, d: dx * dx + dz * dz });
+    }
+    ranked.sort((a, b) => a.d - b.d);
+    const n = this.night ? (this._liteGpu ? 4 : 6) : 2;
+    for (let i = 0; i < n && i < ranked.length; i++) {
+      ranked[i].e.intensity = this.night ? 3.2 - i * 0.28 : 0.1;
+    }
   }
   updateParticles(t, e, n) {
     const s = this.exhaust.geometry.getAttribute("position");
