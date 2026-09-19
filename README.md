@@ -8,11 +8,11 @@ Sterling (age ~10–11) lands on a **bright full-screen School Hub** — not a d
 
 Live: **https://sterling.claimreach.com**
 
-1. School Hub opens first (Game Hall).
-2. **Play Grand Prix** — 118 × 13 is the first gate.
+1. School Hub opens first (Game Hall). Never boots into a city stub.
+2. **PLAY GRAND PRIX** is the primary — 118 × 13 is the first gate.
 3. **Speed Houses** is playable on the hub screen itself.
 4. Missing Quick Checks stay **AT SCHOOL only** chips — not in-game quizzes.
-5. **Enter City** is a secondary stub.
+5. City is a later reward. There is no Enter City destination until a real city exists.
 
 ## Local
 

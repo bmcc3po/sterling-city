@@ -14,7 +14,6 @@ import { sfxHit, sfxMiss, unlockAudio } from "./juice";
 
 export type HubHooks = {
   onPlayPrix: () => void;
-  onEnterCity: () => void;
   onCash: (amount: number, reason: string) => void;
 };
 
@@ -111,10 +110,6 @@ export class SchoolHub {
       this.hooks.onPlayPrix();
       return;
     }
-    if (act === "city") {
-      this.hooks.onEnterCity();
-      return;
-    }
     if (act === "speed-ans" && this.speed) {
       unlockAudio();
       const ok = sameAnswer(t.dataset.ans || "", this.speed.correct);
@@ -193,7 +188,7 @@ export class SchoolHub {
           <div class="sh-header-right">
             <div id="hub-cash" class="sh-cash-pill">$${this.progress.cash.toLocaleString()}</div>
             <div class="sh-pill ${a ? "auth-fail" : "ok"}">${a ? "AUTH_FAIL" : esc(this.sourceLabel || "feed")}</div>
-            <button type="button" class="ghost compact" data-hub="city">Enter City</button>
+            <span class="sh-locked" title="City is a later reward">City later</span>
           </div>
         </header>
         ${
@@ -227,15 +222,16 @@ export class SchoolHub {
     return `
       <section class="hero-prix">
         <div class="hero-copy">
-          <p class="eyebrow">THE LOOP STERLING OPENS</p>
+          <p class="eyebrow">THE GAME · NOT THE CITY</p>
           <h1>Topic 3 Grand Prix</h1>
-          <p>Race with partial products. Houses → × bottom → add → estimate. Correct steps boost. Wrong answers stall. The step board never hides.</p>
+          <p>Race with partial products. Houses → × bottom → add → estimate. Correct steps <b>BOOST</b>. Wrong answers <b>STALL</b>. First gate is 118 × 13.</p>
           <div class="hero-actions">
-            <button type="button" class="cta huge" data-hub="prix">PLAY GRAND PRIX</button>
-            <span class="hero-meta">${wins} wins · 118 × 13 first gate</span>
+            <button type="button" class="cta huge pulse" data-hub="prix">PLAY GRAND PRIX</button>
+            <span class="hero-meta">${wins} wins · kid-voice houses stay on screen</span>
           </div>
         </div>
         <div class="hero-art" aria-hidden="true">
+          <div class="hero-lights"><i></i><i></i><i></i></div>
           <div class="hero-car">YOU</div>
           <div class="hero-road"></div>
         </div>

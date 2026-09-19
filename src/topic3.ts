@@ -314,9 +314,14 @@ export function htmlT3DrillStepBoard(
       <div class="t3-houses place-houses">${r}</div>
     </div>`;
   }
+  if (mode === "race") {
+    return `<div class="pp-drill-steps race">
+      ${renderBoard(o, { compact: false })}
+    </div>`;
+  }
   return `<div class="pp-drill-steps">
       ${mode === "full" ? `<div class="pp-flow-wrap compact">${flowChartHtml()}</div>` : ""}
-      ${renderBoard(o, { compact: mode === "race" })}
+      ${renderBoard(o, { compact: false })}
     </div>`;
 }
 
