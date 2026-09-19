@@ -206,6 +206,22 @@ export function buildCity(renderer: THREE.WebGLRenderer, lite = isLiteGpu): City
           ac.position.set(bx + 1.1, h + 0.55, bz);
           group.add(ac);
         }
+        if (h > 14 && rng() > 0.4) {
+          const cornice = new THREE.Mesh(
+            new THREE.BoxGeometry(w + 0.4, 0.28, d + 0.4),
+            new THREE.MeshStandardMaterial({ color: 0x2a2420, roughness: 0.65 }),
+          );
+          cornice.position.set(bx, h + 0.1, bz);
+          group.add(cornice);
+        }
+        if (h > 12 && rng() > 0.5) {
+          const rail = new THREE.MeshStandardMaterial({ color: 0x3a3a40, metalness: 0.45, roughness: 0.4 });
+          for (let f = 0; f < 3; f++) {
+            const land = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.08, 1.6), rail);
+            land.position.set(bx + w / 2 + 0.4, 3.2 + f * 2.6, bz);
+            group.add(land);
+          }
+        }
 
         colliders.push({
           minX: bx - w / 2 - 0.15,
@@ -422,7 +438,7 @@ export function buildCity(renderer: THREE.WebGLRenderer, lite = isLiteGpu): City
     colliders,
     lamps,
     spots,
-    spawn: new THREE.Vector3(roadX(4), 0, roadZ(3) - 8),
+    spawn: new THREE.Vector3(roadX(4), 0, roadZ(3) + 6),
     reflector,
     lanes,
     pedPaths,
