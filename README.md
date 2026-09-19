@@ -10,7 +10,8 @@ Live: **https://sterling.claimreach.com**
 
 1. School Hub opens first (Game Hall). Never boots into a city stub.
 2. **PLAY GRAND PRIX** is the primary — 118 × 13 is the first gate.
-3. **Speed Houses** is playable on the hub screen itself.
+3. **Learn** is a Hub screen (not a city popup) — dummy-proof 6-step map with Ster kid-voice.
+4. **Speed Houses** is playable on the hub screen itself.
 4. Missing Quick Checks stay **AT SCHOOL only** chips — not in-game quizzes.
 5. City is a later reward. There is no Enter City destination until a real city exists.
 

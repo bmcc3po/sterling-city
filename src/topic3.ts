@@ -242,7 +242,7 @@ export function renderBoard(i: StepBoard, opts?: { compact?: boolean }): string 
     )
     .join("");
   const r = i.houses
-    .map((l) => `<div class="house${l.ask ? " ask" : ""}"><small>${l.label}</small><b>${l.value}</b></div>`)
+    .map((l) => `<div class="house${l.ask ? " ask" : ""}"><i class="house-roof" aria-hidden="true"></i><small>${l.label} HOUSE</small><b>${l.value}</b></div>`)
     .join("");
   const k = sterKid(i.a, i.b);
   return `<div class="t3-board${e}" data-hardness="${i.hardness}">
@@ -254,23 +254,143 @@ export function renderBoard(i: StepBoard, opts?: { compact?: boolean }): string 
   </div>`;
 }
 
-export function flowChartHtml(): string {
-  const i = [
-    { t: "① SPLIT HOUSES", d: "hundreds / tens / ones" },
-    { t: "② HUNDREDS × BOTTOM", d: "e.g. 100 × 13 first" },
-    { t: "③ TENS × BOTTOM", d: "don't drop the zero — 10 × 13 = 130, not 13" },
-    { t: "④ ONES × BOTTOM", d: "e.g. 8 × 13" },
-    { t: "⑤ STACK AND ADD", d: "add the three partial products" },
-    { t: "⑥ CHECK ESTIMATE", d: "100×13≈1300 — close?" },
+export type LearnBeat = {
+  id: string;
+  title: string;
+  map: string;
+  voice: string;
+  tip: string;
+  show: string;
+  houseAsk?: "HUNDREDS" | "TENS" | "ONES";
+};
+
+export const LEARN_FLOW = [
+  { t: "① SPLIT HOUSES", d: "hundreds / tens / ones" },
+  { t: "② HUNDREDS × BOTTOM", d: "e.g. 100 × 13 first" },
+  { t: "③ TENS × BOTTOM", d: "don't drop the zero — 10 × 13 = 130, not 13" },
+  { t: "④ ONES × BOTTOM", d: "e.g. 8 × 13" },
+  { t: "⑤ STACK AND ADD", d: "add the three partial products" },
+  { t: "⑥ CHECK ESTIMATE", d: "100×13≈1300 — close?" },
+] as const;
+
+export function topic3LearnBeats(a = 118, b = 13): LearnBeat[] {
+  const k = sterKid(a, b);
+  const h = Math.floor(a / 100) * 100;
+  const t = Math.floor((a % 100) / 10) * 10;
+  const o = a % 10;
+  return [
+    {
+      id: "split",
+      title: LEARN_FLOW[0].t,
+      map: LEARN_FLOW[0].d,
+      voice: k.split,
+      tip: `${a} becomes ${fmt(h)} / ${fmt(t)} / ${o}. Three houses, then multiply.`,
+      show: `${fmt(h)} · ${fmt(t)} · ${o}`,
+    },
+    {
+      id: "hundreds",
+      title: LEARN_FLOW[1].t,
+      map: LEARN_FLOW[1].d,
+      voice: k.hundreds,
+      tip: `${fmt(h)} × ${b} = ${fmt(h * b)}. Hundreds house first — always.`,
+      show: fmt(h * b),
+      houseAsk: "HUNDREDS",
+    },
+    {
+      id: "tens",
+      title: LEARN_FLOW[2].t,
+      map: LEARN_FLOW[2].d,
+      voice: k.tens,
+      tip: `${k.carry} Don't drop the zero: ${fmt(t)} × ${b} = ${fmt(t * b)}, not ${fmt((t / 10) * b)}.`,
+      show: fmt(t * b),
+      houseAsk: "TENS",
+    },
+    {
+      id: "ones",
+      title: LEARN_FLOW[3].t,
+      map: LEARN_FLOW[3].d,
+      voice: k.ones,
+      tip: `${k.carry} Ones house: ${o} × ${b} = ${fmt(o * b)}.`,
+      show: fmt(o * b),
+      houseAsk: "ONES",
+    },
+    {
+      id: "add",
+      title: LEARN_FLOW[4].t,
+      map: LEARN_FLOW[4].d,
+      voice: k.add,
+      tip: `${fmt(h * b)} + ${fmt(t * b)} + ${fmt(o * b)} = ${fmt(a * b)}.`,
+      show: fmt(a * b),
+    },
+    {
+      id: "check",
+      title: LEARN_FLOW[5].t,
+      map: LEARN_FLOW[5].d,
+      voice: k.check,
+      tip: `Estimate ${fmt(h)}×${b}≈${fmt(h * b)}. Exact ${fmt(a * b)} is close — checks out.`,
+      show: fmt(a * b),
+    },
   ];
-  return `<div class="t3-flow-chart" role="list">${i
-    .map(
-      (t, e) =>
-        `<div class="t3-flow-box" role="listitem"><b>${t.t}</b><span>${t.d}</span></div>${
-          e < i.length - 1 ? '<div class="t3-flow-arrow" aria-hidden="true">▼</div>' : ""
-        }`,
-    )
-    .join("")}</div>`;
+}
+
+export function flowChartHtml(active = -1): string {
+  return `<div class="t3-flow-chart" role="list">${LEARN_FLOW.map(
+    (t, e) =>
+      `<button type="button" class="t3-flow-box${e === active ? " on" : ""}" role="listitem" data-hub="learn-step" data-step="${e}"><b>${t.t}</b><span>${t.d}</span></button>${
+        e < LEARN_FLOW.length - 1 ? '<div class="t3-flow-arrow" aria-hidden="true">▼</div>' : ""
+      }`,
+  ).join("")}</div>`;
+}
+
+/** Kid-path strip — same 6 beats + stuck 118×13 + carry / tens-zero language. */
+export function sterStripHtml(): string {
+  const k = sterKid(118, 13);
+  return `<div class="t3-ster-strip">
+    <b>Kid path (every problem):</b>
+    <ol>
+      <li>Split the top number into place-value houses: hundreds / tens / ones</li>
+      <li>Multiply hundreds × bottom number first (e.g. 100 × 13)</li>
+      <li>Multiply tens × bottom (watch the zero — 10 × 13 = 130, not 13)</li>
+      <li>Multiply ones × bottom</li>
+      <li>Add the three partial products</li>
+      <li>Check: estimate (100×13≈1300) — is your answer close?</li>
+    </ol>
+    <p class="t3-stuck">${k.stuck}</p>
+    <p>${k.carry} ${k.tens} ${k.add}</p>
+  </div>`;
+}
+
+export function htmlT3LearnLesson(step = 0): string {
+  const beats = topic3LearnBeats(118, 13);
+  const i = Math.max(0, Math.min(beats.length - 1, step));
+  const beat = beats[i]!;
+  const k = sterKid(118, 13);
+  const board = guided118x13();
+  const houses = board.houses
+    .map((h) => {
+      const on = beat.houseAsk === h.label;
+      return `<div class="house learn-house${on ? " ask" : ""}"><i class="house-roof" aria-hidden="true"></i><small>${h.label} HOUSE</small><b>${h.value}</b></div>`;
+    })
+    .join("");
+  return `<div class="learn-lesson" data-learn-step="${beat.id}">
+    <p class="t3-kid learn-stuck">${k.stuck}</p>
+    ${sterStripHtml()}
+    <div class="learn-map">
+      <p class="eyebrow">DUMMY-PROOF STEP MAP · TAP A BOX</p>
+      ${flowChartHtml(i)}
+    </div>
+    <article class="learn-beat" data-beat="${beat.id}">
+      <p class="learn-beat-kicker">STEP ${i + 1} / ${beats.length}</p>
+      <h3>${beat.title}</h3>
+      <p class="t3-kid">${beat.voice}</p>
+      <p class="learn-tip">${beat.tip}</p>
+      <p class="learn-show">${beat.show}</p>
+    </article>
+    <div class="t3-houses place-houses learn-houses">${houses}</div>
+    <div class="pp-drill-steps learn-board">
+      ${renderBoard(board)}
+    </div>
+  </div>`;
 }
 
 export function parseFactors(prompt: string): Factors | null {
@@ -307,7 +427,7 @@ export function htmlT3DrillStepBoard(
   const o = buildBoard(e.a, e.b, s, n);
   if (mode === "mini") {
     const r = o.houses
-      .map((l) => `<div class="house${l.ask ? " ask" : ""}"><small>${l.label}</small><b>${l.value}</b></div>`)
+      .map((l) => `<div class="house${l.ask ? " ask" : ""}"><i class="house-roof" aria-hidden="true"></i><small>${l.label} HOUSE</small><b>${l.value}</b></div>`)
       .join("");
     return `<div class="pp-drill-steps mini">
       <p class="t3-kid">${sterKid(e.a, e.b).line}</p>
@@ -316,7 +436,7 @@ export function htmlT3DrillStepBoard(
   }
   if (mode === "race") {
     const houses = o.houses
-      .map((l) => `<div class="house${l.ask ? " ask" : ""}"><small>${l.label}</small><b>${l.value}</b></div>`)
+      .map((l) => `<div class="house${l.ask ? " ask" : ""}"><i class="house-roof" aria-hidden="true"></i><small>${l.label} HOUSE</small><b>${l.value}</b></div>`)
       .join("");
     const crumbs = o.crumbs
       .map((l, i) => `<span class="t3-crumb${i === 0 ? " on" : ""}">${l}</span>`)

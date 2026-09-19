@@ -1,4 +1,12 @@
-import { htmlT3DrillStepBoard, kidVoiceHtml, makeProblem, sameAnswer, type Problem } from "./topic3";
+import {
+  htmlT3DrillStepBoard,
+  htmlT3LearnLesson,
+  kidVoiceHtml,
+  makeProblem,
+  sameAnswer,
+  topic3LearnBeats,
+  type Problem,
+} from "./topic3";
 import {
   STER_WORK_HANDOFF,
   CAMPUS_PARENT_URL,
@@ -10,14 +18,14 @@ import {
   type SchoolFeed,
   type SchoolProgress,
 } from "./schoolFeed";
-import { sfxHit, sfxMiss, unlockAudio } from "./juice";
+import { sfxHit, sfxMiss, sfxTick, unlockAudio } from "./juice";
 
 export type HubHooks = {
   onPlayPrix: () => void;
   onCash: (amount: number, reason: string) => void;
 };
 
-type Tab = "play" | "school" | "connect";
+type Tab = "play" | "learn" | "school" | "connect";
 
 export class SchoolHub {
   root: HTMLElement;
@@ -32,6 +40,7 @@ export class SchoolHub {
   speedStreak = 0;
   speedTimer = 0;
   flash = "";
+  learnStep = 0;
 
   constructor(root: HTMLElement, hooks: HubHooks) {
     this.root = root;
@@ -108,6 +117,35 @@ export class SchoolHub {
     if (act === "prix") {
       unlockAudio();
       this.hooks.onPlayPrix();
+      return;
+    }
+    if (act === "learn-step") {
+      unlockAudio();
+      sfxTick();
+      this.learnStep = Number(t.dataset.step || 0);
+      this.renderLearnOnly();
+      return;
+    }
+    if (act === "learn-next") {
+      unlockAudio();
+      sfxTick();
+      this.learnStep = Math.min(topic3LearnBeats().length - 1, this.learnStep + 1);
+      this.renderLearnOnly();
+      return;
+    }
+    if (act === "learn-prev") {
+      unlockAudio();
+      sfxTick();
+      this.learnStep = Math.max(0, this.learnStep - 1);
+      this.renderLearnOnly();
+      return;
+    }
+    if (act === "speed") {
+      this.tab = "play";
+      this.render();
+      window.requestAnimationFrame(() => {
+        this.root.querySelector("#hub-speed")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
       return;
     }
     if (act === "speed-ans" && this.speed) {
@@ -198,6 +236,7 @@ export class SchoolHub {
         }
         <nav class="sh-tabs" role="tablist">
           ${this.tabBtn("play", "Game Hall")}
+          ${this.tabBtn("learn", "Learn")}
           ${this.tabBtn("school", "School")}
           ${this.tabBtn("connect", "Connect")}
         </nav>
@@ -214,7 +253,13 @@ export class SchoolHub {
     if (!this.feed) return `<p class="sh-muted">Loading school feed…</p>`;
     if (this.tab === "connect") return this.connect();
     if (this.tab === "school") return this.school();
+    if (this.tab === "learn") return this.learn();
     return this.play();
+  }
+
+  private renderLearnOnly() {
+    const host = this.root.querySelector("#hub-learn");
+    if (host) host.innerHTML = this.learnBody();
   }
 
   private play() {
@@ -227,6 +272,7 @@ export class SchoolHub {
           <p>Race with partial products. Houses → × bottom → add → estimate. Correct steps <b>BOOST</b>. Wrong answers <b>STALL</b>. First gate is 118 × 13.</p>
           <div class="hero-actions">
             <button type="button" class="cta huge pulse" data-hub="prix">PLAY GRAND PRIX</button>
+            <button type="button" class="ghost" data-hub="tab" data-tab="learn">Learn 118 × 13</button>
             <span class="hero-meta">${wins} wins · kid-voice houses stay on screen</span>
           </div>
         </div>
@@ -251,6 +297,15 @@ export class SchoolHub {
           </div>
         </div>
         <div id="hub-speed">${this.speedWidget()}</div>
+      </section>
+
+      <section class="learn-peek">
+        <div>
+          <p class="eyebrow">FIRST-CLASS LEARN · NOT A POPUP</p>
+          <h2>Need the dummy-proof map?</h2>
+          <p>Split houses → × hundreds → × tens (keep the zero) → × ones → add → estimate. Stuck line is 118 × 13.</p>
+        </div>
+        <button type="button" class="ghost" data-hub="tab" data-tab="learn">Open Learn</button>
       </section>
 
       <section class="qc-strip">
@@ -282,6 +337,40 @@ export class SchoolHub {
             .join("")}
         </div>
       </div>`;
+  }
+
+  private learn() {
+    return `
+      <section class="learn-hero">
+        <div class="learn-hero-copy">
+          <p class="eyebrow">LEARN · TOPIC 3 · BRIGHT KID SCREEN</p>
+          <h1>Houses, then race</h1>
+          <p>Dummy-proof map. Tap a step. Same Ster kid-voice that stays on Grand Prix and Speed Houses.</p>
+          <div class="hero-actions">
+            <button type="button" class="cta huge pulse" data-hub="prix">PLAY GRAND PRIX</button>
+            <button type="button" class="ghost" data-hub="speed">Practice Speed Houses</button>
+          </div>
+        </div>
+      </section>
+      <div id="hub-learn">${this.learnBody()}</div>
+    `;
+  }
+
+  private learnBody() {
+    const last = topic3LearnBeats().length - 1;
+    return `
+      ${htmlT3LearnLesson(this.learnStep)}
+      <div class="learn-nav">
+        <button type="button" class="ghost" data-hub="learn-prev" ${this.learnStep <= 0 ? "disabled" : ""}>← Back</button>
+        <span class="learn-nav-meta">Step ${this.learnStep + 1} of ${last + 1}</span>
+        <button type="button" class="cta" data-hub="learn-next" ${this.learnStep >= last ? "disabled" : ""}>Next step →</button>
+      </div>
+      <div class="learn-ctas">
+        <button type="button" class="cta huge pulse" data-hub="prix">PLAY GRAND PRIX</button>
+        <button type="button" class="ghost" data-hub="speed">Speed Houses</button>
+        <button type="button" class="text-link" data-hub="tab" data-tab="play">Back to Game Hall</button>
+      </div>
+    `;
   }
 
   private school() {
