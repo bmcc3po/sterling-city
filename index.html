@@ -6,10 +6,19 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="theme-color" content="#05060d" />
     <title>STERLING CITY</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23050a14'/%3E%3Cpath d='M8 40 L32 16 L56 40 L48 40 L48 52 L16 52 L16 40Z' fill='%23ffc44d'/%3E%3C/svg%3E" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23050a14'/%3E%3Cpath d='M8 40 L32 16 L56 40 L48 40 L48 52 L16 52 L16 40Z' fill='%23c9a227'/%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      html,body{margin:0;height:100%;background:#05060d;overflow:hidden}
+      #boot{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:#05060d;color:#c9a227}
+      #boot.hide{opacity:0;pointer-events:none!important;visibility:hidden}
+      @media (max-width:820px),(pointer:coarse){
+        #title-card h1{background:none!important;-webkit-background-clip:unset!important;color:#ffd36a!important;text-shadow:0 2px 0 #3a2800,0 0 12px #000!important}
+        .gate-shell,.coach-flash,.boss-hud,.pause-card{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#0b1224!important}
+      }
+    </style>
   </head>
   <body>
     <canvas id="gl"></canvas>
@@ -21,22 +30,24 @@
             <div class="radar-label">N</div>
           </div>
           <div id="cash">$0</div>
+          <div id="mode-badge">DRIVE</div>
         </div>
         <div class="hud-center">
           <div id="radio">FLASH FM · Night Circuit</div>
-          <div id="objective">DRIVE TO THE GOLD BLIP — COURIER DROP</div>
+          <div id="objective">GOLD BLIP — ONES LINE booth · Topic 3</div>
         </div>
         <div class="hud-right">
           <div id="wanted" aria-label="wanted stars"><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span></div>
           <div id="speed"><b>0</b><small>MPH</small></div>
-          <button id="theme" type="button" title="Toggle lights">NIGHT</button>
+          <button id="theme" type="button" title="Toggle day / night">NIGHT</button>
+          <button id="pause-btn" type="button" title="Pause venues">PAUSE</button>
         </div>
       </div>
 
       <div id="title-card">
-        <p class="city-tag">KID-SAFE OPEN CITY</p>
+        <p class="city-tag">OPEN CITY · NOT A MENU</p>
         <h1>STERLING CITY</h1>
-        <p class="tagline">YOUR RIDE. YOUR MISSIONS. MATH IS THE HEIST.</p>
+        <p class="tagline">DRIVE · WALK · TOPIC 3 GATES</p>
       </div>
 
       <div id="toast"></div>
@@ -48,6 +59,7 @@
         <button id="brake" type="button">BRAKE</button>
         <button id="gas" type="button">GAS</button>
       </div>
+      <button id="exit-vehicle" type="button">EXIT CAR (E)</button>
       <button id="interact" type="button" hidden>START MISSION</button>
 
       <div id="math-gate" hidden>
@@ -55,8 +67,7 @@
           <div class="gate-kicker" id="gate-kicker">COURIER LOCK</div>
           <h2 id="gate-title">Exact change</h2>
           <p id="gate-prompt"></p>
-          <div id="place-houses" hidden></div>
-          <div id="fall-lanes" hidden></div>
+          <div id="pp-drill-steps" class="pp-drill-steps" hidden></div>
           <div id="answers"></div>
         </div>
       </div>
@@ -79,6 +90,19 @@
           <p id="boss-prompt"></p>
           <div id="boss-answers"></div>
           <div id="boss-cash">$0</div>
+        </div>
+      </div>
+
+      <div id="pause-sheet" hidden>
+        <div class="pause-card">
+          <p class="gate-kicker">OPTIONAL VENUES — CITY STAYS HOME</p>
+          <h2>PAUSE</h2>
+          <p>School Hub and Grand Prix are side rooms. Resume dumps you back on the street.</p>
+          <div class="pause-actions">
+            <button type="button" data-pause="resume">RESUME CITY</button>
+            <button type="button" data-pause="practice">PRACTICE · Topic 3</button>
+            <button type="button" data-pause="gp">GRAND PRIX · optional</button>
+          </div>
         </div>
       </div>
     </div>
