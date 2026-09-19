@@ -27906,14 +27906,14 @@ function ns(i, t, e = Xe) {
 }
 function Ng() {
   return ns(1024, (i, t) => {
-    i.fillStyle = "#070b14";
+    i.fillStyle = "#b4bac4";
     i.fillRect(0, 0, t, t);
     const e = i.getImageData(0, 0, t, t);
     for (let n = 0; n < e.data.length; n += 4) {
-      const s = (Math.random() - 0.5) * 18;
-      e.data[n] = 10 + s;
-      e.data[n + 1] = 16 + s;
-      e.data[n + 2] = 28 + s;
+      const s = (Math.random() - 0.5) * 14;
+      e.data[n] = 176 + s;
+      e.data[n + 1] = 180 + s;
+      e.data[n + 2] = 186 + s;
     }
     i.putImageData(e, 0, 0);
     i.globalAlpha = 0.55;
@@ -29351,7 +29351,7 @@ function zg(i) {
     colliders: n,
     lamps: s,
     spots: $,
-    spawn: new R(Ft / 2 + Jt / 2, 0, -22),
+    spawn: new R(Ft / 2 + Jt / 2, 0, 28),
     reflector: a,
     peds: Q,
     ramps: xt,
@@ -38057,9 +38057,11 @@ class Kv {
     const e = this.player.pos.z - this.schoolPos.z;
     const n = Math.hypot(t, e);
     const s = document.getElementById("interact");
-    if (s && n < 10 && (this.mode === "drive" || this.mode === "onfoot")) {
+    const exit = document.getElementById("exit-vehicle");
+    if (exit && !exit.hidden) return;
+    if (s && n < 4.5 && (this.mode === "drive" || this.mode === "onfoot")) {
       s.hidden = false;
-      s.textContent = "ENTER SCHOOL HUB";
+      s.textContent = "SCHOOL (optional)";
       s.onclick = () => void this.openSchool();
     }
   }
