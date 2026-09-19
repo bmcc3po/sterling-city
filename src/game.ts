@@ -102,12 +102,22 @@ export class SterlingCity {
   private fovKick = 0;
 
   constructor(canvas: HTMLCanvasElement) {
-    this.renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: !this.lite,
-      powerPreference: "high-performance",
-      alpha: false,
-    });
+    const makeGL = (lite: boolean) =>
+      new THREE.WebGLRenderer({
+        canvas,
+        antialias: !lite,
+        powerPreference: lite ? "low-power" : "high-performance",
+        alpha: false,
+        failIfMajorPerformanceCaveat: false,
+      });
+    try {
+      this.renderer = makeGL(this.lite);
+    } catch {
+      this.lite = true;
+      document.documentElement.classList.add("lite-gpu");
+      document.body.classList.add("lite-gpu");
+      this.renderer = makeGL(true);
+    }
     this.renderer.setPixelRatio(this.lite ? 1 : Math.min(window.devicePixelRatio, 1.5));
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
