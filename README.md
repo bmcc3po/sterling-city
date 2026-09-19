@@ -6,7 +6,7 @@ Sterling (age ~10–11) owns the gold GT. Missions are courier drops, vault crac
 
 ## Play
 
-Open the deployed URL on an iPhone (or desktop). First screen is the city, not a menu.
+Open the deployed URL on an iPhone (or desktop). Boot is the 3D open-world city — drive, walk, missions. Hub / Learn / Grand Prix are optional side doors, never the home screen.
 
 - **Phone:** left joystick steer, GAS / BRAKE
 - **Desktop:** WASD or arrows, Space to drift
