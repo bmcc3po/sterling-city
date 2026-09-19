@@ -95,3 +95,50 @@ export function sideDecal(text: string, fill = "#0b0d14") {
     ctx.fillText(text, size / 2, size / 2);
   });
 }
+
+export function streetSign(text: string, bg = "#1c3a22", fg = "#f4f1ea") {
+  return canvasTexture(256, (ctx, size) => {
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, size, size);
+    ctx.strokeStyle = fg;
+    ctx.lineWidth = 10;
+    ctx.strokeRect(10, 10, size - 20, size - 20);
+    ctx.fillStyle = fg;
+    ctx.font = "800 36px Rajdhani, Impact, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    const words = text.split(" ");
+    if (words.length > 1) {
+      ctx.fillText(words[0]!, size / 2, size / 2 - 22);
+      ctx.fillText(words.slice(1).join(" "), size / 2, size / 2 + 22);
+    } else {
+      ctx.font = "800 48px Rajdhani, Impact, sans-serif";
+      ctx.fillText(text, size / 2, size / 2);
+    }
+  });
+}
+
+export function stopSign() {
+  return canvasTexture(256, (ctx, size) => {
+    ctx.clearRect(0, 0, size, size);
+    ctx.translate(size / 2, size / 2);
+    ctx.beginPath();
+    for (let i = 0; i < 8; i++) {
+      const a = (Math.PI / 8) + i * (Math.PI / 4);
+      const r = 110;
+      if (i === 0) ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+      else ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+    }
+    ctx.closePath();
+    ctx.fillStyle = "#b71c1c";
+    ctx.fill();
+    ctx.strokeStyle = "#f4f1ea";
+    ctx.lineWidth = 10;
+    ctx.stroke();
+    ctx.fillStyle = "#f4f1ea";
+    ctx.font = "800 58px Rajdhani, Impact, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("STOP", 0, 4);
+  });
+}

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { isLiteGpu } from "./device";
 import { sideDecal } from "./textures";
 
 function mesh(geo: THREE.BufferGeometry, mat: THREE.Material, x = 0, y = 0, z = 0) {
@@ -60,15 +61,17 @@ export function createHeroCar(): CarKit {
     roughness: 0.3,
     clearcoat: 0.4,
   });
-  const glass = new THREE.MeshPhysicalMaterial({
-    color: 0x87c6ff,
-    metalness: 0.1,
-    roughness: 0.05,
-    transmission: 0.45,
-    transparent: true,
-    opacity: 0.72,
-    thickness: 0.4,
-  });
+  const glass = isLiteGpu
+    ? new THREE.MeshStandardMaterial({ color: 0x4a6a88, metalness: 0.4, roughness: 0.2 })
+    : new THREE.MeshPhysicalMaterial({
+        color: 0x87c6ff,
+        metalness: 0.1,
+        roughness: 0.05,
+        transmission: 0.45,
+        transparent: true,
+        opacity: 0.72,
+        thickness: 0.4,
+      });
 
   body.add(mesh(new THREE.BoxGeometry(1.86, 0.42, 4.35), paint, 0, 0.46, 0.05));
   body.add(mesh(new THREE.BoxGeometry(1.78, 0.22, 2.1), paint, 0, 0.72, -0.15)); // cabin lower

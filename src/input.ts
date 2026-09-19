@@ -1,12 +1,30 @@
+export type ControlSample = {
+  steer: number;
+  throttle: number;
+  brake: number;
+  handbrake: boolean;
+  interact: boolean;
+  interactEdge: boolean;
+  escape: boolean;
+  boost: boolean;
+};
+
 export class Input {
   steer = 0;
   throttle = 0;
   brake = 0;
   handbrake = false;
   interact = false;
+  interactEdge = false;
+  escape = false;
+  boost = false;
   private keys = new Set<string>();
   private pointerId: number | null = null;
   private origin = { x: 0, y: 0 };
+  private prevInteract = false;
+  private prevEscape = false;
+  private gasHeld = false;
+  private brakeHeld = false;
 
   constructor(
     private stick: HTMLElement,
@@ -37,12 +55,12 @@ export class Input {
       window.addEventListener("pointercancel", end);
     };
     hold(gas, (v) => {
-      this.throttle = v ? 1 : this.throttle;
-      if (!v && !this.keys.has("KeyW") && !this.keys.has("ArrowUp")) this.throttle = 0;
+      this.gasHeld = v;
+      this.throttle = v ? 1 : 0;
     });
     hold(brake, (v) => {
-      this.brake = v ? 1 : this.brake;
-      if (!v && !this.keys.has("KeyS") && !this.keys.has("ArrowDown")) this.brake = 0;
+      this.brakeHeld = v;
+      this.brake = v ? 1 : 0;
     });
 
     stick.addEventListener("pointerdown", (e) => {
@@ -59,6 +77,8 @@ export class Input {
     const clear = () => {
       this.pointerId = null;
       this.steer = 0;
+      if (!this.gasHeld && !this.keys.has("KeyW") && !this.keys.has("ArrowUp")) this.throttle = 0;
+      if (!this.brakeHeld && !this.keys.has("KeyS") && !this.keys.has("ArrowDown")) this.brake = 0;
       knob.style.transform = "translate(-50%, -50%)";
     };
     stick.addEventListener("pointerup", clear);
@@ -74,12 +94,14 @@ export class Input {
     const nx = (dx / len) * clamped;
     const ny = (dy / len) * clamped;
     this.knob.style.transform = `translate(calc(-50% + ${nx}px), calc(-50% + ${ny}px))`;
-    this.steer = THREEClamp(nx / max);
-    if (ny < -10) this.throttle = Math.min(1, -ny / max);
-    if (ny > 12) this.brake = Math.min(1, ny / max);
+    this.steer = clamp(nx / max);
+    if (ny < -8) this.throttle = Math.min(1, -ny / max);
+    else if (!this.gasHeld && !this.keys.has("KeyW") && !this.keys.has("ArrowUp")) this.throttle = 0;
+    if (ny > 10) this.brake = Math.min(1, ny / max);
+    else if (!this.brakeHeld && !this.keys.has("KeyS") && !this.keys.has("ArrowDown")) this.brake = 0;
   }
 
-  sample() {
+  sample(): ControlSample {
     let steer = this.steer;
     let throttle = this.throttle;
     let brake = this.brake;
@@ -88,17 +110,27 @@ export class Input {
     if (this.keys.has("KeyW") || this.keys.has("ArrowUp")) throttle = 1;
     if (this.keys.has("KeyS") || this.keys.has("ArrowDown")) brake = 1;
     this.handbrake = this.keys.has("Space");
-    this.interact = this.keys.has("KeyE") || this.keys.has("Enter");
+    this.boost = this.keys.has("ShiftLeft") || this.keys.has("ShiftRight");
+    const interactNow = this.keys.has("KeyE") || this.keys.has("Enter");
+    this.interactEdge = interactNow && !this.prevInteract;
+    this.prevInteract = interactNow;
+    this.interact = interactNow;
+    const escNow = this.keys.has("Escape") || this.keys.has("KeyP");
+    this.escape = escNow && !this.prevEscape;
+    this.prevEscape = escNow;
     return {
-      steer: THREEClamp(steer),
+      steer: clamp(steer),
       throttle,
       brake,
       handbrake: this.handbrake,
       interact: this.interact,
+      interactEdge: this.interactEdge,
+      escape: this.escape,
+      boost: this.boost,
     };
   }
 }
 
-function THREEClamp(v: number) {
+function clamp(v: number) {
   return Math.max(-1, Math.min(1, v));
 }
