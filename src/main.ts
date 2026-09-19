@@ -1,5 +1,6 @@
 import { isLiteGpu } from "./device";
 import "./style.css";
+import "./gta3-hud.css";
 import { SterlingCity } from "./game";
 import { practiceProblem } from "./mathBank";
 

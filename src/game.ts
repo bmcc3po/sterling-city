@@ -182,7 +182,7 @@ export class SterlingCity {
     }
 
     const palette = [0x1f4aa8, 0xb4233a, 0x1f8a62, 0x6a3d9a, 0xd8d4c8, 0x1c1c22, 0x8a6a1e];
-    const trafficN = this.lite ? 14 : 22;
+    const trafficN = this.lite ? 16 : 28;
     const lanes = this.city.lanes.length ? this.city.lanes : [];
     for (let i = 0; i < trafficN; i++) {
       const kit = createTrafficCar(palette[i % palette.length]!);
@@ -206,7 +206,7 @@ export class SterlingCity {
       this.scene.add(kit.group);
     }
 
-    const pedN = this.lite ? 12 : 22;
+    const pedN = this.lite ? 16 : 32;
     for (let i = 0; i < pedN; i++) {
       const path = this.city.pedPaths[i % this.city.pedPaths.length] ?? sidewalkLoop(0, 0, 10);
       const start = path[i % path.length]!;
@@ -260,6 +260,7 @@ export class SterlingCity {
     document.getElementById("interact")!.onclick = () => this.tryStartMission();
     document.getElementById("exit-vehicle")!.onclick = () => this.toggleVehicle();
     document.getElementById("pause-btn")!.onclick = () => this.togglePause();
+    document.getElementById("more-btn")?.addEventListener("click", () => this.togglePause());
     document.getElementById("answers")!.addEventListener("click", (e) => {
       const t = e.target as HTMLElement;
       if (t.tagName === "BUTTON") this.solve(t.textContent || "");
@@ -580,8 +581,8 @@ export class SterlingCity {
     const side = new THREE.Vector3(Math.cos(this.player.yaw), 0, -Math.sin(this.player.yaw));
     const spd = this.player.vel.length();
     const idlePull = !this.onFoot ? THREE.MathUtils.clamp((8.6 - spd) / 8.6, 0, 1) : 0;
-    const backDist = this.onFoot ? 4.8 : 7.72 + idlePull * 8.9 + Math.min(3, spd * 0.052) - (spd > 16 ? 1.28 : spd > 8 ? 0.62 : 0);
-    const height = this.onFoot ? 2.85 : 2.92 + idlePull * 2.55;
+    const backDist = this.onFoot ? 4.8 : 8.4 + idlePull * 5.2 + Math.min(2.2, spd * 0.04) - (spd > 16 ? 0.9 : 0);
+    const height = this.onFoot ? 2.85 : 3.15 + idlePull * 1.55;
     const desired = this.player.pos.clone().addScaledVector(back, backDist).addScaledVector(side, this.player.steerVis * 0.8).add(new THREE.Vector3(0, height, 0));
     this.keepCamOutOfWalls(desired);
     this.ensureCamClearOfHull(desired);
@@ -1057,7 +1058,10 @@ export class SterlingCity {
       getaway: "NITRO RINGS — multiply for boost",
       garage: "GARAGE LIFT — Topic 3 unlocks parts",
     };
-    document.getElementById("objective")!.textContent = text ?? labels[this.mission];
+    const line = text ?? labels[this.mission];
+    document.getElementById("objective")!.textContent = line;
+    const panel = document.getElementById("mission-panel");
+    if (panel) panel.textContent = `NOW: ${this.spot(this.mission).label}`;
   }
 
   private renderWanted() {

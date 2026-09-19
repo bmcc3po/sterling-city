@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { Reflector } from "three/addons/objects/Reflector.js";
 import { isLiteGpu } from "./device";
 import { sidewalkLoop } from "./pedestrians";
+import { instancedMesh, plaqueTexture, type Pose } from "./props";
 import { mulberry32, pick } from "./rng";
 import { asphaltTexture, neonSign, stopSign, streetSign, windowTexture } from "./textures";
 
@@ -182,34 +183,20 @@ export function buildCity(renderer: THREE.WebGLRenderer, lite = isLiteGpu): City
         }
 
         const shopColor = pick(rng, [0xb71c3a, 0xc9a227, 0x1b6b8a, 0x2e7d32, 0x6a1b9a]);
-        const shop = new THREE.Mesh(
-          new THREE.BoxGeometry(w * 0.9, 2.1, 0.1),
-          new THREE.MeshBasicMaterial({ color: shopColor, toneMapped: false }),
-        );
-        shop.position.set(bx, 1.2, bz + d / 2 + 0.1);
-        group.add(shop);
-
-        if (rng() > 0.42) {
-          const words =
-            kind === "harbor"
-              ? ["DOCKS", "CRANE", "STEEL", "FISH"]
-              : kind === "neon"
-                ? ["ARCADE", "RADIO", "NOON", "GRID"]
-                : kind === "homes"
-                  ? ["BAKERY", "MAIL", "PARK", "RENT"]
-                  : ["PIZZA", "BANK", "24H", "PARTS", "COACH"];
-          const colors = ["#c9a227", "#d4d0c4", "#8ecae6", "#e07a5f"];
-          const sign = new THREE.Mesh(
-            new THREE.PlaneGeometry(Math.min(w, 9), 2.6),
-            new THREE.MeshBasicMaterial({
-              map: neonSign(pick(rng, words), pick(rng, colors)),
-              transparent: true,
-              toneMapped: false,
-            }),
-          );
-          sign.position.set(bx, 4.6, bz + d / 2 + 0.18);
-          group.add(sign);
-        }
+        const words =
+          kind === "harbor"
+            ? ["DOCKS", "CRANE", "STEEL", "FISH"]
+            : kind === "neon"
+              ? ["ARCADE", "RADIO", "NOON", "GRID"]
+              : kind === "homes"
+                ? ["BAKERY", "MAIL", "PARK", "RENT"]
+                : ["PIZZA", "BANK", "24H", "PARTS", "COACH"];
+        const colors = ["#c9a227", "#d4d0c4", "#8ecae6", "#e07a5f"];
+        const word = pick(rng, words);
+        const tint = pick(rng, colors);
+        addStorefront(group, bx, bz, w, d, 1, 0, shopColor, word, tint, rng() > 0.28);
+        addStorefront(group, bx, bz, w, d, 0, 1, shopColor, word, tint, rng() > 0.45);
+        if (rng() > 0.55) addStorefront(group, bx, bz, w, d, -1, 0, shopColor, word, tint, false);
 
         if (!lite && rng() > 0.55) {
           const ac = new THREE.Mesh(
@@ -348,41 +335,68 @@ export function buildCity(renderer: THREE.WebGLRenderer, lite = isLiteGpu): City
   curb.position.set(0, 0.2, CITY_SPAN / 2 + 20);
   group.add(curb);
 
-  // Dress driving avenues: mesh-only props (no extra PointLights — those freeze phones).
+  // Instanced curb dressing — density without a draw-call storm.
   const parkGeo = new THREE.BoxGeometry(1.55, 0.7, 3.4);
-  const parkMats = [0x1f4aa8, 0x8a1e2e, 0x2a2f3a, 0x6a5344, 0xd8d4c8].map(
-    (c) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.45, metalness: 0.35 }),
-  );
-  const hydrantMat = new THREE.MeshStandardMaterial({ color: 0xa33a28, roughness: 0.55 });
-  const hydGeo = new THREE.CylinderGeometry(0.14, 0.16, 0.55, 6);
-  const step = lite ? 36 : 24;
+  const parkMat = new THREE.MeshStandardMaterial({ color: 0x3a3f48, roughness: 0.5, metalness: 0.3 });
+  const lampPoses: Pose[] = [];
+  const bulbPoses: Pose[] = [];
+  const parkPoses: Pose[] = [];
+  const step = lite ? 32 : 20;
   for (let i = 0; i < CELLS - 1; i++) {
     const rx = roadX(i);
     const rz = roadZ(i);
-    for (let s = -CITY_SPAN / 2 + 12; s < CITY_SPAN / 2; s += step) {
-      const lampX = new THREE.Mesh(postGeo, lampMat);
-      lampX.position.set(rx + ROAD / 2 - 1.4, 2.55, s);
-      const bulbX = new THREE.Mesh(bulbGeo, bulbMat);
-      bulbX.position.set(lampX.position.x, 5.1, s);
-      group.add(lampX, bulbX);
-      const parked = new THREE.Mesh(parkGeo, pick(rng, parkMats));
-      parked.position.set(rx + (Math.floor(s) % 48 > 24 ? 6.2 : -6.2), 0.4, s + 3);
-      parked.rotation.y = Math.floor(s) % 48 > 24 ? 0 : Math.PI;
-      group.add(parked);
+    for (let s = -CITY_SPAN / 2 + 10; s < CITY_SPAN / 2; s += step) {
+      lampPoses.push({ x: rx + ROAD / 2 - 1.4, y: 2.55, z: s });
+      bulbPoses.push({ x: rx + ROAD / 2 - 1.4, y: 5.1, z: s });
+      const side = Math.floor(s + i * 7) % 48 > 24 ? 6.2 : -6.2;
+      parkPoses.push({ x: rx + side, y: 0.4, z: s + 3, ry: side > 0 ? 0 : Math.PI });
       if (i % 2 === 0) {
-        const lampZ = new THREE.Mesh(postGeo, lampMat);
-        lampZ.position.set(s, 2.55, rz + ROAD / 2 - 1.4);
-        const bulbZ = new THREE.Mesh(bulbGeo, bulbMat);
-        bulbZ.position.set(s, 5.1, lampZ.position.z);
-        group.add(lampZ, bulbZ);
+        lampPoses.push({ x: s, y: 2.55, z: rz + ROAD / 2 - 1.4 });
+        bulbPoses.push({ x: s, y: 5.1, z: rz + ROAD / 2 - 1.4 });
       }
     }
-    if (!lite && i % 2 === 0) {
-      const hyd = new THREE.Mesh(hydGeo, hydrantMat);
-      hyd.position.set(rx + 6.8, 0.28, 8);
-      group.add(hyd);
+    // Crossing pedestrians use the road as a short two-point path.
+    if (i === 4 || i === 3) {
+      for (let k = 0; k < (lite ? 2 : 4); k++) {
+        const z = -40 + k * 28 + i;
+        pedPaths.push([
+          { x: rx - 8, z },
+          { x: rx + 8, z },
+        ]);
+      }
     }
   }
+  if (lampPoses.length) group.add(instancedMesh(postGeo, lampMat, lampPoses));
+  if (bulbPoses.length) group.add(instancedMesh(bulbGeo, bulbMat, bulbPoses));
+  if (parkPoses.length) group.add(instancedMesh(parkGeo, parkMat, parkPoses));
+
+  const pedagogy = [
+    { title: "ONES LINE", sub: "118 × 3 first", z: -8 },
+    { title: "WRITE ZERO", sub: "tens line placeholder", z: 6 },
+    { title: "HUNDREDS", sub: "100 × 13 = 1,300", z: 22 },
+    { title: "ADD HOUSES", sub: "1,300 + 130 + 104", z: 36 },
+  ];
+  const rxSpawn = roadX(4);
+  for (const p of pedagogy) {
+    const plate = new THREE.Mesh(
+      new THREE.PlaneGeometry(3.4, 1.7),
+      new THREE.MeshBasicMaterial({ map: plaqueTexture(p.title, p.sub), toneMapped: false }),
+    );
+    plate.position.set(rxSpawn - 7.4, 2.1, p.z);
+    plate.rotation.y = Math.PI / 2;
+    group.add(plate);
+  }
+
+  const board = new THREE.Mesh(
+    new THREE.PlaneGeometry(10, 5),
+    new THREE.MeshBasicMaterial({
+      map: plaqueTexture("118 × 13", "ONES LINE → WRITE 0 → TENS → ADD", "#141018", "#ffe14a"),
+      toneMapped: false,
+    }),
+  );
+  board.position.set(rxSpawn + 8.5, 7.5, 12);
+  board.rotation.y = -Math.PI / 2;
+  group.add(board);
 
   const spots: MissionSpot[] = [
     { id: "courier", x: roadX(4), z: roadZ(4) - 2, label: "ONES LINE BOOTH" },
@@ -420,6 +434,50 @@ export function buildCity(renderer: THREE.WebGLRenderer, lite = isLiteGpu): City
 function offset(i: number, j: number, dx: number, dz: number) {
   const c = blockCenter(i, j);
   return { x: c.x + dx, z: c.z + dz };
+}
+
+function addStorefront(
+  group: THREE.Group,
+  bx: number,
+  bz: number,
+  w: number,
+  d: number,
+  nx: number,
+  nz: number,
+  shopColor: number,
+  word: string,
+  tint: string,
+  withSign: boolean,
+) {
+  const px = bx + nx * (w / 2 + 0.12);
+  const pz = bz + nz * (d / 2 + 0.12);
+  const yaw = Math.atan2(nx, nz);
+  const stripW = nx !== 0 ? d * 0.9 : w * 0.9;
+  const shop = new THREE.Mesh(
+    new THREE.BoxGeometry(nx !== 0 ? 0.1 : stripW, 2.1, nx !== 0 ? stripW : 0.1),
+    new THREE.MeshBasicMaterial({ color: shopColor, toneMapped: false }),
+  );
+  shop.position.set(px, 1.2, pz);
+  const awn = new THREE.Mesh(
+    new THREE.BoxGeometry(nx !== 0 ? 1.1 : stripW, 0.08, nx !== 0 ? stripW : 1.1),
+    new THREE.MeshStandardMaterial({ color: 0x3a2a18, roughness: 0.7 }),
+  );
+  awn.position.set(bx + nx * (w / 2 + 0.55), 2.45, bz + nz * (d / 2 + 0.55));
+  const door = new THREE.Mesh(
+    new THREE.BoxGeometry(nx !== 0 ? 0.08 : 1.1, 2.0, nx !== 0 ? 1.1 : 0.08),
+    new THREE.MeshStandardMaterial({ color: 0x1a120c, roughness: 0.6 }),
+  );
+  door.position.set(px + nx * 0.04, 1.05, pz + nz * 0.04);
+  group.add(shop, awn, door);
+  if (withSign) {
+    const sign = new THREE.Mesh(
+      new THREE.PlaneGeometry(Math.min(stripW, 9), 2.4),
+      new THREE.MeshBasicMaterial({ map: neonSign(word, tint), transparent: true, toneMapped: false }),
+    );
+    sign.position.set(px + nx * 0.08, 4.5, pz + nz * 0.08);
+    sign.rotation.y = yaw;
+    group.add(sign);
+  }
 }
 
 export function makeWorldGate(id: MissionId) {

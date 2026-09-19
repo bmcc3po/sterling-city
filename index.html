@@ -22,27 +22,25 @@
   </head>
   <body>
     <canvas id="gl"></canvas>
-    <div id="hud">
-      <div class="hud-top">
-        <div class="hud-left">
-          <div class="radar-wrap">
-            <canvas id="minimap" width="220" height="220"></canvas>
-            <div class="radar-label">N</div>
-          </div>
-          <div id="cash">$0</div>
-          <div id="mode-badge">DRIVE</div>
-        </div>
-        <div class="hud-center">
-          <div id="radio">FLASH FM · Night Circuit</div>
-          <div id="objective">GOLD BLIP — ONES LINE booth · Topic 3</div>
-        </div>
-        <div class="hud-right">
-          <div id="wanted" aria-label="wanted stars"><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span></div>
-          <div id="speed"><b>0</b><small>MPH</small></div>
-          <button id="theme" type="button" title="Toggle day / night">NIGHT</button>
-          <button id="pause-btn" type="button" title="Pause venues">PAUSE</button>
-        </div>
+    <div id="hud" class="gta-hud">
+      <div class="gta-tl">
+        <div id="mission-panel">NOW: ONES LINE BOOTH</div>
+        <div id="objective">GOLD BLIP — ONES LINE booth · Topic 3</div>
+        <div id="mode-badge">DRIVE</div>
       </div>
+      <div class="gta-tr">
+        <div id="cash">$0</div>
+        <div id="wanted" aria-label="wanted stars"><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span></div>
+        <div id="speed"><b>0</b><small>MPH</small></div>
+        <button id="theme" type="button" title="Toggle day / night">NIGHT</button>
+        <button id="pause-btn" type="button" title="Pause venues">PAUSE</button>
+      </div>
+      <div class="radar-wrap gta-bl">
+        <canvas id="minimap" width="220" height="220"></canvas>
+        <div class="radar-label">N</div>
+      </div>
+      <button id="more-btn" type="button" title="Pause / more">☰</button>
+      <div id="radio" hidden>FLASH FM · Night Circuit</div>
 
       <div id="title-card">
         <p class="city-tag">OPEN CITY · NOT A MENU</p>
