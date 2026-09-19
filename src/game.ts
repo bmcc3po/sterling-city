@@ -205,6 +205,17 @@ export class SterlingCity {
       this.traffic.push(t);
       this.scene.add(kit.group);
     }
+    const spawnRx = this.player.pos.x;
+    const near = this.city.lanes.filter((l) => l.axis === "z" && Math.abs(l.x - spawnRx) < 10);
+    for (let i = 0; i < Math.min(6, this.traffic.length, near.length || 6); i++) {
+      const lane = near[i % Math.max(1, near.length)];
+      const car = this.traffic[i]!;
+      const offset = lane?.x ?? spawnRx + (i % 2 ? 3.1 : -3.1);
+      const dir = (lane?.dir ?? (i % 2 ? -1 : 1)) as 1 | -1;
+      car.lane = { axis: "z", dir, offset };
+      car.pos.set(offset, 0, this.player.pos.z + 14 + i * 11);
+      car.yaw = dir === 1 ? 0 : Math.PI;
+    }
 
     const pedN = this.lite ? 16 : 32;
     for (let i = 0; i < pedN; i++) {

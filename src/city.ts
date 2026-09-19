@@ -385,6 +385,21 @@ export function buildCity(renderer: THREE.WebGLRenderer, lite = isLiteGpu): City
   if (lampPoses.length) group.add(instancedMesh(postGeo, lampMat, lampPoses));
   if (bulbPoses.length) group.add(instancedMesh(bulbGeo, bulbMat, bulbPoses));
   if (parkPoses.length) group.add(instancedMesh(parkGeo, parkMat, parkPoses));
+  const dumpPoses: Pose[] = [];
+  for (let i = 0; i < CELLS - 1; i += lite ? 2 : 1) {
+    const rx = roadX(i);
+    dumpPoses.push({ x: rx + 7.1, y: 0.55, z: -18 + i * 8, ry: 0.2 });
+    dumpPoses.push({ x: rx - 7.1, y: 0.55, z: 14 + i * 6, ry: -0.15 });
+  }
+  if (dumpPoses.length) {
+    group.add(
+      instancedMesh(
+        new THREE.BoxGeometry(1.2, 1.1, 1.8),
+        new THREE.MeshStandardMaterial({ color: 0x2f4a32, roughness: 0.7 }),
+        dumpPoses,
+      ),
+    );
+  }
 
   const pedagogy = [
     { title: "ONES LINE", sub: "118 × 3 first", z: -8 },
