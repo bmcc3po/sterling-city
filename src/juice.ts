@@ -49,11 +49,21 @@ export function sfxMiss() {
 }
 
 export function sfxWin() {
-  beep(523, 0.12, "square", 0.05);
-  setTimeout(() => beep(659, 0.12, "square", 0.05), 90);
-  setTimeout(() => beep(784, 0.22, "square", 0.06), 180);
+  beep(523, 0.1, "square", 0.05);
+  setTimeout(() => beep(659, 0.1, "square", 0.05), 80);
+  setTimeout(() => beep(784, 0.12, "square", 0.06), 160);
+  setTimeout(() => beep(1046, 0.22, "square", 0.05), 260);
 }
 
 export function sfxTick() {
   beep(880, 0.04, "square", 0.03);
+}
+
+export function sfxCountdown() {
+  beep(392, 0.1, "square", 0.05);
+}
+
+export function sfxGo() {
+  beep(523, 0.08, "square", 0.06, 784);
+  beep(784, 0.16, "sawtooth", 0.04);
 }
