@@ -315,8 +315,25 @@ export function htmlT3DrillStepBoard(
     </div>`;
   }
   if (mode === "race") {
+    const houses = o.houses
+      .map((l) => `<div class="house${l.ask ? " ask" : ""}"><small>${l.label}</small><b>${l.value}</b></div>`)
+      .join("");
+    const crumbs = o.crumbs
+      .map((l, i) => `<span class="t3-crumb${i === 0 ? " on" : ""}">${l}</span>`)
+      .join('<span class="t3-crumb-arrow">→</span>');
+    const steps = o.algo
+      .map(
+        (l) => `<div class="t3-step ${l.kind}${l.ask ? " ask" : ""}" data-step="${l.id}">
+        <div class="t3-step-label">${l.label}</div>
+        <div class="t3-step-show">${l.show}</div>
+      </div>`,
+      )
+      .join("");
     return `<div class="pp-drill-steps race">
-      ${renderBoard(o, { compact: false })}
+      <p class="t3-kid">${sterKid(e.a, e.b).line}</p>
+      <div class="t3-houses place-houses">${houses}</div>
+      <div class="t3-crumbs">${crumbs}</div>
+      <div class="t3-algo">${steps}</div>
     </div>`;
   }
   return `<div class="pp-drill-steps">

@@ -1,6 +1,5 @@
 import {
   htmlT3DrillStepBoard,
-  kidVoiceHtml,
   makeProblem,
   opening118x13,
   sameAnswer,
@@ -424,7 +423,7 @@ export class GrandPrix {
       <div class="gp-ask">
         <div class="gp-kicker">${p.kicker}</div>
         <h2>${p.title}</h2>
-        <p class="gp-prompt"><span class="t3-prompt-ask">${esc(p.prompt)}</span>${kidVoiceHtml(p.prompt, p.factors)}</p>
+        <p class="gp-prompt"><span class="t3-prompt-ask">${esc(p.prompt)}</span></p>
       </div>
       ${htmlT3DrillStepBoard({ prompt: p.prompt, factors: p.factors, askTarget: p.askTarget }, "race")}
     `;

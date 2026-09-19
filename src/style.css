@@ -266,7 +266,7 @@ button { cursor: pointer; }
 .gp-juice.boost { background: #ffe14a; color: #2a1400; }
 .gp-juice.stall { background: #fb7185; color: #2a1400; }
 .gp-canvas {
-  width: 100%; height: min(30vh, 240px); border-radius: 16px; border: 3px solid #ffe14a;
+  width: 100%; height: min(22vh, 180px); border-radius: 16px; border: 3px solid #ffe14a;
   background: #89d4ff; display: block;
 }
 .t3-board.compact .t3-step-detail,
@@ -274,13 +274,19 @@ button { cursor: pointer; }
 .t3-board.compact .t3-step { grid-template-columns: 100px 1fr auto; }
 .pp-drill-steps.mini .t3-kid { font-size: 14px; }
 .pp-drill-steps.race .t3-kid { font-size: 16px; }
-.pp-drill-steps.race .house { min-height: 78px; padding: 10px 8px; }
-.pp-drill-steps.race .house small { font-size: 12px; }
-.pp-drill-steps.race .house b { font-size: 18px; line-height: 1.2; }
+.pp-drill-steps.race .t3-houses {
+  position: sticky; top: 0; z-index: 2;
+  background: #fff7e6; padding: 4px 0 10px; margin: 0 0 8px;
+}
+.pp-drill-steps.race .house { min-height: 88px; padding: 12px 8px; }
+.pp-drill-steps.race .house small { font-size: 13px; }
+.pp-drill-steps.race .house b { font-size: 20px; line-height: 1.2; }
+.pp-drill-steps.race .t3-step {
+  grid-template-columns: 120px 1fr; align-items: center;
+}
 .pp-drill-steps.race .t3-step-label { font-size: 13px; }
-.pp-drill-steps.race .t3-step-detail { font-size: 15px; color: var(--ink); }
 .pp-drill-steps.race .t3-step-show { font-size: 22px; }
-.pp-drill-steps.race .t3-notepad { font-size: 14px; }
+.pp-drill-steps.race .t3-notepad { display: none; }
 .gp-board {
   flex: 1; overflow: auto; background: #fff7e6; color: var(--ink);
   border-radius: 18px; padding: 10px 12px; border: 3px solid #12203a;
