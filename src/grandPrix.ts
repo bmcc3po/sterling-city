@@ -41,6 +41,7 @@ export class GrandPrix {
   phase: Phase = "start";
   count = 3;
   countTimer = 0;
+  private answerTimer = 0;
   specks: Speck[] = [];
   won = false;
 
@@ -51,6 +52,7 @@ export class GrandPrix {
   }
 
   start() {
+    window.clearTimeout(this.answerTimer);
     unlockAudio();
     this.open = true;
     this.finished = false;
@@ -80,6 +82,7 @@ export class GrandPrix {
   }
 
   close() {
+    window.clearTimeout(this.answerTimer);
     this.open = false;
     this.root.hidden = true;
     window.clearInterval(this.countTimer);
@@ -182,16 +185,17 @@ export class GrandPrix {
     this.renderKeepCanvas();
     this.paintAnswer(guess, ok);
     if (you.progress >= 1 || this.step + 1 >= CHECKPOINTS) {
-      window.setTimeout(() => this.finish(ok), 140);
+      this.answerTimer = window.setTimeout(() => this.finish(ok), 140);
       return;
     }
-    window.setTimeout(() => {
+    this.answerTimer = window.setTimeout(() => {
       this.juice = "coast";
       this.nextProblem();
     }, 160);
   }
 
   private finish(lastOk: boolean) {
+    if (!this.open || this.finished) return;
     this.finished = true;
     this.phase = "finish";
     this.place = this.rank();

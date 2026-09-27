@@ -39,6 +39,7 @@ export class SchoolHub {
   speedScore = 0;
   speedStreak = 0;
   speedTimer = 0;
+  private speedLocked = false;
   flash = "";
   learnStep = 0;
 
@@ -75,6 +76,7 @@ export class SchoolHub {
   }
 
   private dealSpeed() {
+    this.speedLocked = false;
     this.speed = makeProblem(this.speedStreak, "hub", "HUB SPEED · TOPIC 3");
     this.speedEnds = performance.now() + 20000;
     this.flash = "";
@@ -83,7 +85,7 @@ export class SchoolHub {
   private armSpeedTimer() {
     window.clearInterval(this.speedTimer);
     this.speedTimer = window.setInterval(() => {
-      if (this.tab !== "play" || this.root.hidden) return;
+      if (this.tab !== "play" || this.root.hidden || this.speedLocked) return;
       const left = Math.max(0, this.speedEnds - performance.now());
       const bar = this.root.querySelector<HTMLElement>("#speed-bar");
       const clock = this.root.querySelector("#speed-clock");
@@ -149,6 +151,9 @@ export class SchoolHub {
       return;
     }
     if (act === "speed-ans" && this.speed) {
+      if (this.speedLocked || this.root.hidden || this.tab !== "play") return;
+      if (performance.now() >= this.speedEnds) return;
+      this.speedLocked = true;
       unlockAudio();
       const ok = sameAnswer(t.dataset.ans || "", this.speed.correct);
       if (ok) {

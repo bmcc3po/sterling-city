@@ -1,0 +1,25 @@
+const fs = require('node:fs');
+const assert = require('node:assert/strict');
+const ts = require('typescript');
+require.extensions['.ts'] = (m, filename) => m._compile(ts.transpileModule(fs.readFileSync(filename, 'utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,filename);
+require.extensions['.css'] = () => {};
+const storage = new Map();
+global.localStorage = {getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)};
+const THREE = require('three');
+const {StreetWorld} = require('../src/world.ts');
+const {schoolClient} = require('../src/schoolFeed.ts');
+const input = {value:'1',select(){}}; const feedback = {textContent:''};
+const world = Object.assign(Object.create(StreetWorld.prototype),{footVelocity:0,streetRewards:[],upgrades:{},onFoot:false,avatar:new THREE.Group(),legs:[],ramps:[],parkPass:false,jumpCooldown:0,verticalSpeed:0,stage:'manifest',question:{a:12,b:14},records:[],loot:[],recovered:[],mission:0,wins:0,upgraded:false,heat:0,rivals:[],keys:new Set(),touches:new Map(),car:new THREE.Group(),blocks:[],speed:0,yaw:0,boost:100,lastSafe:new THREE.Vector3(),root:{querySelector:s=>s==='#cargo-answer'?input:feedback}});
+world.modal=()=>{};world.closeModal=()=>{};world.notify=()=>{};
+world.answer(); assert.equal(world.stage,'manifest');assert.equal(world.records.length,1);assert.match(feedback.textContent,/Ten crates hold 140/);
+input.value='168'; world.answer(); assert.equal(world.stage,'escape');assert.equal(world.records[1].correct,true);
+world.complete(); assert.equal(world.wins,1);assert.equal(schoolClient.getProgress().cash,900);
+world.complete(); assert.equal(schoolClient.getProgress().cash,900,'no duplicate payout');
+world.upgrade();assert.equal(schoolClient.getProgress().cash,200);assert.equal(world.upgraded,true);
+world.upgrade();assert.equal(schoolClient.getProgress().cash,200,'no duplicate purchase');
+const restored=Object.create(StreetWorld.prototype); restored.restore();assert.equal(restored.stage,'paid');assert.equal(restored.wins,1);assert.equal(restored.records.length,2);assert.equal(restored.upgraded,true);
+world.stage='pickup';world.keys.add('KeyW');for(let i=0;i<100;i++)world.drive(.02);assert.ok(world.speed>30);assert.ok(world.car.position.z>20);
+world.keys.clear();const prior=world.speed;for(let i=0;i<100;i++)world.drive(.02);assert.ok(world.speed<prior/5,'released gas decelerates');
+world.car.position.set(0,0,0);world.speed=50;world.blocks=[{x:0,z:5,w:4,d:4}];world.drive(.04);assert.equal(world.car.position.z,0,'buildings block the car');assert.ok(world.speed<0);
+console.log('PASS: coaching, correct answer transition, single payout, single upgrade charge, saved history, acceleration, released throttle, building collision');
+

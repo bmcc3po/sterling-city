@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0 --port 43180",
     "deploy": "npm run build && wrangler deploy",
-    "pages": "npm run build && wrangler pages deploy dist --project-name=sterling-city --commit-dirty=true --branch=main"
+    "pages": "npm run build && wrangler pages deploy dist --project-name=sterling-city --commit-dirty=true --branch=main",
+    "test": "node tests/world-check.cjs && node tests/estate-check.cjs && node tests/garage-check.cjs && node tests/activities-check.cjs && node tests/street-action-check.cjs"
   },
   "dependencies": {
     "three": "^0.170.0"

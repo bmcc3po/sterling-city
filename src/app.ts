@@ -1,81 +1,33 @@
-import { SchoolHub } from "./hub";
-import { GrandPrix } from "./grandPrix";
-import { CityStub } from "./cityStub";
-import { schoolClient } from "./schoolFeed";
-import { PEDAGOGY_MARKERS } from "./topic3";
+import { SchoolHub } from './hub';
+import { GrandPrix } from './grandPrix';
+import { StreetWorld } from './world';
+import { schoolClient } from './schoolFeed';
 
-function stripCityDeepLink() {
-  const url = new URL(window.location.href);
-  const screen = url.searchParams.get("screen") || url.searchParams.get("mode");
-  const hash = url.hash.replace(/^#/, "").toLowerCase();
-  if (screen === "city" || hash === "city" || hash === "city-stub") {
-    url.searchParams.delete("screen");
-    url.searchParams.delete("mode");
-    url.hash = "";
-    history.replaceState(null, "", `${url.pathname}${url.search}`);
-  }
-}
-
-export function boot() {
-  stripCityDeepLink();
-
-  const hubEl = document.getElementById("school-hub")!;
-  const prixEl = document.getElementById("grand-prix")!;
-  const cityEl = document.getElementById("city-stub")!;
-  const bootEl = document.getElementById("boot");
-  const toast = document.getElementById("school-cash-toast");
-
-  const showToast = (amount: number, reason: string) => {
-    if (!toast) return;
-    toast.hidden = false;
-    toast.textContent = `+$${amount} · ${reason}`;
-    toast.classList.add("show");
-    window.setTimeout(() => {
-      toast.classList.remove("show");
-      toast.hidden = true;
-    }, 1200);
-  };
-
-  const openPrix = () => {
-    hub.hide();
-    city.closeQuiet();
-    document.body.classList.remove("city-screen", "hub-screen");
-    document.body.classList.add("prix-screen");
-    prix.start();
-  };
-
-  const openHub = () => {
-    document.body.classList.remove("prix-screen", "city-screen");
-    void hub.open();
-  };
-
+export async function boot() {
+  const qa = import.meta.env.DEV && new URLSearchParams(location.search).has("playtest") ? await import("./playtest") : null;
+  qa?.prepareTestStorage();
+  const hubEl = document.getElementById('school-hub')!;
+  const prixEl = document.getElementById('grand-prix')!;
+  const worldEl = document.createElement('div'); worldEl.id = 'street-world'; document.body.append(worldEl);
+  const back = document.createElement('button'); back.id = 'return-city'; back.textContent = '← RETURN TO CITY'; back.hidden = true; document.body.append(back);
+  const openHub = () => { world?.hide(); prixEl.hidden = true; back.hidden = false; void hub.open(); };
   const hub = new SchoolHub(hubEl, {
-    onPlayPrix: openPrix,
-    onCash: (amount, reason) => showToast(amount, reason),
+    onPlayPrix: () => { hub.hide(); back.hidden = true; prix.start(); },
+    onCash: () => {},
   });
-
   const prix = new GrandPrix(prixEl, {
     onExit: openHub,
-    onWin: (cash) => {
-      const p = schoolClient.getProgress();
-      p.cash += cash;
-      p.prixWins += 1;
-      schoolClient.saveProgress(p);
-      showToast(cash, "Grand Prix win");
-    },
+    onWin: cash => { const p = schoolClient.getProgress(); p.cash += cash; p.prixWins++; schoolClient.saveProgress(p); },
   });
-
-  const city = new CityStub(cityEl, {
-    onHub: openHub,
-    onPrix: openPrix,
-  });
-
-  // School Hub is the only boot destination. Never start City Stub.
-  void hub.open().finally(() => {
-    bootEl?.classList.add("hide");
-    window.setTimeout(() => bootEl?.setAttribute("hidden", ""), 180);
-  });
-
-  // Keep pedagogy identifiers reachable so minify cannot drop them.
-  (window as Window & { __SC_PEDAGOGY?: typeof PEDAGOGY_MARKERS }).__SC_PEDAGOGY = PEDAGOGY_MARKERS;
+  let world: StreetWorld | undefined;
+  try {
+    world = new StreetWorld(worldEl, openHub);
+    qa?.attachPlaytest(world);
+    back.onclick = () => { hub.hide(); back.hidden = true; world!.show(); };
+  } catch (error) {
+    console.error('City startup failed', error);
+    worldEl.remove(); back.remove(); void hub.open();
+    const notice = document.createElement('p'); notice.textContent = 'The 3D city could not start on this device. School activities are still available.'; notice.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:150;background:#172431;color:white;padding:15px;margin:0'; document.body.append(notice);
+  }
+  document.getElementById('boot')!.hidden = true;
 }
